@@ -1,0 +1,169 @@
+---
+description: "Best practices for using Sequential Thinking MCP server for structured, step-by-step code generation and problem-solving."
+globs: []
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith:
+  - "Memory-MCP"
+  - "Sequential-Thinking-Advanced"
+---
+
+
+# Sequential Thinking for Code Generation
+
+## Overview
+
+The Sequential Thinking MCP server enables AI assistants to break down complex coding problems into structured, logical steps. This approach is particularly valuable for:
+
+- Complex feature implementation
+- Algorithm development
+- Architectural design
+- Debugging multi-step issues
+- Refactoring complex code structures
+- Building coherent systems from scratch
+
+## Core Principles
+
+- **Step-by-step reasoning**: Break down problems into discrete, manageable steps
+- **Evolving understanding**: Refine approach as new information emerges
+- **Hypothesis testing**: Formulate and verify solutions methodically
+- **Backtracking**: Revise previous steps when necessary
+- **Explicit reasoning**: Articulate thought process clearly
+- **Progressive refinement**: Move from abstract to concrete implementations
+
+## Workflow Patterns
+
+### 1. Problem Analysis Pattern
+
+```
+Thought 1: Clarify problem requirements and constraints
+Thought 2: Identify key components and their relationships
+Thought 3: Determine necessary technical approaches
+Thought 4: Identify potential challenges and edge cases
+Thought 5: Formulate initial solution strategy
+```
+
+### 2. Code Architecture Pattern
+
+```
+Thought 1: Define high-level architecture and components
+Thought 2: Establish interfaces and contracts between components
+Thought 3: Plan data flow and state management approach
+Thought 4: Consider error handling and edge cases
+Thought 5: Design testing strategy
+Thought 6: Refine architecture based on insights
+```
+
+### 3. Implementation Pattern
+
+```
+Thought 1: Define structure and skeleton of implementation
+Thought 2: Implement core functionality first
+Thought 3: Add error handling and edge case management
+Thought 4: Refactor for readability and maintainability
+Thought 5: Optimize for performance where appropriate
+Thought 6: Add tests to verify functionality
+```
+
+### 4. Debugging Pattern
+
+```
+Thought 1: Understand the expected vs. actual behavior
+Thought 2: Identify potential sources of the issue
+Thought 3: Form hypothesis about cause of problem
+Thought 4: Design test to confirm hypothesis
+Thought 5: Implement fix based on confirmed cause
+Thought 6: Verify fix resolves the issue without side effects
+```
+
+## Effective Usage in Code Generation
+
+### Planning Phase
+
+- Start with a high-level understanding of requirements
+- Break down features into logical components
+- Identify dependencies and interfaces first
+- Consider patterns from existing codebase
+- Plan testing approach alongside implementation
+
+### Implementation Phase
+
+- Generate skeleton code structure first
+- Implement functionality in logical sequence
+- Consider error cases and edge conditions
+- Implement parallel components in related groups
+- Generate tests with implementations
+
+### Refinement Phase
+
+- Review generated code for consistency
+- Optimize critical paths
+- Enhance error handling
+- Improve documentation
+- Ensure test coverage is adequate
+
+## Integration with Other MCP Services
+
+- Use Memory MCP to store insights about project patterns
+- Use Filesystem MCP to read existing code for context
+- Use Database MCP for structured data operations
+- Use external API services for integrations
+
+## Best Practices
+
+- Always clarify assumptions at each step
+- Document reasoning for significant decisions
+- Be explicit about trade-offs considered
+- Revise earlier steps when new information suggests a better approach
+- Generate test cases that verify correctness
+- Consider both happy path and error scenarios
+- When generating complex algorithms, trace through execution with examples
+- For architecture, consider scalability, maintainability, and performance
+
+## Common Pitfalls to Avoid
+
+- Skipping steps in reasoning process
+- Failing to revise earlier steps when new information emerges
+- Over-engineering solutions for simple problems
+- Under-specifying critical components
+- Neglecting error handling in initial implementation
+- Assuming too much about the runtime environment
+- Insufficient consideration of edge cases
+
+## Example: Feature Implementation
+
+```
+Thought 1: Analyze requirements for user authentication feature
+  - Need user registration, login, password reset
+  - Must use JWT for authentication
+  - Need role-based permissions
+
+Thought 2: Plan component architecture
+  - AuthService for core authentication logic
+  - UserController for HTTP endpoints
+  - TokenManager for JWT handling
+  - User model with secure password storage
+
+Thought 3: Design data flow
+  - Registration flow: validate → create user → generate token
+  - Login flow: authenticate → generate token → return user data
+  - Password reset: verify email → send token → validate token → update password
+
+Thought 4: Implement core components
+  - Start with User model and secure password handling
+  - Then implement TokenManager for JWT operations
+  - Next build AuthService with core logic
+  - Finally implement Controller with endpoints
+
+Thought 5: Add validation and error handling
+  - Input validation for all endpoints
+  - Proper error responses with appropriate HTTP codes
+  - Security measures against brute force attacks
+  - Token expiration and refresh logic
+
+Thought 6: Test implementation
+  - Unit tests for each component
+  - Integration tests for full flows
+  - Security tests for authentication bypass attempts
+```

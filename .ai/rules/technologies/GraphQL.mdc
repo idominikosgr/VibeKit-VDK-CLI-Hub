@@ -1,0 +1,130 @@
+---
+description: Best practices for GraphQL API development and integration across client and server applications.
+globs: ["**/*.graphql", "**/*.gql", "**/schema.graphql", "**/schema.js", "**/resolvers.js", "**/gql*.ts", "**/useQuery*.ts"]
+alwaysApply: false
+version: "1.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["TypeScript-Modern", "React19", "Apollo", "NextJS15"]
+---
+
+# GraphQL Best Practices
+
+## Schema Design Principles
+- Design your schema from the client's perspective, focusing on use cases rather than server implementation.
+- Use descriptive, consistent naming conventions across types, fields, and operations.
+- Keep fields focused and cohesive within their types.
+- Apply the principle of least privilege by only exposing what clients need.
+- Prefer object types over deeply nested structures when appropriate.
+- Use enums for fields with a fixed set of allowed values.
+- Add descriptions to types, fields, and arguments using triple-quote (`"""`) comments.
+- Organize related types into logical namespaces using a common prefix.
+- Design mutations to reflect user intent rather than implementation details.
+- Consider pagination from the start for collections that may grow large.
+
+## Type System Best Practices
+- Use non-nullable fields (`!`) by default, and make them nullable only when there's a clear reason.
+- Consider using custom scalars for values with specific formats (emails, URLs, dates).
+- Implement interfaces for common behaviors across multiple types.
+- Use unions for fields that can return different object types.
+- Apply input types for complex mutation arguments.
+- Design enums with clear, specific values rather than generic ones.
+- Consider using the Relay connection spec for paginated lists.
+- Use fragments to compose reusable field selections for complex queries.
+- Apply directives (`@deprecated`, `@skip`, `@include`) appropriately.
+- Consider implementing the Node interface for entities that need global identification.
+
+## Query Optimization
+- Implement dataloader pattern to solve the N+1 query problem.
+- Use query complexity analysis to prevent resource-exhausting queries.
+- Consider depth limiting to prevent deeply nested query attacks.
+- Implement field-level authorization in resolvers.
+- Cache responses at appropriate levels (CDN, API gateway, resolver).
+- Use persisted queries in production to reduce query size and improve security.
+- Monitor slow queries and optimize accordingly.
+- Consider batching multiple queries into a single request where appropriate.
+- Implement partial responses to serve what's needed rather than entire objects.
+- Use query cost analysis to fairly allocate server resources.
+
+## Client-Side Implementation
+- Generate typed queries, mutations, and fragments using tools like GraphQL Code Generator.
+- Implement client-side caching for query results.
+- Use fragments to share common field selections between queries.
+- Consider implementing optimistic UI updates for mutations.
+- Handle error states appropriately at the component level.
+- Implement retry logic for failed requests where appropriate.
+- Use query variables instead of string interpolation to avoid injection attacks.
+- Consider implementing client-side schema validation.
+- Use React suspense with GraphQL where appropriate for loading states.
+- Separate GraphQL operation definitions from UI components.
+
+## Apollo Client Best Practices
+- Configure the cache to properly normalize and store query results.
+- Use `useQuery` hook for data fetching with proper loading and error states.
+- Implement `useMutation` with optimistic updates where appropriate.
+- Use the Apollo Client cache for state management when possible.
+- Configure proper error handling at the Apollo Client level.
+- Consider implementing a custom cache redirect function for complex cache scenarios.
+- Use the Apollo Client devtools for debugging.
+- Implement a structured approach to Apollo Client error handling.
+- Consider using Apollo Link for custom middleware functionality.
+- Take advantage of refetching and polling for real-time data needs.
+
+## Server-Side Implementation
+- Organize resolvers by their corresponding type, not by data source.
+- Keep resolvers focused on translating between GraphQL and your services.
+- Implement proper authentication and authorization at the resolver level.
+- Use dataloaders to batch and cache database queries.
+- Implement proper error handling with custom error types.
+- Consider using schema stitching or federation for large applications.
+- Implement subscription handling for real-time functionality.
+- Use schema validation and linting in your development workflow.
+- Log and monitor GraphQL operations in production.
+- Implement field-level performance tracing.
+
+## Testing GraphQL APIs
+- Write tests for resolvers using a mocked context.
+- Implement integration tests that validate the entire GraphQL execution.
+- Use snapshot testing for schema changes.
+- Test error handling and edge cases.
+- Validate custom directives and scalar implementations.
+- Implement performance tests for critical queries.
+- Test permission and access control rules.
+- Validate schema changes against existing clients for backward compatibility.
+- Test subscription functionality with proper cleanup.
+- Consider implementing automated query complexity analysis in tests.
+
+## Performance Considerations
+- Only request needed fields to minimize data transfer and processing.
+- Implement appropriate caching strategies at multiple levels.
+- Use persisted queries in production.
+- Consider implementing automatic persisted queries (APQ).
+- Use query batching for multiple simultaneous queries.
+- Implement proper indexing on database fields used in resolvers.
+- Consider implementing resolver-level caching for expensive computations.
+- Use execution tracing to identify and optimize slow resolvers.
+- Implement response compression in production environments.
+- Consider using GraphQL-specific CDN caching strategies.
+
+## Security Considerations
+- Implement depth limiting to prevent nested query attacks.
+- Use query complexity analysis to prevent resource exhaustion.
+- Implement appropriate rate limiting.
+- Always validate and sanitize input at the field level.
+- Apply proper authorization checks in resolvers.
+- Use environment-specific API keys for introspection queries.
+- Consider disabling introspection in production.
+- Implement proper error masking to avoid information leakage.
+- Use transport security (HTTPS) for all GraphQL endpoints.
+- Consider implementing persisted queries to prevent arbitrary operation execution.
+
+## GraphQL with TypeScript
+- Generate TypeScript types from your GraphQL schema.
+- Use typed hooks and components with tools like `graphql-codegen`.
+- Create proper TypeScript interfaces for resolver arguments and returns.
+- Apply strict type checking to catch schema-related issues early.
+- Use GraphQL enums directly in TypeScript code.
+- Implement proper nullable type handling in TypeScript.
+- Consider zod validation for input types.
+- Leverage discriminated union types for GraphQL unions and interfaces.
+- Use TypeScript generics for reusable GraphQL operation components.
+- Apply exhaustive type checking for all possible GraphQL response states.

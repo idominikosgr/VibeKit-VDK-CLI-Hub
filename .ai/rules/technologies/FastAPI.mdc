@@ -1,0 +1,169 @@
+---
+description: Best practices for building high-performance APIs with FastAPI, a modern Python web framework.
+globs: ["**/*.py", "**/requirements.txt", "**/pyproject.toml"]
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["Python3","Docker-Kubernetes"]
+---
+
+# FastAPI Best Practices
+
+## Project Structure & Organization
+- Organize your project with clear separation of concerns:
+  - `app/` - Main application package
+  - `app/api/` - API routes and endpoints
+  - `app/core/` - Core functionality, config, security
+  - `app/db/` - Database models, sessions, repositories
+  - `app/models/` - Pydantic models (schemas)
+  - `app/services/` - Business logic
+  - `app/utils/` - Utility functions
+- Use the FastAPI application factory pattern with dependencies.
+- Separate routers by resource or feature.
+- Keep configuration separate using environment variables or config files.
+- Use `.env` files for local development, but never commit them to version control.
+
+## API Design & Routing
+- Use semantic REST principles for resource-based endpoints.
+- Group related endpoints using APIRouter.
+- Use path parameters for resource identification.
+- Use query parameters for filtering, sorting, and pagination.
+- Use request bodies for complex data.
+- Create nested routers for resource hierarchies.
+- Version your API explicitly in the URL path (e.g., `/api/v1/`).
+- Use consistent naming conventions for endpoints.
+- Design idempotent endpoints where appropriate.
+
+## Type Hints & Pydantic Models
+- Use Pydantic models extensively for request and response validation.
+- Define clear input and output models for each endpoint.
+- Create separate models for requests, responses, and database operations.
+- Use model inheritance to reduce duplication.
+- Define custom validators for complex validation logic.
+- Use Field with constraints for precise validation.
+- Use typing.Optional for optional fields.
+- Use Literal for fields with a fixed set of allowed values.
+- Create reusable components with Pydantic's BaseModel.
+
+## Dependency Injection
+- Use FastAPI's dependency injection system for shared resources.
+- Create reusable dependencies for common functionality.
+- Use dependency injection for database sessions.
+- Implement proper dependency scoping (request, app).
+- Use dependencies for security and authentication.
+- Chain dependencies for complex requirements.
+- Use Depends(callable) syntax for type-checking benefits.
+- Create custom dependency classes for complex logic.
+
+## Authentication & Security
+- Use OAuth2 with password flow, JWT tokens, or OAuth2 providers.
+- Implement proper token validation and verification.
+- Use secure password hashing (bcrypt, Argon2).
+- Create a security utility to get the current user.
+- Use scopes for fine-grained permissions.
+- Implement rate limiting for APIs.
+- Set appropriate CORS settings.
+- Add security headers (using middleware if needed).
+- Never expose sensitive information in responses.
+
+## Database Integration
+- Use async ORM libraries (SQLAlchemy 2.0+ with async support, Tortoise ORM).
+- Implement connection pooling for database efficiency.
+- Create database sessions as dependencies.
+- Use migrations for database schema changes (Alembic).
+- Implement repositories or DAOs for database operations.
+- Handle database errors gracefully.
+- Use transactions where appropriate.
+- Implement proper indexing for query performance.
+- Consider using Redis or similar for caching frequent queries.
+
+## Performance Optimization
+- Use async/await consistently throughout the application.
+- Implement proper connection pooling for databases and external services.
+- Use caching for expensive operations (Redis, in-memory).
+- Apply pagination for endpoints returning large collections.
+- Understand FastAPI's starlette.concurrency.run_in_threadpool for CPU-bound tasks.
+- Use background tasks for operations that don't need immediate response.
+- Monitor response times and optimize slow endpoints.
+- Consider using worker processes for CPU-intensive operations.
+
+## Error Handling
+- Implement global exception handlers using exception_handler.
+- Return appropriate HTTP status codes for different error situations.
+- Create custom exception classes for domain-specific errors.
+- Include meaningful error messages in responses.
+- Structure error responses consistently.
+- Log errors with context information.
+- Handle validation errors gracefully.
+- Consider security implications when exposing error details.
+
+## Testing
+- Write comprehensive tests using pytest and pytest-asyncio.
+- Use FastAPI's TestClient for API testing.
+- Implement fixtures for common testing scenarios.
+- Mock external services and dependencies.
+- Use a separate test database or in-memory database.
+- Test happy paths, edge cases, and error scenarios.
+- Implement integration tests for critical paths.
+- Use parametrized tests for similar test cases.
+
+## Documentation
+- Leverage FastAPI's automatic documentation generation.
+- Add clear descriptions to all models and endpoints.
+- Include examples in schema definitions.
+- Document authentication requirements.
+- Use tags to organize API endpoints.
+- Add docstrings to all functions, classes, and modules.
+- Include request/response examples for complex endpoints.
+- Document rate limits and other restrictions.
+
+## Middleware & CORS
+- Configure CORS with appropriate settings for your frontend.
+- Implement custom middleware where needed.
+- Use middleware for cross-cutting concerns.
+- Consider using middleware for:
+  - Request ID generation
+  - Logging
+  - Metrics collection
+  - Response compression
+  - Authentication
+- Apply middleware in the right order.
+- Keep middleware lightweight to maintain performance.
+
+## Background Tasks & Async Operations
+- Use BackgroundTasks for operations that don't block the response.
+- Implement proper task queues for more complex background processing.
+- Consider using Celery, Arq, or RQ for distributed task processing.
+- Implement proper error handling for background tasks.
+- Use workers with appropriate concurrency settings.
+- Monitor background task performance and failures.
+- Implement retry mechanisms for unreliable operations.
+
+## Logging & Monitoring
+- Configure structured logging with appropriate levels.
+- Include request IDs in logs for request tracking.
+- Log relevant information for debugging and monitoring.
+- Use a logging framework compatible with async operations.
+- Implement metrics collection for API usage and performance.
+- Consider integrating with monitoring tools.
+- Log authentication and authorization events.
+- Implement health check endpoints.
+
+## Deployment & Environment Management
+- Use Docker for containerization.
+- Configure proper ASGI servers (Uvicorn, Hypercorn) with appropriate workers.
+- Use environment variables for configuration across environments.
+- Implement CI/CD pipelines for automated testing and deployment.
+- Consider using Kubernetes for orchestration.
+- Implement proper health checks and readiness probes.
+- Use staged deployments (dev, staging, production).
+- Manage secrets securely using appropriate tools.
+
+## WebSockets (If Applicable)
+- Use proper connection management for WebSockets.
+- Implement authentication for WebSocket connections.
+- Handle disconnects gracefully.
+- Structure WebSocket messages consistently.
+- Use appropriate serialization for WebSocket messages.
+- Consider using connection managers for broadcast operations.
+- Implement proper error handling for WebSocket operations.

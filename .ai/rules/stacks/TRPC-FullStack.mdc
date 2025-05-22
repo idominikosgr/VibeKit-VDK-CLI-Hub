@@ -1,0 +1,421 @@
+---
+description: Best practices for building end-to-end type-safe applications with tRPC, Next.js, and Prisma.
+globs: ["**/*.{ts", "tsx}", "**/trpc/**", "**/prisma/**"]
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["TypeScript-Modern","NextJS15","React19"]
+---
+
+# tRPC Full-Stack
+
+## Stack Overview
+
+### Core Technologies
+- **Next.js** with App Router or SvelteKit as the framework
+- **TypeScript** for end-to-end type safety
+- **tRPC** for type-safe API communication
+
+### Data Layer
+- **Prisma ORM** for database access
+- **PlanetScale** or **Supabase** for database hosting
+
+### UI Layer
+- **Tailwind CSS** for styling
+- **Headless UI** or **Radix UI** components
+
+### State Management
+- **TanStack Query** with tRPC integration for server state
+- **Zod** for validation integrated with tRPC
+
+### Authentication
+- **Clerk** or **Lucia Auth** for authentication
+
+### Testing
+- **Vitest** for unit and integration tests
+- **Playwright** for end-to-end testing
+
+## Project Structure for Next.js
+
+```
+/
+u251cu2500u2500 prisma/               # Prisma schema and migrations
+u251cu2500u2500 src/
+u2502   u251cu2500u2500 app/              # Next.js App Router pages
+u2502   u251cu2500u2500 components/       # React components
+u2502   u251cu2500u2500 server/           # Server-side code
+u2502   u2502   u251cu2500u2500 api/          # API routes
+u2502   u2502   u251cu2500u2500 auth.ts       # Authentication helpers
+u2502   u2502   u251cu2500u2500 db.ts        # Database client
+u2502   u2502   u2514u2500u2500 trpc/         # tRPC implementation
+u2502   u2502       u251cu2500u2500 routers/   # tRPC routers
+u2502   u2502       u251cu2500u2500 procedures/ # reusable procedures
+u2502   u2502       u2514u2500u2500 index.ts   # tRPC initialization
+u2502   u251cu2500u2500 lib/               # Utility functions
+u2502   u251cu2500u2500 types/             # TypeScript definitions
+u2502   u2514u2500u2500 utils/             # Shared utilities
+u2514u2500u2500 public/                # Static assets
+```
+
+## tRPC Implementation
+
+### Setup Root Router and Initialization
+
+```typescript
+// src/server/trpc/index.ts
+import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
+
+import { ZodError } from 'zod';
+import { getServerAuthSession } from '../auth';
+import { db } from '../db';
+
+type CreateContextOptions = {
+  headers: Headers;
+};
+
+const createInnerTRPCContext = async (opts: CreateContextOptions) => {
+  const session = await getServerAuthSession();
+
+  return {
+    session,
+    headers: opts.headers,
+    db,
+  };
+};
+
+export const createTRPCContext = async (opts: {
+  headers: Headers;
+}) => {
+  return await createInnerTRPCContext({
+    headers: opts.headers,
+  });
+};
+
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
+});
+
+export const createTRPCRouter = t.router;
+export const publicProcedure = t.procedure;
+
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+```
+
+### Example Router Implementation
+
+```typescript
+// src/server/trpc/routers/post.ts
+import { z } from 'zod';
+
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../index';
+
+export const postRouter = createTRPCRouter({
+  all: publicProcedure.query(({ ctx }) => {
+    return ctx.db.post.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { author: true },
+    });
+  }),
+
+  byId: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.post.findUnique({
+        where: { id: input.id },
+        include: { author: true },
+      });
+    }),
+
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string().min(1).max(100),
+        content: z.string().min(1),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: {
+          title: input.title,
+          content: input.content,
+          authorId: ctx.session.user.id,
+        },
+      });
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Post not found',
+        });
+      }
+
+      if (post.authorId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Not authorized',
+        });
+      }
+
+      await ctx.db.post.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
+    }),
+});
+```
+
+### Root Router Export
+
+```typescript
+// src/server/trpc/routers/_app.ts
+import { createTRPCRouter } from '../index';
+import { postRouter } from './post';
+import { userRouter } from './user';
+
+export const appRouter = createTRPCRouter({
+  post: postRouter,
+  user: userRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+## Client-Side Integration with Next.js
+
+### API Handler
+
+```typescript
+// src/app/api/trpc/[trpc]/route.ts
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+
+import { appRouter } from '@/server/trpc/routers/_app';
+ import { createTRPCContext } from '@/server/trpc';
+
+const handler = (req: Request) =>
+  fetchRequestHandler({
+    endpoint: '/api/trpc',
+    req,
+    router: appRouter,
+    createContext: () => createTRPCContext({ headers: req.headers }),
+  });
+
+export { handler as GET, handler as POST };
+```
+
+### Client Provider Setup
+
+```typescript
+// src/utils/trpc/provider.tsx
+'use client';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { httpBatchLink, loggerLink } from '@trpc/client';
+import { createTRPCReact } from '@trpc/react-query';
+import { useState } from 'react';
+import superjson from 'superjson';
+
+import { type AppRouter } from '@/server/trpc/routers/_app';
+
+export const api = createTRPCReact<AppRouter>();
+
+export function TRPCProvider({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() =>
+    api.createClient({
+      transformer: superjson,
+      links: [
+        loggerLink({
+          enabled: (opts) =>
+            process.env.NODE_ENV === 'development' ||
+            (opts.direction === 'down' && opts.result instanceof Error),
+        }),
+        httpBatchLink({
+          url: '/api/trpc',
+        }),
+      ],
+    }),
+  );
+
+  return (
+    <api.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </api.Provider>
+  );
+}
+```
+
+### Client-Side Usage Example
+
+```typescript
+// src/app/posts/page.tsx
+'use client';
+
+import { api } from '@/utils/trpc/provider';
+
+export default function Posts() {
+  const postsQuery = api.post.all.useQuery();
+
+  if (postsQuery.isLoading) {
+    return <div>Loading posts...</div>;
+  }
+
+  if (postsQuery.error) {
+    return <div>Error loading posts: {postsQuery.error.message}</div>;
+  }
+
+  return (
+    <div className="container py-10">
+      <h1 className="text-3xl font-bold mb-6">Posts</h1>
+      <div className="grid gap-4">
+        {postsQuery.data.map((post) => (
+          <div key={post.id} className="border p-4 rounded-lg">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-sm text-muted-foreground">
+              By {post.author?.name || 'Unknown'}
+            </p>
+            <p className="mt-2">{post.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Mutation Example
+
+```typescript
+// src/components/posts/create-post-form.tsx
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { api } from '@/utils/trpc/provider';
+
+export function CreatePostForm() {
+  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const utils = api.useUtils();
+  const createPost = api.post.create.useMutation({
+    onSuccess: () => {
+      setTitle('');
+      setContent('');
+      utils.post.all.invalidate();
+      router.push('/posts');
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createPost.mutate({ title, content });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="title" className="block font-medium mb-1">
+          Title
+        </label>
+        <input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full px-3 py-2 border rounded-md"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="content" className="block font-medium mb-1">
+          Content
+        </label>
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full px-3 py-2 border rounded-md min-h-[150px]"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={createPost.isPending}
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+      >
+        {createPost.isPending ? 'Creating...' : 'Create Post'}
+      </button>
+    </form>
+  );
+}
+```
+
+## Best Practices
+
+1. **End-to-End Type Safety**
+   - Let tRPC infer types automatically from your router definitions
+   - Use Zod for input validation in procedures
+   - Leverage TypeScript's type inference between client and server
+
+2. **Router Organization**
+   - Organize routers by domain/feature (users, posts, etc.)
+   - Create reusable procedures for common operations
+   - Use middleware for auth and other cross-cutting concerns
+
+3. **Error Handling**
+   - Use TRPCError for structured error responses
+   - Implement proper error handling on the client
+   - Provide user-friendly error messages
+
+4. **Performance**
+   - Use query invalidation carefully
+   - Leverage React Query's caching capabilities
+   - Consider batching related mutations
+
+5. **Security**
+   - Always validate user permissions in protected procedures
+   - Use middleware to enforce authentication
+   - Never trust client-side data without validation
+
+6. **Testing**
+   - Create test utilities for tRPC procedures
+   - Mock the tRPC client in component tests
+   - Test happy and error paths
+
+7. **Deployment**
+   - Use environment variables for configuration
+   - Consider edge functions for better performance
+   - Implement proper logging and monitoring

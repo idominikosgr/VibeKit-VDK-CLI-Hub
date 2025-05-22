@@ -1,0 +1,825 @@
+---
+description: Best practices for building modern e-commerce applications with Next.js Commerce, Shopify, and related technologies.
+globs: ["**/*.{ts", "tsx}", "**/next.config.{js", "mjs", "ts}", "**/commerce/**"]
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["TypeScript-Modern","NextJS15","React19"]
+---
+
+# E-commerce Stack
+
+## Stack Overview
+
+### Core Technologies
+- **Next.js Commerce** or **Remix** as the framework
+- **React 19+** for component-based UI
+- **TypeScript** for type safety
+
+### Commerce Layer
+- **Shopify Hydrogen**, **Medusa.js**, or **Commerce.js** for e-commerce functionality
+
+### UI Layer
+- **Tailwind CSS** for styling
+- **Shadcn UI** for accessible, customizable components
+
+### Content Management
+- **Sanity** or **Builder.io** for visual editing
+
+### Payment Processing
+- **Stripe Elements** + **PaymentIntents API**
+
+### Search & Discovery
+- **Algolia** or **Elastic** for product search
+
+### State Management
+- **Context API** or **Zustand** for cart management
+
+### Performance
+- Heavy focus on Core Web Vitals
+- Image optimization
+- Edge functions for region-specific content
+
+## Project Structure for Next.js Commerce
+
+```
+/
+u251cu2500u2500 .github/             # GitHub workflows
+u251cu2500u2500 src/
+u2502   u251cu2500u2500 app/             # Next.js App Router pages
+u2502   u2502   u251cu2500u2500 (auth)/      # Authentication routes
+u2502   u2502   u251cu2500u2500 products/    # Product pages
+u2502   u2502   u251cu2500u2500 cart/        # Cart pages
+u2502   u2502   u251cu2500u2500 checkout/    # Checkout flow
+u2502   u2502   u251cu2500u2500 api/         # API routes
+u2502   u2502   u2514u2500u2500 layout.tsx   # Root layout
+u2502   u251cu2500u2500 components/      # React components
+u2502   u2502   u251cu2500u2500 ui/          # Shadcn UI components
+u2502   u2502   u251cu2500u2500 product/      # Product components
+u2502   u2502   u251cu2500u2500 cart/        # Cart components
+u2502   u2502   u2514u2500u2500 checkout/    # Checkout components
+u2502   u251cu2500u2500 lib/             # Shared utilities
+u2502   u2502   u251cu2500u2500 commerce/    # Commerce provider
+u2502   u2502   u251cu2500u2500 hooks/       # Custom hooks
+u2502   u2502   u251cu2500u2500 cart/        # Cart functionality
+u2502   u2502   u2514u2500u2500 checkout/    # Checkout utilities
+u2502   u251cu2500u2500 config/          # Application config
+u2502   u2514u2500u2500 types/           # TypeScript definitions
+u251cu2500u2500 public/              # Static assets
+u2514u2500u2500 commerce-config.js   # Commerce provider config
+```
+
+## Shopify Integration
+
+### Shopify Hydrogen Configuration
+
+```typescript
+// src/lib/commerce/shopify/config.ts
+import { ShopifyProvider, ShopifyConfig } from '@shopify/hydrogen-react';
+
+export const shopifyConfig: ShopifyConfig = {
+  storeDomain: process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!,
+  storefrontToken: process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN!,
+  storefrontApiVersion: '2023-10',
+};
+
+export function ShopifyProviderWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <ShopifyProvider {...shopifyConfig}>
+      {children}
+    </ShopifyProvider>
+  );
+}
+```
+
+### Product Fetching with Shopify
+
+```typescript
+// src/lib/commerce/shopify/product.ts
+import { gql } from '@shopify/hydrogen-react';
+import { shopifyFetch } from './fetch';
+
+export async function getProduct(handle: string) {
+  const query = gql`
+    query ProductDetails($handle: String!) {
+      product(handle: $handle) {
+        id
+        title
+        description
+        handle
+        images(first: 10) {
+          edges {
+            node {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+        variants(first: 100) {
+          edges {
+            node {
+              id
+              title
+              price {
+                amount
+                currencyCode
+              }
+              availableForSale
+              selectedOptions {
+                name
+                value
+              }
+            }
+          }
+        }
+        options {
+          name
+          values
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
+  `;
+
+  const { data, errors } = await shopifyFetch(query, { variables: { handle } });
+
+  if (errors) {
+    throw new Error(errors[0].message);
+  }
+
+  return data.product;
+}
+```
+
+## Product Display Component
+
+```tsx
+// src/components/product/ProductView.tsx
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import { useCart } from '@/lib/commerce/cart/use-cart';
+import { ProductGallery } from './ProductGallery';
+import { ProductOptions } from './ProductOptions';
+import { Button } from '@/components/ui/button';
+import { formatPrice } from '@/lib/utils/format';
+
+interface ProductViewProps {
+  product: any; // Type would be more specific based on your commerce provider
+}
+
+export function ProductView({ product }: ProductViewProps) {
+  const { addItem } = useCart();
+  const [selectedVariant, setSelectedVariant] = useState(product.variants.edges[0].node);
+  const [quantity, setQuantity] = useState(1);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const handleAddToCart = async () => {
+    setIsAddingToCart(true);
+    try {
+      await addItem({
+        variantId: selectedVariant.id,
+        quantity,
+      });
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+
+  const updateSelectedVariant = (options: Record<string, string>) => {
+    // Find the variant that matches all selected options
+    const matchedVariant = product.variants.edges.find((edge: any) => {
+      return edge.node.selectedOptions.every((option: any) => {
+        return options[option.name] === option.value;
+      });
+    });
+
+    if (matchedVariant) {
+      setSelectedVariant(matchedVariant.node);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-10">
+      {/* Product Gallery */}
+      <div>
+        <ProductGallery images={product.images.edges.map((edge: any) => edge.node)} />
+      </div>
+
+      {/* Product Details */}
+      <div className="space-y-6">
+        <h1 className="text-3xl font-bold">{product.title}</h1>
+        
+        <div className="text-xl font-semibold">
+          {formatPrice(
+            selectedVariant.price.amount, 
+            selectedVariant.price.currencyCode
+          )}
+        </div>
+        
+        <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+        
+        {/* Product Options (color, size, etc.) */}
+        <ProductOptions 
+          options={product.options} 
+          variants={product.variants.edges.map((edge: any) => edge.node)}
+          onChange={updateSelectedVariant}
+        />
+        
+        {/* Quantity Selector */}
+        <div className="flex items-center space-x-4">
+          <span className="font-medium">Quantity:</span>
+          <div className="flex border rounded-md">
+            <button 
+              className="px-3 py-1 border-r" 
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              aria-label="Decrease quantity"
+            >
+              -
+            </button>
+            <span className="px-4 py-1">{quantity}</span>
+            <button 
+              className="px-3 py-1 border-l" 
+              onClick={() => setQuantity(quantity + 1)}
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        
+        {/* Add to Cart Button */}
+        <Button 
+          className="w-full py-6" 
+          onClick={handleAddToCart}
+          disabled={isAddingToCart || !selectedVariant.availableForSale}
+        >
+          {!selectedVariant.availableForSale ? 'Out of Stock' : 
+           isAddingToCart ? 'Adding...' : 'Add to Cart'}
+        </Button>
+        
+        {/* Additional Information */}
+        <div className="border-t pt-6 space-y-4">
+          <div className="flex space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Free shipping on orders over $50</span>
+          </div>
+          <div className="flex space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Free returns within 30 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+## Cart Implementation
+
+```typescript
+// src/lib/commerce/cart/cart-context.tsx
+'use client';
+
+import { createContext, useContext, useReducer, useEffect } from 'react';
+import { getCookie, setCookie } from '@/lib/utils/cookies';
+
+type CartItem = {
+  variantId: string;
+  quantity: number;
+  // Additional fields would be populated when displaying cart
+};
+
+type CartState = {
+  items: CartItem[];
+  isLoading: boolean;
+  error: string | null;
+};
+
+type CartAction =
+  | { type: 'CART_LOADING' }
+  | { type: 'CART_ERROR'; payload: string }
+  | { type: 'CART_LOADED'; payload: CartItem[] }
+  | { type: 'ADD_ITEM'; payload: CartItem }
+  | { type: 'UPDATE_ITEM_QUANTITY'; payload: { variantId: string; quantity: number } }
+  | { type: 'REMOVE_ITEM'; payload: { variantId: string } }
+  | { type: 'CLEAR_CART' };
+
+const initialState: CartState = {
+  items: [],
+  isLoading: true,
+  error: null,
+};
+
+const CartContext = createContext<{
+  state: CartState;
+  addItem: (item: Omit<CartItem, 'title' | 'price' | 'image'>) => Promise<void>;
+  updateItemQuantity: (variantId: string, quantity: number) => Promise<void>;
+  removeItem: (variantId: string) => Promise<void>;
+  clearCart: () => Promise<void>;
+} | undefined>(undefined);
+
+function cartReducer(state: CartState, action: CartAction): CartState {
+  switch (action.type) {
+    case 'CART_LOADING':
+      return { ...state, isLoading: true, error: null };
+      
+    case 'CART_ERROR':
+      return { ...state, isLoading: false, error: action.payload };
+      
+    case 'CART_LOADED':
+      return { ...state, items: action.payload, isLoading: false, error: null };
+      
+    case 'ADD_ITEM': {
+      const existingItemIndex = state.items.findIndex(
+        (item) => item.variantId === action.payload.variantId
+      );
+      
+      let newItems;
+      
+      if (existingItemIndex > -1) {
+        // Item exists, update quantity
+        newItems = [...state.items];
+        newItems[existingItemIndex] = {
+          ...newItems[existingItemIndex],
+          quantity: newItems[existingItemIndex].quantity + action.payload.quantity,
+        };
+      } else {
+        // Add new item
+        newItems = [...state.items, action.payload];
+      }
+      
+      return { ...state, items: newItems, error: null };
+    }
+      
+    case 'UPDATE_ITEM_QUANTITY': {
+      const { variantId, quantity } = action.payload;
+      const newItems = state.items.map((item) =>
+        item.variantId === variantId ? { ...item, quantity } : item
+      );
+      
+      return { ...state, items: newItems, error: null };
+    }
+      
+    case 'REMOVE_ITEM': {
+      const newItems = state.items.filter(
+        (item) => item.variantId !== action.payload.variantId
+      );
+      
+      return { ...state, items: newItems, error: null };
+    }
+      
+    case 'CLEAR_CART':
+      return { ...state, items: [], error: null };
+      
+    default:
+      return state;
+  }
+}
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = useReducer(cartReducer, initialState);
+  
+  // Load cart from cookies on initial render
+  useEffect(() => {
+    const loadCart = () => {
+      try {
+        const savedCart = getCookie('cart');
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          dispatch({ type: 'CART_LOADED', payload: parsedCart });
+        } else {
+          dispatch({ type: 'CART_LOADED', payload: [] });
+        }
+      } catch (error) {
+        console.error('Failed to load cart:', error);
+        dispatch({ type: 'CART_ERROR', payload: 'Failed to load cart' });
+      }
+    };
+    
+    loadCart();
+  }, []);
+  
+  // Save cart to cookies whenever it changes
+  useEffect(() => {
+    if (!state.isLoading) {
+      setCookie('cart', JSON.stringify(state.items), { days: 30 });
+    }
+  }, [state.items, state.isLoading]);
+  
+  // Cart operations
+  const addItem = async (item: Omit<CartItem, 'title' | 'price' | 'image'>) => {
+    dispatch({ type: 'ADD_ITEM', payload: item as CartItem });
+  };
+  
+  const updateItemQuantity = async (variantId: string, quantity: number) => {
+    if (quantity < 1) {
+      await removeItem(variantId);
+      return;
+    }
+    
+    dispatch({
+      type: 'UPDATE_ITEM_QUANTITY',
+      payload: { variantId, quantity },
+    });
+  };
+  
+  const removeItem = async (variantId: string) => {
+    dispatch({
+      type: 'REMOVE_ITEM',
+      payload: { variantId },
+    });
+  };
+  
+  const clearCart = async () => {
+    dispatch({ type: 'CLEAR_CART' });
+  };
+  
+  return (
+    <CartContext.Provider
+      value={{
+        state,
+        addItem,
+        updateItemQuantity,
+        removeItem,
+        clearCart,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  
+  return context;
+};
+```
+
+## Stripe Integration for Checkout
+
+```typescript
+// src/app/api/checkout/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import Stripe from 'stripe';
+import { z } from 'zod';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
+});
+
+// Validate the request body
+const checkoutSchema = z.object({
+  items: z.array(
+    z.object({
+      variantId: z.string(),
+      quantity: z.number().int().positive(),
+      price: z.number().positive(),
+      name: z.string(),
+      image: z.string().optional(),
+    })
+  ),
+  successUrl: z.string().url(),
+  cancelUrl: z.string().url(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    // Parse and validate the request body
+    const body = await request.json();
+    const result = checkoutSchema.safeParse(body);
+    
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: result.error.format() },
+        { status: 400 }
+      );
+    }
+    
+    const { items, successUrl, cancelUrl } = result.data;
+    
+    // Create Stripe checkout session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: items.map((item) => ({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            images: item.image ? [item.image] : [],
+            metadata: {
+              variantId: item.variantId,
+            },
+          },
+          unit_amount: Math.round(item.price * 100), // Convert to cents
+        },
+        quantity: item.quantity,
+      })),
+      mode: 'payment',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA', 'GB'],
+      },
+      metadata: {
+        // Add any custom metadata for your order here
+        source: 'web-store',
+      },
+    });
+    
+    return NextResponse.json({ sessionId: session.id });
+  } catch (error: any) {
+    console.error('Checkout error:', error);
+    
+    return NextResponse.json(
+      { error: error.message || 'An error occurred creating the checkout session' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Checkout Flow Component
+
+```tsx
+// src/components/checkout/CheckoutButton.tsx
+'use client';
+
+import { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Button } from '@/components/ui/button';
+import { useCart } from '@/lib/commerce/cart/use-cart';
+import { useToast } from '@/components/ui/use-toast';
+import { getProductDetails } from '@/lib/commerce/product';
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+export function CheckoutButton() {
+  const { state, clearCart } = useCart();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleCheckout = async () => {
+    if (state.items.length === 0) {
+      toast({
+        title: 'Cart is empty',
+        description: 'Add some products to your cart before checking out.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Get full details for cart items
+      const itemsWithDetails = await Promise.all(
+        state.items.map(async (item) => {
+          const product = await getProductDetails(item.variantId);
+          return {
+            variantId: item.variantId,
+            quantity: item.quantity,
+            name: product.title,
+            price: parseFloat(product.price),
+            image: product.image?.url,
+          };
+        })
+      );
+      
+      // Call the checkout API
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: itemsWithDetails,
+          successUrl: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/cart`,
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create checkout session');
+      }
+      
+      const { sessionId } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      const stripe = await stripePromise;
+      const { error } = await stripe!.redirectToCheckout({ sessionId });
+      
+      if (error) {
+        throw new Error(error.message || 'Failed to redirect to checkout');
+      }
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      toast({
+        title: 'Checkout failed',
+        description: error.message || 'An error occurred during checkout',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return (
+    <Button
+      className="w-full py-6"
+      onClick={handleCheckout}
+      disabled={isLoading || state.items.length === 0}
+    >
+      {isLoading ? 'Processing...' : 'Proceed to Checkout'}
+    </Button>
+  );
+}
+```
+
+## Product Search with Algolia
+
+```tsx
+// src/components/search/ProductSearch.tsx
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import algoliasearch from 'algoliasearch/lite';
+import { InstantSearch, SearchBox, Hits, RefinementList, Pagination } from 'react-instantsearch';
+import { ProductCard } from '@/components/product/ProductCard';
+
+// Initialize Algolia client
+const searchClient = algoliasearch(
+  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
+);
+
+export function ProductSearch() {
+  const router = useRouter();
+  const [searchState, setSearchState] = useState({});
+  
+  // Update URL when search state changes
+  useEffect(() => {
+    const searchStateString = JSON.stringify(searchState);
+    if (searchStateString === '{}') return;
+    
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('q', searchStateString);
+    
+    // Update URL without triggering a navigation
+    const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
+    window.history.replaceState({ path: newUrl }, '', newUrl);
+  }, [searchState]);
+  
+  // Load search state from URL on initial render
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const q = searchParams.get('q');
+    
+    if (q) {
+      try {
+        const parsedState = JSON.parse(q);
+        setSearchState(parsedState);
+      } catch (error) {
+        console.error('Failed to parse search state from URL:', error);
+      }
+    }
+  }, []);
+  
+  // Custom Hits component using our ProductCard
+  const CustomHits = ({ hits }: { hits: any[] }) => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {hits.map((hit) => (
+        <ProductCard 
+          key={hit.objectID}
+          product={{
+            id: hit.objectID,
+            title: hit.title,
+            handle: hit.handle,
+            price: hit.price,
+            image: hit.image,
+            vendor: hit.vendor,
+          }}
+          onClick={() => router.push(`/products/${hit.handle}`)}
+        />
+      ))}
+    </div>
+  );
+  
+  return (
+    <InstantSearch
+      searchClient={searchClient}
+      indexName="products"
+      searchState={searchState}
+      onStateChange={setSearchState}
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Filters */}
+        <div className="lg:col-span-1 space-y-6">
+          <div>
+            <h3 className="text-lg font-medium mb-2">Categories</h3>
+            <RefinementList attribute="categories" />
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-medium mb-2">Brand</h3>
+            <RefinementList attribute="vendor" />
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-medium mb-2">Price</h3>
+            <RefinementList attribute="price_range" />
+          </div>
+        </div>
+        
+        {/* Search Results */}
+        <div className="lg:col-span-3 space-y-6">
+          <SearchBox
+            placeholder="Search for products..."
+            classNames={{
+              root: 'relative w-full',
+              input: 'w-full px-4 py-2 border rounded-md',
+              submit: 'absolute right-3 top-1/2 transform -translate-y-1/2',
+              reset: 'hidden',
+            }}
+          />
+          
+          <Hits hitComponent={CustomHits} />
+          
+          <div className="flex justify-center mt-8">
+            <Pagination
+              classNames={{
+                root: 'flex space-x-1',
+                item: 'px-3 py-1 border rounded',
+                selectedItem: 'bg-blue-600 text-white',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </InstantSearch>
+  );
+}
+```
+
+## Best Practices
+
+1. **Performance**
+   - Use image optimization for product images
+   - Implement proper caching for product and category pages
+   - Use Incremental Static Regeneration (ISR) for product pages
+   - Prefetch critical pages and resources
+   - Optimize Core Web Vitals for better SEO and conversion
+
+2. **User Experience**
+   - Implement proper loading states for all interactions
+   - Use skeleton loaders during data fetching
+   - Create intuitive navigation patterns
+   - Optimize mobile checkout flow
+   - Provide helpful validation messages for forms
+
+3. **SEO and Discoverability**
+   - Implement proper structured data for products
+   - Create optimized product URLs
+   - Generate sitemaps for all products and categories
+   - Use proper meta tags for social sharing
+   - Implement breadcrumbs for navigation and SEO
+
+4. **Security**
+   - Never store sensitive payment information
+   - Implement rate limiting for checkout endpoints
+   - Validate all form inputs on both client and server
+   - Secure API endpoints with proper authentication
+   - Use HTTPS for all communications
+
+5. **Analytics and Optimization**
+   - Implement proper e-commerce tracking
+   - Set up conversion goal tracking
+   - Monitor cart abandonment
+   - A/B test checkout flow variations
+   - Track user engagement with products

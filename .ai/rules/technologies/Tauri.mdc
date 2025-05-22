@@ -1,0 +1,168 @@
+---
+description: Best practices for Tauri - a framework for building lightweight, secure desktop applications with web technologies.
+globs: ["**/tauri.conf.json", "**/src-tauri/**", "**/Cargo.toml", "**/*.rs"]
+alwaysApply: false
+version: "1.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["TypeScript-Modern", "React19", "Vue3", "Svelte5"]
+---
+
+# Tauri Best Practices
+
+## Project Structure & Organization
+- Maintain a clear separation between frontend (web) and backend (Rust) code.
+- Follow the standard Tauri project structure:
+  - `src/` or equivalent for your frontend code
+  - `src-tauri/` for Rust backend code
+  - `src-tauri/src/main.rs` as the entry point for the Rust code
+- Use a modern frontend framework (React, Vue, Svelte) for the UI layer.
+- Organize Rust modules logically based on functionality.
+- Place platform-specific code in dedicated modules.
+- Leverage Rust's module system for backend code organization.
+- Store static assets in appropriate directories accessible to both frontend and backend.
+- Use proper dependency management for both frontend (npm/yarn/pnpm) and backend (Cargo).
+- Consider separating business logic into a core Rust library that can be shared.
+
+## Application Configuration
+- Configure your application properly in `tauri.conf.json`.
+- Limit allowed APIs to only what your application needs for security.
+- Set appropriate window properties based on your application's requirements.
+- Configure proper permissions for file system, shell, and network access.
+- Define specific bundle configurations for different operating systems.
+- Use environment variables for environment-specific configuration.
+- Configure proper updater settings for application updates.
+- Define appropriate CSP (Content Security Policy) rules.
+- Use conditional compilation for platform-specific features.
+- Configure proper window events and handlers.
+
+## Frontend-Backend Communication
+- Use Tauri commands for communication between frontend and backend:
+  ```rust
+  #[tauri::command]
+  fn greet(name: String) -> String {
+      format!("Hello, {}!", name)
+  }
+  ```
+- Implement proper error handling in commands:
+  ```rust
+  #[tauri::command]
+  fn risky_operation() -> Result<String, String> {
+      // Implementation
+      Ok("Success".into())
+  }
+  ```
+- Use strongly typed payload structures:
+  ```rust
+  #[derive(serde::Serialize, serde::Deserialize)]
+  struct User {
+      name: String,
+      age: u8,
+  }
+  
+  #[tauri::command]
+  fn process_user(user: User) -> Result<(), String> {
+      // Implementation
+      Ok(())
+  }
+  ```
+- Consider using Tauri events for one-to-many communication patterns.
+- Implement proper async patterns for long-running operations.
+- Use state management for sharing data between commands.
+- Validate all input from the frontend in Rust code.
+- Keep commands focused and single-purpose.
+- Document the API contract between frontend and backend.
+- Use TypeScript for type safety in frontend command invocations.
+
+## Security Considerations
+- Follow the principle of least privilege when configuring allowed APIs.
+- Validate all user inputs in Rust code, not just in the frontend.
+- Use Tauri's security features such as CSP and limited access.
+- Implement proper CORS settings for network requests.
+- Consider the security implications of shell command execution.
+- Use secure storage for sensitive information.
+- Implement proper sandboxing of web content.
+- Be cautious with custom URL schemes.
+- Handle sensitive data appropriately, avoiding logging or unnecessary storage.
+- Consider signing your application for improved user trust.
+
+## Performance Optimization
+- Use asynchronous Rust code for I/O-bound operations:
+  ```rust
+  #[tauri::command]
+  async fn fetch_data() -> Result<String, String> {
+      // Async implementation
+      Ok("Data".into())
+  }
+  ```
+- Offload CPU-intensive tasks to background threads.
+- Optimize memory usage by properly managing resources.
+- Consider using web workers for CPU-intensive frontend tasks.
+- Implement proper caching strategies.
+- Optimize asset sizes for faster loading.
+- Use lazy loading for non-essential application features.
+- Profile your application regularly to identify bottlenecks.
+- Consider the tradeoffs between binary size and features.
+- Optimize startup time by deferring non-essential initialization.
+
+## Rust Best Practices
+- Follow standard Rust idioms and patterns.
+- Leverage the type system for safety and expressiveness.
+- Use the Result and Option types appropriately for error handling.
+- Implement proper error types for your application.
+- Use strong typing rather than stringly-typed interfaces.
+- Leverage async/await for I/O-bound operations.
+- Use channels for communication between tasks.
+- Apply proper resource management with RAII pattern.
+- Implement traits for common behavior.
+- Consider using a domain-driven design approach for complex applications.
+
+## Frontend Framework Integration
+- Use framework-specific bindings for improved developer experience:
+  - `@tauri-apps/api` for vanilla JS
+  - `tauri-react` for React integration
+  - Equivalent packages for other frameworks
+- Implement proper error handling for command invocations.
+- Consider using suspense or similar patterns for async operations.
+- Implement proper loading states for commands.
+- Use TypeScript for improved type safety.
+- Maintain clean separation between UI and application logic.
+- Consider using state management libraries appropriate to your framework.
+- Implement proper abstractions for Tauri API calls.
+- Design responsive UIs that adapt to window resizing.
+- Consider accessibility from the beginning.
+
+## Packaging & Distribution
+- Configure proper application metadata in `tauri.conf.json`.
+- Set up CI/CD pipelines for automated builds on all platforms.
+- Implement a proper update mechanism using Tauri's updater.
+- Sign your applications appropriately for each platform.
+- Consider using GitHub Releases or similar platforms for distribution.
+- Implement proper versioning using semantic versioning.
+- Include appropriate documentation with your releases.
+- Consider platform-specific considerations (macOS notarization, Windows SmartScreen).
+- Implement proper installer customization.
+- Test your distribution process thoroughly before releases.
+
+## Testing
+- Implement unit tests for Rust code using the standard test framework.
+- Use integration tests for testing complete features.
+- Implement proper mocking for dependencies.
+- Consider using end-to-end testing for critical user journeys.
+- Test on all target platforms regularly.
+- Implement proper test fixtures for consistent testing.
+- Use continuous integration for automatic testing.
+- Test edge cases and error conditions extensively.
+- Consider property-based testing for complex algorithms.
+- Implement performance benchmarks for critical paths.
+
+## Development Workflow
+- Use Tauri's development server for rapid iteration.
+- Configure hot reloading where appropriate.
+- Use consistent code formatting tools (Prettier, Rustfmt).
+- Implement linting for both frontend and Rust code.
+- Consider using git hooks for pre-commit validation.
+- Document code and APIs thoroughly.
+- Use semantic versioning for your application.
+- Maintain a comprehensive changelog.
+- Consider implementing feature flags for gradual rollouts.
+- Use proper debug logging that can be enabled in development builds.

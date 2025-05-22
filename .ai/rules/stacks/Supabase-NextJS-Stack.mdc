@@ -1,0 +1,649 @@
+---
+description: Best practices for building applications with the Supabase-Next.js full stack, including TypeScript, Tailwind CSS, and Shadcn UI.
+globs: ["**/*.{ts", "tsx", "js", "jsx}", "**/next.config.{js", "mjs", "ts}", "**/supabase/**"]
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["NextJS15","TypeScript-Modern","Supabase"]
+---
+
+# Supabase-Next.js Full Stack
+
+## Stack Overview
+
+### Core Technologies
+- **Next.js 15+** with App Router (React Server Components)
+- **React 19+** for component-based UI
+- **TypeScript 5.4+** with strict mode enabled
+- **Supabase** for backend services (auth, database, storage, realtime, edge functions)
+
+### UI Layer
+- **Tailwind CSS 4+** for utility-first styling
+- **Shadcn UI** for accessible, customizable components
+- **Lucide React** for consistent iconography
+
+### State Management
+- **TanStack Query** (React Query) for server state
+- **Zustand** for client-side state
+- **Supabase Realtime** for live data updates
+
+### Data Validation
+- **Zod** for runtime validation and type inference
+- End-to-end type safety with TypeScript
+
+### Development Tools
+- **Turborepo** for monorepo management (optional)
+- **Prettier** for code formatting
+- **ESLint** for code quality
+
+## Project Structure
+
+```
+/
+├── .github/             # GitHub Actions workflows
+├── src/
+│   ├── app/             # Next.js App Router pages
+│   │   ├── (auth)/      # Authentication routes (grouped)
+│   │   ├── (dashboard)/ # Dashboard routes (grouped)
+│   │   ├── api/         # API routes
+│   │   └── layout.tsx   # Root layout with providers
+│   ├── components/      # React components
+│   │   ├── ui/          # Shadcn UI components
+│   │   └── [feature]/   # Feature-specific components
+│   ├── lib/             # Shared utilities
+│   │   ├── supabase/    # Supabase client functions
+│   │   ├── utils.ts     # Utility functions
+│   │   └── validations/ # Zod schemas
+│   ├── hooks/           # Custom React hooks
+│   │   ├── use-supabase-auth.ts
+│   │   └── use-[feature].ts
+│   ├── stores/          # Zustand stores
+│   └── types/           # TypeScript type definitions
+├── public/              # Static assets
+├── supabase/            # Supabase configuration
+│   ├── migrations/      # Database migrations
+│   ├── functions/       # Edge Functions
+│   ├── seed.sql         # Database seed data
+│   └── config.toml      # Local development config
+└── package.json         # Project dependencies
+```
+
+## Supabase Integration
+
+### Client Setup
+
+```typescript
+// src/lib/supabase/client.ts
+import { createBrowserClient } from '@supabase/ssr'
+import { Database } from '@/types/supabase'
+
+export function createClient() {
+  return createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+```
+
+### Server-Side Setup
+
+```typescript
+// src/lib/supabase/server.ts
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { Database } from '@/types/supabase'
+
+export function createClient() {
+  const cookieStore = cookies()
+
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value
+        },
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name, options) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  )
+}
+```
+
+### Database Types Generation
+
+```bash
+pnpm supabase gen types typescript --project-id "your-project-id" --schema public > src/types/supabase.ts
+```
+
+## Authentication Implementation
+
+### Auth Provider Setup
+
+```typescript
+// src/components/providers/supabase-auth-provider.tsx
+"use client"
+
+import { createContext, useContext, useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
+
+type SupabaseAuthContextType = {
+  user: User | null
+  isLoading: boolean
+  signOut: () => Promise<void>
+}
+
+const SupabaseAuthContext = createContext<SupabaseAuthContextType>(null!)
+
+export function SupabaseAuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null)
+        setIsLoading(false)
+      }
+    )
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [supabase])
+
+  const signOut = async () => {
+    await supabase.auth.signOut()
+  }
+
+  const value = {
+    user,
+    isLoading,
+    signOut
+  }
+
+  return (
+    <SupabaseAuthContext.Provider value={value}>
+      {children}
+    </SupabaseAuthContext.Provider>
+  )
+}
+
+export const useSupabaseAuth = () => useContext(SupabaseAuthContext)
+```
+
+### Auth Middleware
+
+```typescript
+// src/middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name) {
+          return request.cookies.get(name)?.value
+        },
+        set(name, value, options) {
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove(name, options) {
+          request.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          })
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+        },
+      },
+    }
+  )
+
+  const { data: { session } } = await supabase.auth.getSession()
+
+  // Protected routes check
+  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
+    const redirectUrl = new URL('/login', request.url)
+    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Redirect logged in users away from auth pages
+  if (session && (request.nextUrl.pathname.startsWith('/login') ||
+                  request.nextUrl.pathname.startsWith('/register'))) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  return response
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/auth/callback).*)'],
+}
+```
+
+## Database Access Patterns
+
+### Server Component Data Fetching
+
+```typescript
+// src/app/posts/page.tsx
+import { createClient } from '@/lib/supabase/server'
+
+export const revalidate = 60 // Revalidate every 60 seconds
+
+export default async function PostsPage() {
+  const supabase = createClient()
+
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('id, title, content, created_at, users(name)')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return <div>Failed to load posts</div>
+  }
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Recent Posts</h1>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {posts.map((post) => (
+          <div key={post.id} className="p-4 border rounded-lg">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-sm text-muted-foreground">
+              By {post.users?.name} on {new Date(post.created_at).toLocaleDateString()}
+            </p>
+            <p className="mt-2">{post.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+### Client-Side Data Fetching with TanStack Query
+
+```typescript
+// src/hooks/use-posts.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+import { PostSchema, type Post } from '@/lib/validations/post'
+
+export function usePosts() {
+  const supabase = createClient()
+  const queryClient = useQueryClient()
+
+  // Fetch posts
+  const postsQuery = useQuery({
+    queryKey: ['posts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('id, title, content, created_at, user_id, users(name)')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data as Post[]
+    },
+  })
+
+  // Create post
+  const createPostMutation = useMutation({
+    mutationFn: async (newPost: Omit<Post, 'id' | 'created_at' | 'users'>) => {
+      // Validate post data with Zod
+      const validatedPost = PostSchema.parse(newPost)
+
+      const { data, error } = await supabase
+        .from('posts')
+        .insert(validatedPost)
+        .select()
+
+      if (error) throw error
+      return data[0] as Post
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+    },
+  })
+
+  return {
+    posts: postsQuery.data ?? [],
+    isLoading: postsQuery.isLoading,
+    error: postsQuery.error,
+    createPost: createPostMutation.mutate,
+    isCreating: createPostMutation.isPending,
+  }
+}
+```
+
+### Real-time Data with Supabase
+
+```typescript
+// src/hooks/use-realtime-posts.ts
+import { useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+import { usePosts } from './use-posts'
+import type { Post } from '@/lib/validations/post'
+
+export function useRealtimePosts() {
+  const supabase = createClient()
+  const queryClient = useQueryClient()
+  const { posts, isLoading, error, createPost } = usePosts()
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('posts-channel')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'posts',
+      }, (payload) => {
+        // Update cache when data changes
+        queryClient.invalidateQueries({ queryKey: ['posts'] })
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [supabase, queryClient])
+
+  return { posts, isLoading, error, createPost }
+}
+```
+
+## Forms with Zod Validation
+
+```typescript
+// src/components/posts/create-post-form.tsx
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { useSupabaseAuth } from "@/components/providers/supabase-auth-provider"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { PostSchema, type PostFormValues } from "@/lib/validations/post"
+import { usePosts } from "@/hooks/use-posts"
+
+export function CreatePostForm() {
+  const { user } = useSupabaseAuth()
+  const { createPost, isCreating } = usePosts()
+
+  const form = useForm<PostFormValues>({
+    resolver: zodResolver(PostSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+    },
+  })
+
+  function onSubmit(values: PostFormValues) {
+    if (!user) return
+
+    createPost({
+      ...values,
+      user_id: user.id,
+    })
+
+    form.reset()
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Post title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Content</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your post content here..."
+                  className="min-h-[120px]"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" disabled={isCreating}>
+          {isCreating ? "Creating..." : "Create Post"}
+        </Button>
+      </form>
+    </Form>
+  )
+}
+```
+
+### Schema Definition with Zod
+
+```typescript
+// src/lib/validations/post.ts
+import { z } from "zod"
+
+export const PostSchema = z.object({
+  title: z
+    .string()
+    .min(3, "Title must be at least 3 characters")
+    .max(100, "Title must be less than 100 characters"),
+  content: z
+    .string()
+    .min(10, "Content must be at least 10 characters")
+    .max(2000, "Content must be less than 2000 characters"),
+  user_id: z.string().uuid().optional(),
+})
+
+export type PostFormValues = z.infer<typeof PostSchema>
+
+export type Post = PostFormValues & {
+  id: string
+  created_at: string
+  users?: {
+    name: string
+  }
+}
+```
+
+## Client-Side State Management with Zustand
+
+```typescript
+// src/stores/ui-store.ts
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
+type UIState = {
+  sidebarOpen: boolean
+  theme: 'light' | 'dark' | 'system'
+  setSidebarOpen: (open: boolean) => void
+  toggleSidebar: () => void
+  setTheme: (theme: 'light' | 'dark' | 'system') => void
+}
+
+export const useUIStore = create<UIState>(
+  persist(
+    (set) => ({
+      sidebarOpen: false,
+      theme: 'system',
+      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      setTheme: (theme) => set({ theme }),
+    }),
+    {
+      name: 'ui-store',
+    }
+  )
+)
+```
+
+## Deploy to Production
+
+### Environment Configuration
+
+```bash
+# .env.local example
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### Supabase Edge Functions
+
+```typescript
+// supabase/functions/send-notification/index.ts
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+interface WebhookPayload {
+  type: string
+  table: string
+  record: Record<string, any>
+  schema: string
+  old_record: Record<string, any> | null
+}
+
+serve(async (req) => {
+  const payload: WebhookPayload = await req.json()
+
+  // Create Supabase client with service role key to access any data
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? '',
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ''
+  )
+
+  if (payload.type === "INSERT" && payload.table === "posts") {
+    // Get post author details
+    const { data: user } = await supabaseAdmin
+      .from('users')
+      .select('email, name')
+      .eq('id', payload.record.user_id)
+      .single()
+
+    if (user) {
+      // Send notification logic here
+      console.log(`Sending notification to ${user.email} for new post: ${payload.record.title}`)
+
+      // Record the notification
+      await supabaseAdmin
+        .from('notifications')
+        .insert({
+          user_id: payload.record.user_id,
+          content: `Your post "${payload.record.title}" was published`,
+          type: 'post_created'
+        })
+    }
+  }
+
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  })
+})
+```
+
+## Best Practices
+
+1. **Type Safety**: Use TypeScript throughout with proper types for Supabase tables
+
+2. **Security**:
+   - Apply Row Level Security (RLS) policies in Supabase
+   - Validate all inputs with Zod
+   - Use environment variables for sensitive information
+
+3. **Performance**:
+   - Implement proper data caching with TanStack Query
+   - Use suspense for loading states
+   - Configure Supabase RLS policies efficiently
+
+4. **State Management**:
+   - Use React Query for server state
+   - Use Zustand for UI state
+   - Use context only when necessary
+
+5. **Component Structure**:
+   - Leverage Server Components where possible
+   - Create reusable hooks for data fetching
+   - Implement proper error boundaries
+
+6. **Styling**:
+   - Use consistent Tailwind patterns
+   - Create component variants with cva
+   - Maintain dark mode support
+
+7. **Testing**:
+   - Write unit tests for critical business logic
+   - Test database access patterns with mocks
+   - Use Playwright for end-to-end testing

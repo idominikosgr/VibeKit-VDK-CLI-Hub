@@ -1,0 +1,152 @@
+---
+description: "Best practices for leveraging Model Context Protocol (MCP) servers for advanced code generation capabilities."
+globs: []
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith:
+  - "Memory-MCP"
+  - "Sequential-Thinking-Advanced"
+---
+
+
+# MCP Servers for Code Generation
+
+## Overview of MCP Capabilities
+
+Model Context Protocol (MCP) servers extend AI code generation capabilities by providing access to:
+
+- **Filesystem operations**: Creating, reading, and modifying code files
+- **Memory storage**: Persisting project patterns and preferences
+- **Sequential thinking**: Breaking down complex code generation tasks
+- **External services**: Integrating with APIs and databases
+
+## Filesystem MCP Best Practices
+
+- Use consistent path handling with absolute paths for clarity
+- Implement proper error handling for all filesystem operations
+- Create directory structures before writing files
+- Check file existence before operations to avoid accidental overwrites
+- Use atomic write operations when possible
+- Preserve file permissions and metadata when appropriate
+- Follow a read-analyze-modify-write pattern for code changes
+- Create backups for critical file modifications
+
+## Memory MCP Best Practices
+
+- Store project-specific patterns for consistent code generation
+- Use semantic tags for better retrieval of code snippets
+- Organize memories hierarchically by feature or component
+- Include context with stored code patterns
+- Store both positive and negative examples (what to avoid)
+- Update memories when project patterns evolve
+- Use memories to maintain consistent style across multiple sessions
+- Store architecture decisions to inform future code generation
+
+## Sequential Thinking MCP for Code Generation
+
+- Break down complex code generation into logical steps
+- Start with high-level architecture before implementation details
+- Plan dependency requirements before writing implementation code
+- Consider interfaces and contracts before implementation
+- Validate each generation step against project requirements
+- Iterate on generated code with progressive refinement
+- Incorporate testing strategy into the sequential planning
+- Consider potential edge cases and error handling scenarios
+
+## Effective MCP Tool Usage Patterns
+
+### Code Structure Analysis Pattern
+```
+1. Read relevant project files
+2. Identify patterns and conventions
+3. Store key insights in memory
+4. Apply insights to generated code
+5. Validate generated code against patterns
+```
+
+### Code Modification Pattern
+```
+1. Analyze existing code structure
+2. Create modification plan with minimal impact
+3. Identify dependencies affected by changes
+4. Implement changes with proper error handling
+5. Verify changes maintain consistency
+```
+
+### New Feature Implementation Pattern
+```
+1. Analyze related components and architecture
+2. Plan component interfaces and dependencies
+3. Generate skeleton implementation
+4. Implement core functionality
+5. Add tests and documentation
+6. Integrate with existing systems
+```
+
+## MCP Command Examples
+
+### Filesystem Operations
+```
+// Reading a file
+read_file({path: "/path/to/file.js"})
+
+// Writing a file with error handling
+try {
+  write_file({path: "/path/to/new-file.js", content: "// Code content"})
+} catch (error) {
+  // Handle error
+}
+
+// Checking if file exists before writing
+if (!file_exists({path: "/path/to/file.js"})) {
+  write_file({path: "/path/to/file.js", content: "// New content"})
+}
+```
+
+### Memory Operations
+```
+// Storing a code pattern
+store_memory({
+  key: "component_pattern",
+  value: "// React component pattern",
+  tags: ["react", "component", "frontend"]
+})
+
+// Retrieving a stored pattern
+get_memory({
+  key: "component_pattern"
+})
+
+// Finding relevant patterns
+search_memories({
+  query: "react component",
+  limit: 5
+})
+```
+
+### Sequential Thinking
+```
+// Breaking down a complex task
+sequential_thinking({
+  task: "Implement authentication system",
+  steps: [
+    "Define user model and schema",
+    "Create authentication service",
+    "Implement login/register endpoints",
+    "Add token validation middleware",
+    "Connect to frontend components"
+  ]
+})
+```
+
+## Integration with Project Knowledge
+
+- Connect MCP operations with project-specific conventions
+- Use project context to inform file locations and naming
+- Apply consistent error handling based on project patterns
+- Reference existing code patterns when generating new code
+- Use project architecture knowledge to inform code organization
+- Leverage existing utilities and helper functions
+- Maintain consistent style and formatting across generated code
+- Align with project testing and documentation approaches

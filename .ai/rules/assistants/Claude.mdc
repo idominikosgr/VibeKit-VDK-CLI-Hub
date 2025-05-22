@@ -1,0 +1,85 @@
+---
+description: "Guidelines for optimizing interactions with Claude (Desktop and Code) AI assistants for code generation and development workflows."
+globs: []
+alwaysApply: false
+version: "2.1.0"
+lastUpdated: "2025-05-18"
+platforms:
+  - "claude"
+  - "claude-desktop"
+---
+
+
+# Claude AI Assistant Optimization
+
+Claude offers AI-powered coding assistance through both Claude Desktop and Claude Code. This guide provides best practices for optimizing interactions with Claude's AI assistants to enhance code generation, comprehension, and maintenance tasks.
+
+## Claude Features
+
+- **Chat Interface**: Claude provides an intelligent chat interface for direct interaction.
+- **Code Generation**: Claude can generate entire functions, classes, or files based on natural language prompts.
+- **Code Explanation**: Claude excels at explaining existing code and answering questions about it.
+- **Refactoring Assistance**: Claude can help identify and implement code improvements.
+- **Context-Aware Understanding**: Claude maintains awareness of previous conversation context.
+- **Multi-File Operations**: Ability to understand and modify multiple files at once.
+- **Visual Understanding**: Claude can interpret screenshots and diagrams when needed.
+
+## Common Command Patterns
+
+- **Natural Language Requests**: Claude responds well to clear, natural language instructions.
+- **File References**: Mention specific files by path to provide context.
+- **Code Block Formatting**: Use triple backticks (```) for code blocks to improve clarity.
+- **Sequential Instructions**: Break down complex tasks into step-by-step instructions.
+- **Asking for Explanations**: Request explanations of code behavior or concepts.
+
+## Effective Prompt Strategies
+
+- **Be Specific**: Provide clear, detailed instructions about what you need.
+- **Include Context**: Reference relevant files, functions, or classes.
+- **Specify Language/Framework**: Mention the programming language or framework you're using.
+- **Incremental Refinement**: Start with a basic request, then refine with follow-up prompts.
+- **Specify Output Format**: Indicate how you want the response formatted (e.g., code only, explanations, etc.).
+
+## Code Generation Best Practices
+
+- **Describe Input/Output**: Clearly describe inputs, outputs, and expected behavior.
+- **Mention Edge Cases**: Specify how edge cases should be handled.
+- **Reference Related Code**: Point to similar functionality in your codebase.
+- **Specify Style Guide**: Mention coding style/convention requirements.
+- **Request Tests**: Ask for tests alongside generated code when appropriate.
+
+## Optimizing for Claude's Capabilities
+
+- **Reasoning Through Problems**: Claude excels at step-by-step reasoning through complex problems.
+- **Document Understanding**: Claude can analyze and understand project documentation.
+- **Contextual Awareness**: Claude maintains conversation context effectively.
+- **Detailed Explanations**: Request detailed explanations of concepts or code.
+- **Code Reviews**: Ask Claude to review and provide feedback on your code.
+
+## Project Organization Tips
+
+- **Clean Workspace**: Keep your workspace organized for better AI understanding.
+- **Clear File Structure**: Well-structured projects improve AI context understanding.
+- **Descriptive Names**: Use meaningful names for files, functions, and variables.
+- **Documentation**: Include README files and code comments for better context.
+- **Consistent Style**: Maintain consistent coding style throughout your project.
+
+## Step-by-Step Process
+
+1. **Define Task Clearly**: Outline what you need before engaging Claude.
+2. **Provide Context**: Reference relevant files and project constraints.
+3. **Review Suggestions**: Carefully review AI-generated code before accepting.
+4. **Refine Iteratively**: Use follow-up prompts to improve initial responses.
+5. **Integrate Solutions**: Apply the final solution to your codebase.
+
+## Claude-Specific MCP Configuration
+
+### Claude Desktop
+- MCP configuration: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Logs: `~/Library/Logs/Claude/mcp-server-*.log`
+
+### Claude Code
+- Global settings: `~/.claude/settings.json`
+- Local project settings: `.claude/settings.json` (in project root)
+- Local project private settings: `.claude/settings.local.json` (in project root, git-ignored)
+- Enterprise settings (macOS): `/Library/Application Support/ClaudeCode/policies.json`

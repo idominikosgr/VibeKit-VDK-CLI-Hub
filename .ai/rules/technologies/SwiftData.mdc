@@ -1,0 +1,256 @@
+---
+description: Best practices for SwiftData, Apple's framework for data modeling, persistence, and synchronization.
+globs: ["**/*.swift", "**/*.xcodeproj", "**/*.xcworkspace"]
+alwaysApply: false
+version: "1.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["Swift", "SwiftUI"]
+---
+
+# SwiftData Best Practices
+
+## Data Model Design
+- Use the `@Model` macro to define your model classes:
+  ```swift
+  @Model
+  final class Trip {
+      var name: String
+      var destination: String
+      var startDate: Date
+      var endDate: Date
+      var observations: [Observation]?
+      
+      init(name: String, destination: String, startDate: Date, endDate: Date) {
+          self.name = name
+          self.destination = destination
+          self.startDate = startDate
+          self.endDate = endDate
+      }
+  }
+  ```
+- Design your models with proper relationships using Swift's native property types:
+  - `@Relationship` for customizing relationship behavior
+  - One-to-one relationships using standard properties
+  - One-to-many relationships using arrays
+  - Many-to-many relationships using arrays on both sides
+- Use appropriate property types for your data:
+  - Use `let` for immutable properties that shouldn't change after creation
+  - Use `var` for properties that can be modified
+- Design your model schemas with versioning in mind from the start.
+- Keep models focused on representing a specific entity or concept.
+- Consider implementing the `Identifiable` protocol for better SwiftUI integration.
+- Use proper value types versus reference types appropriately.
+- Prefer composition over inheritance in your model design.
+- Implement custom initializers for your model classes to ensure proper instantiation.
+
+## SwiftUI Integration
+- Use the `modelContainer` modifier to set up SwiftData in your app:
+  ```swift
+  @main
+  struct MyApp: App {
+      var body: some Scene {
+          WindowGroup {
+              ContentView()
+          }
+          .modelContainer(for: [Trip.self, Observation.self])
+      }
+  }
+  ```
+- Use `@Query` in your SwiftUI views to fetch and display model objects:
+  ```swift
+  struct TripsView: View {
+      @Query var trips: [Trip]
+      
+      var body: some View {
+          List(trips) { trip in
+              Text(trip.name)
+          }
+      }
+  }
+  ```
+- Apply sorting and filtering to queries as needed:
+  ```swift
+  @Query(sort: \Trip.startDate, order: .reverse) var trips: [Trip]
+  
+  // With predicates
+  @Query(filter: #Predicate<Trip> { trip in
+      trip.name.contains("vacation")
+  }) var vacationTrips: [Trip]
+  ```
+- Use `@Environment(\.modelContext)` to access the model context for operations:
+  ```swift
+  @Environment(\.modelContext) private var modelContext
+  
+  func addNewTrip() {
+      let newTrip = Trip(name: "Summer Vacation", destination: "Beach", 
+                         startDate: Date(), endDate: Date().addingTimeInterval(86400 * 7))
+      modelContext.insert(newTrip)
+  }
+  ```
+- Implement proper delete operations with SwiftUI:
+  ```swift
+  func deleteTrips(at offsets: IndexSet) {
+      for index in offsets {
+          modelContext.delete(trips[index])
+      }
+  }
+  ```
+- Consider using SwiftUI's `@State` and `@Binding` in conjunction with SwiftData for form handling.
+- Implement proper error handling when performing data operations.
+- Design your views to handle the case when data is not yet loaded or is empty.
+- Consider implementing preview providers that use in-memory SwiftData stores for development.
+
+## Query and Filtering
+- Use predicates effectively for filtering data:
+  ```swift
+  let predicate = #Predicate<Trip> { trip in
+      trip.destination == "Paris" && trip.endDate > Date()
+  }
+  ```
+- Implement complex query logic through composable predicates:
+  ```swift
+  let inProgress = #Predicate<Trip> { trip in
+      let now = Date()
+      return trip.startDate <= now && trip.endDate >= now
+  }
+  ```
+- Apply appropriate sorting to your queries:
+  ```swift
+  let descriptor = FetchDescriptor<Trip>(predicate: inProgress, 
+                                         sortBy: [SortDescriptor(\Trip.startDate)])
+  ```
+- Consider batch size and pagination for large datasets:
+  ```swift
+  var descriptor = FetchDescriptor<Trip>()
+  descriptor.fetchLimit = 20
+  descriptor.fetchOffset = page * 20
+  ```
+- Use fetch descriptors directly when more control is needed:
+  ```swift
+  do {
+      let trips = try modelContext.fetch(descriptor)
+      // Process trips
+  } catch {
+      // Handle errors
+  }
+  ```
+- Implement proper error handling for queries that might fail.
+- Use relationship filtering effectively for nested queries.
+- Consider the performance implications of complex queries.
+- Cache query results appropriately when they're expensive to compute.
+- Design your queries to fetch only the data that you need.
+
+## Persistence and Transactions
+- Perform related operations within a transaction for consistency:
+  ```swift
+  try modelContext.transaction {
+      // Multiple operations
+      let trip = Trip(name: "Road Trip", destination: "Mountains", 
+                     startDate: Date(), endDate: Date().addingTimeInterval(86400 * 3))
+      modelContext.insert(trip)
+      
+      let observation = Observation(title: "Wildlife", description: "Saw deer")
+      observation.trip = trip
+      modelContext.insert(observation)
+  }
+  ```
+- Implement proper error handling for save operations:
+  ```swift
+  do {
+      try modelContext.save()
+  } catch {
+      // Handle save error
+      print("Failed to save: \(error.localizedDescription)")
+  }
+  ```
+- Consider automatic saving based on lifecycle events:
+  ```swift
+  .onChange(of: scenePhase) { oldPhase, newPhase in
+      if newPhase == .inactive {
+          try? modelContext.save()
+      }
+  }
+  ```
+- Configure appropriate persistence options for your app's needs.
+- Implement undo/redo support where appropriate using transaction history.
+- Consider the timing and frequency of save operations based on data criticality.
+- Implement proper error recovery mechanisms for failed transactions.
+- Use batch operations for performance with large datasets.
+- Consider the atomicity needs of your operations.
+- Implement appropriate locking strategies for concurrent access.
+
+## Schema Migration
+- Design your data models with future changes in mind.
+- Implement versioned schema migrations when making breaking changes:
+  ```swift
+  let container = ModelContainer(for: Trip.self, Observation.self, 
+                               configurations: ModelConfiguration(schema: Schema([Trip.self, Observation.self], 
+                                                                                version: 2))
+  ```
+- Follow these migration strategies:
+  - Additive changes (new properties/entities) generally don't require migration
+  - Renaming requires migration mapping
+  - Type changes require custom migration logic
+  - Relationship changes often need explicit migration
+- Test migrations thoroughly with real-world data scenarios.
+- Document schema changes for future reference.
+- Consider implementing backups before migrations.
+- Test both upgrade and potential downgrade paths.
+- Implement data validation after migration.
+- Consider phased rollouts for critical migrations in production apps.
+- Include migration progress indicators for potentially long-running migrations.
+
+## Performance Optimization
+- Fetch only the data you need with appropriate predicates and limits.
+- Use batch operations for insertions, updates, or deletions of multiple objects.
+- Implement proper indexing for frequently queried properties:
+  ```swift
+  @Model
+  final class Trip {
+      @Attribute(.unique) var id: UUID
+      @Attribute(.indexed) var startDate: Date
+      // other properties
+  }
+  ```
+- Consider denormalization for frequently accessed data to reduce joins.
+- Implement lazy loading for relationship properties that aren't always needed.
+- Profile your data operations to identify bottlenecks.
+- Consider the memory implications of large query results.
+- Use appropriate caching strategies for expensive queries.
+- Implement appropriate background processing for large operations.
+- Consider the performance impact of observers and reactive updates.
+
+## Testing
+- Create dedicated test configurations with in-memory stores:
+  ```swift
+  let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+  let container = try ModelContainer(for: Trip.self, configurations: configuration)
+  ```
+- Set up test fixtures for consistent test data.
+- Test CRUD operations thoroughly.
+- Implement tests for your migration logic.
+- Test edge cases in your predicates and queries.
+- Consider performance testing for large datasets.
+- Test concurrency scenarios for multi-user or multi-process access.
+- Implement UI tests that interact with SwiftData through your app interface.
+- Create test utilities for common SwiftData operations in tests.
+- Test error conditions and recovery mechanisms.
+- Validate data integrity after complex operations.
+
+## Synchronization
+- Consider using `@Model(synchronization: .mirrorAll)` for implementing sync with CloudKit:
+  ```swift
+  @Model(synchronization: .mirrorAll)
+  final class SyncedTrip {
+      // properties
+  }
+  ```
+- Implement proper conflict resolution strategies.
+- Design your models to track metadata needed for synchronization.
+- Test synchronization with simulated network conditions.
+- Implement proper error handling for sync failures.
+- Consider offline capabilities and queue pending changes.
+- Design your sync architecture to handle eventual consistency.
+- Implement appropriate retry logic for failed sync operations.
+- Consider privacy and security implications of synchronized data.
+- Design an appropriate sync frequency based on data criticality and battery impact.

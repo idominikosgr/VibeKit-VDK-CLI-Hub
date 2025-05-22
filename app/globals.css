@@ -1,0 +1,274 @@
+/* Import Tailwind CSS */
+@import "tailwindcss";
+
+/* Custom dark mode variant for manual toggling */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Theme variables for Tailwind utility generation */
+@theme {
+  /* Base colors */
+  --color-background: oklch(0.98 0.015 95);
+  --color-foreground: oklch(0.22 0.03 347);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.22 0.03 347);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.22 0.03 347);
+  --color-primary: oklch(0.69 0.24 12);
+  --color-primary-foreground: oklch(1 0 0);
+  --color-secondary: oklch(0.96 0.02 9);
+  --color-secondary-foreground: oklch(0.48 0.12 10);
+  --color-muted: oklch(0.96 0.02 15);
+  --color-muted-foreground: oklch(0.40 0.05 6);
+  --color-accent: oklch(0.74 0.20 26);
+  --color-accent-foreground: oklch(0.22 0.03 347);
+  --color-destructive: oklch(0.56 0.22 355);
+  --color-destructive-foreground: oklch(1 0 0);
+  --color-border: oklch(0.92 0.015 15);
+  --color-input: oklch(0.92 0.015 15);
+  --color-ring: oklch(0.69 0.24 12);
+
+  /* Chart colors */
+  --color-chart-1: oklch(0.69 0.24 12);
+  --color-chart-2: oklch(0.74 0.20 26);
+  --color-chart-3: oklch(0.83 0.18 24);
+  --color-chart-4: oklch(0.78 0.18 16);
+  --color-chart-5: oklch(0.57 0.14 10);
+
+  /* Radius */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius: 0.625rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.825rem;
+  --radius-2xl: 1rem;
+
+  /* Shadow definitions */
+  --shadow-2xs: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow-xs: 0 1px 3px 0 oklch(0 0 0 / 0.1), 0 1px 2px -1px oklch(0 0 0 / 0.1);
+  --shadow-sm: 0 4px 6px -1px oklch(0 0 0 / 0.1), 0 2px 4px -2px oklch(0 0 0 / 0.1);
+  --shadow: 0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1);
+  --shadow-md: 0 20px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 25px 50px -12px oklch(0 0 0 / 0.25);
+  --shadow-xl: 0 35px 60px -15px oklch(0 0 0 / 0.3);
+  --shadow-2xl: 0 50px 75px -25px oklch(0 0 0 / 0.35);
+}
+
+/* CSS Variable definitions for direct usage in CSS */
+:root {
+  --background: 24.00 100.00% 98.04%;
+  --foreground: 346.67 7.96% 22.16%;
+  --card: 0 0% 100%;
+  --card-foreground: 346.67 7.96% 22.16%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 346.67 7.96% 22.16%;
+  --primary: 11.63 100% 68.63%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 8.57 100.00% 95.88%;
+  --secondary-foreground: 9.91 47.33% 47.65%;
+  --muted: 15.00 100.00% 96.08%;
+  --muted-foreground: 6.32 18.81% 39.61%;
+  --accent: 26.11 98.50% 73.92%;
+  --accent-foreground: 346.67 7.96% 22.16%;
+  --destructive: 355.49 77.58% 56.27%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 14.63 100.00% 91.96%;
+  --input: 14.63 100.00% 91.96%;
+  --ring: 11.63 100% 68.63%;
+
+  /* Chart colors */
+  --chart-1: 11.63 100% 68.63%;
+  --chart-2: 26.11 98.50% 73.92%;
+  --chart-3: 23.86 100.00% 82.75%;
+  --chart-4: 16.07 100% 78.04%;
+  --chart-5: 9.58 54.84% 57.45%;
+
+  /* Radius */
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* Sidebar */
+  --sidebar-background: 15.00 100.00% 96.08%;
+  --sidebar-foreground: 346.67 7.96% 22.16%;
+  --sidebar-primary: 11.63 100% 68.63%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 26.11 98.50% 73.92%;
+  --sidebar-accent-foreground: 346.67 7.96% 22.16%;
+  --sidebar-border: 14.63 100.00% 91.96%;
+  --sidebar-ring: 11.63 100% 68.63%;
+  --sidebar-width: 260px;
+  --sidebar-width-collapsed: 80px;
+  --sidebar-duration: 300ms;
+  --sidebar-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadow definitions */
+  --shadow-2xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
+  --shadow-sm: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow-md: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 2px 4px -4px hsl(0 0% 0% / 0.09);
+  --shadow-lg: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 4px 6px -4px hsl(0 0% 0% / 0.09);
+  --shadow-xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 8px 10px -4px hsl(0 0% 0% / 0.09);
+  --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
+}
+
+/* Dark mode variable overrides */
+.dark {
+  --background: 336 13.51% 14.51%;
+  --foreground: 21.43 35.00% 92.16%;
+  --card: 324 9.62% 20.39%;
+  --card-foreground: 21.43 35.00% 92.16%;
+  --popover: 324 9.62% 20.39%;
+  --popover-foreground: 21.43 35.00% 92.16%;
+  --primary: 11.63 100% 68.63%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 325 9.38% 25.10%;
+  --secondary-foreground: 21.43 35.00% 92.16%;
+  --muted: 324 9.62% 20.39%;
+  --muted-foreground: 22.22 25.23% 79.02%;
+  --accent: 26.11 98.50% 73.92%;
+  --accent-foreground: 336 13.51% 14.51%;
+  --destructive: 355.49 77.58% 56.27%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 325 9.38% 25.10%;
+  --input: 325 9.38% 25.10%;
+  --ring: 11.63 100% 68.63%;
+
+  /* Sidebar */
+  --sidebar-background: 336 13.51% 14.51%;
+  --sidebar-foreground: 21.43 35.00% 92.16%;
+  --sidebar-primary: 11.63 100% 68.63%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 26.11 98.50% 73.92%;
+  --sidebar-accent-foreground: 336 13.51% 14.51%;
+  --sidebar-border: 325 9.38% 25.10%;
+  --sidebar-ring: 11.63 100% 68.63%;
+}
+
+/* Base styles */
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  h1 { font-size: clamp(2.25rem, 4vw, 3rem); }
+  h2 { font-size: clamp(1.875rem, 3vw, 2.25rem); }
+  h3 { font-size: clamp(1.5rem, 2.5vw, 1.875rem); }
+  h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+  h5 { font-size: clamp(1.125rem, 1.5vw, 1.25rem); }
+  h6 { font-size: clamp(1rem, 1.25vw, 1.125rem); }
+}
+
+/* Component styles */
+@layer components {
+  .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-full {
+    overflow: hidden;
+  }
+
+  /* Button and interactive element styling */
+  .btn, button, a {
+    transition: all 150ms ease;
+  }
+
+  .btn:hover:not(:disabled),
+  button:hover:not(:disabled),
+  a:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  /* Card styling */
+  .card {
+    transition: all 200ms ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Sidebar styling */
+  .sidebar-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 40;
+    width: var(--sidebar-width);
+    transition: transform 200ms ease, width 200ms ease;
+  }
+
+  .sidebar-collapsed {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  .sidebar-content {
+    width: var(--sidebar-width);
+    transition: all 200ms ease;
+    overflow-x: hidden;
+  }
+
+  .sidebar-content-collapsed {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-fixed {
+      transform: translateX(-100%);
+    }
+
+    .sidebar-fixed.sidebar-open {
+      transform: translateX(0);
+    }
+
+    .sidebar-content,
+    .sidebar-content-collapsed {
+      width: var(--sidebar-width);
+    }
+  }
+}
+
+/* Utilities */
+@layer utilities {
+  /* Animation keyframes and utilities */
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+
+  .animate-accordion-down {
+    animation: accordion-down 200ms ease-out;
+  }
+
+  .animate-accordion-up {
+    animation: accordion-up 200ms ease-out;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}

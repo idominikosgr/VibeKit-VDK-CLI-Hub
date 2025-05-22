@@ -1,0 +1,140 @@
+---
+description: Kotlin best practices and patterns for Android, server-side, and multiplatform development.
+globs: ["**/*.kt", "**/*.kts", "**/build.gradle.kts"]
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["Android","SpringBoot"]
+---
+
+# Kotlin Best Practices
+
+## Project Structure & Organization
+- Use a standard project structure based on your build tool (Gradle/Maven).
+- For Android projects, follow the Android project structure with feature-based packages.
+- For multiplatform projects, use the appropriate source set organization (`commonMain`, `jvmMain`, etc.).
+- Organize code into meaningful packages based on features rather than layers.
+- Use separate packages for different concerns (e.g., `data`, `domain`, `ui`/`presentation`).
+- Keep build scripts clean and modular; use `buildSrc` or composite builds for complex build logic.
+- Use `.kts` (Kotlin Script) for build files when possible.
+
+## Code Style & Formatting
+- Follow the [Kotlin coding conventions](https://kotlinlang.org/docs/coding-conventions.html).
+- Use consistent indentation (4 spaces or tabs as per project standard).
+- Use trailing commas for multiline lists/arrays and parameter lists.
+- Use `ktlint`, `detekt`, or similar for automated style checking.
+- Follow naming conventions:
+  - Use `camelCase` for functions, properties, parameters, and variables.
+  - Use `PascalCase` for classes, interfaces, objects, and type parameters.
+  - Use `snake_case` for constants (although uppercase is also common).
+  - Use consistent, descriptive names that convey purpose.
+
+## Language Features & Idioms
+- Use Kotlin's type inference when the type is obvious.
+- Prefer `val` (immutable) over `var` (mutable) whenever possible.
+- Use string templates (`"Hello, $name"`) instead of concatenation.
+- Use data classes for model objects that primarily hold data.
+- Use sealed classes for representing restricted hierarchies.
+- Use extension functions to extend functionality of classes you don't own.
+- Use infix functions for readable DSL-like code when appropriate.
+- Use higher-order functions and lambdas for cleaner, more expressive code.
+- Leverage function references (`::functionName`) when passing functions as parameters.
+
+## Null Safety
+- Embrace Kotlin's null safety system; avoid `!!` operator unless absolutely necessary.
+- Use safe calls (`?.`) and elvis operator (`?:`) for null handling.
+- Use `requireNotNull()` or `checkNotNull()` for preconditions.
+- Design APIs to minimize the need for nullability.
+- Use `lateinit` for non-null properties that are initialized after construction.
+- Use `by lazy` for properties that need deferred initialization.
+- Consider using nullable types for optional parameters rather than overloads.
+
+## Coroutines & Concurrency
+- Use structured concurrency principles; ensure all coroutines have proper scope.
+- Use appropriate dispatchers based on the work being done.
+- Use `suspend` functions for asynchronous operations instead of callbacks.
+- Handle exceptions properly with `try-catch` or structured concurrency error handling.
+- Use `flow` for asynchronous streams of values.
+- Properly cancel coroutines when they are no longer needed.
+- Avoid blocking calls in coroutine contexts not designed for them.
+- Use `withContext` to switch contexts for specific operations.
+- Consider using `Mutex` or other synchronization primitives for shared state access.
+
+## Collections & Functional Programming
+- Use the Kotlin standard library's collection functions (`map`, `filter`, etc.) instead of loops where appropriate.
+- Chain collection operations sensibly; consider performance implications.
+- Use sequence operations for large collections to avoid intermediate collection creation.
+- Use destructuring declarations where appropriate.
+- Leverage scope functions (`let`, `run`, `apply`, `also`, `with`) appropriately:
+  - `let` for operations on non-null objects and for chaining.
+  - `run` when you need to use `this` in the lambda.
+  - `apply` for object configuration.
+  - `also` for side effects.
+  - `with` for operating on a non-null object without returning a result.
+
+## Object-Oriented & Functional Design
+- Prefer composition over inheritance where appropriate.
+- Use interfaces to define contracts.
+- Make classes final by default; open only when designed for extension.
+- Consider using function types and higher-order functions for strategy patterns.
+- Use immutability and pure functions when possible.
+- Use destructuring and pattern matching for cleaner code.
+- Use operator overloading judiciously and semantically.
+
+## Extension Functions & Properties
+- Use extensions to add utility functions to existing classes.
+- Prefer to place extensions in companion objects for related functionality.
+- Use extension properties for computed values related to a class.
+- Group related extensions in the same file or package.
+- Name extension functions clearly to indicate what they do.
+- Use receiver type constraints (`where` clauses) to restrict extensions to specific types.
+
+## DSL Design (If Applicable)
+- Design DSLs with a clear structure and purpose.
+- Use type-safe builders for creating DSLs.
+- Use function literals with receiver for clean DSL definitions.
+- Consider nesting and scoping to create hierarchical structures.
+- Make DSL syntax intuitive and readable.
+- Document DSL usage with examples.
+
+## Error Handling
+- Use exceptions for exceptional situations, not control flow.
+- Create custom exception types for domain-specific errors.
+- Use `Result` type for functions that may fail predictably.
+- Handle errors at the appropriate level of abstraction.
+- Provide meaningful error messages.
+- Use `runCatching` for converting exceptions to `Result`.
+
+## Testing
+- Write unit tests using JUnit or other testing frameworks.
+- Use MockK or similar for mocking in tests.
+- Write tests for all public APIs and critical functions.
+- Leverage data classes for test fixtures.
+- Use parametrized tests for testing multiple scenarios.
+- Mock dependencies to isolate the unit under test.
+- Consider using property-based testing for more thorough validation.
+
+## Performance Considerations
+- Be aware of boxing/unboxing operations with primitive types.
+- Use inline functions for higher-order functions where appropriate.
+- Be mindful of lambdas capturing variables from outer scope.
+- Consider using value classes to avoid object allocation overhead.
+- Optimize hot loops and performance-critical code.
+- Use benchmarking tools to measure performance.
+- Consider tailrec for recursive functions to avoid stack overflow.
+
+## Documentation
+- Write clear KDoc comments for public APIs.
+- Document non-obvious behavior and implementation details.
+- Provide examples for complex APIs.
+- Use `@throws` to document exceptions that might be thrown.
+- Document thread-safety guarantees or requirements.
+- Generate documentation with Dokka.
+
+## Interoperability with Java
+- Use `@JvmField`, `@JvmStatic`, and other annotations for better Java interop.
+- Be aware of Kotlin features that don't translate directly to Java.
+- Consider Java usage when designing public APIs in Kotlin.
+- Use `@JvmOverloads` for functions with default parameter values.
+- Handle nullability properly when interacting with Java code.
+- Be aware of how Kotlin's collection interfaces map to Java collections.

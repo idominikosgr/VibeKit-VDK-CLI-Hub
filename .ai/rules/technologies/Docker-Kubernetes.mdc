@@ -1,0 +1,130 @@
+---
+description: Best practices for containerization with Docker and orchestration with Kubernetes for modern applications.
+globs: ["**/Dockerfile", "**/docker-compose.yml", "**/*.dockerfile", "**/*.yaml", "**/*.yml", "**/k8s/*.yml", "**/kubernetes/*.yaml"]
+alwaysApply: false
+version: "1.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith: ["TypeScript-Modern", "Python3", "NodeExpress", "NextJS15", "FastAPI"]
+---
+
+# Docker & Kubernetes Best Practices
+
+## Docker Image Design
+- Use official base images whenever possible.
+- Prefer Alpine-based images for smaller footprints unless specific dependencies require larger images.
+- Implement multi-stage builds to minimize final image size.
+- Group related commands in a single RUN instruction to reduce layers.
+- Place infrequently changing instructions early in the Dockerfile.
+- Use .dockerignore to exclude unnecessary files from the build context.
+- Explicitly set image tags rather than using `latest` to ensure reproducible builds.
+- Set appropriate USER instructions to avoid running as root.
+- Include health checks with HEALTHCHECK instruction.
+- Leverage build arguments (ARG) for build-time variability.
+
+## Container Security
+- Scan images for vulnerabilities using tools like Trivy, Claire, or Snyk.
+- Run containers with minimal capabilities and permissions.
+- Use read-only file systems where possible.
+- Implement secrets management outside of images or Dockerfiles.
+- Avoid storing sensitive data in environment variables.
+- Configure resource limits to prevent DoS attacks.
+- Keep base images updated to address security vulnerabilities.
+- Use non-root users inside containers.
+- Implement network policies to restrict container communications.
+- Regularly audit container access and permissions.
+
+## Docker Compose Best Practices
+- Use version 3 or higher of the compose specification.
+- Define service dependencies with `depends_on`.
+- Implement proper resource constraints with `deploy` settings.
+- Use named volumes for persistent data.
+- Leverage environment files for configuration.
+- Define clear network segregation for services.
+- Implement health checks for critical services.
+- Use profiles for different deployment scenarios.
+- Document service relationships in compose files.
+- Consider using docker-compose.override.yml for local development specifics.
+
+## Kubernetes Architecture
+- Design resource requirements (CPU, memory) based on actual application needs.
+- Implement proper namespace isolation for different environments or teams.
+- Use labels and annotations systematically for resource organization.
+- Design controllers (Deployments, StatefulSets, DaemonSets) according to application needs.
+- Implement proper service discovery with Services and Ingress resources.
+- Use ConfigMaps and Secrets for configuration management.
+- Design resource limits and requests for all containers.
+- Implement horizontal pod autoscaling for scalable services.
+- Consider Operators for complex, stateful applications.
+- Design network policies to enforce the principle of least privilege.
+
+## Kubernetes Deployment Strategies
+- Implement rolling updates for zero-downtime deployments.
+- Consider blue-green deployments for critical services.
+- Use canary deployments for gradual feature rollouts.
+- Implement readiness and liveness probes for all containers.
+- Consider resource budget planning with LimitRanges and ResourceQuotas.
+- Leverage init containers for deployment prerequisites.
+- Implement proper lifecycle hooks for graceful shutdowns.
+- Use PodDisruptionBudgets to ensure availability during disruptions.
+- Consider Node affinity rules for workload distribution.
+- Implement proper rollback strategies for failed deployments.
+
+## Resource Management
+- Set both resource requests and limits for predictable performance.
+- Use namespaces with ResourceQuotas for resource isolation.
+- Implement horizontal pod autoscaling based on metrics.
+- Consider vertical pod autoscaling for optimizing resource allocation.
+- Implement cluster autoscaling for dynamic capacity.
+- Monitor resource usage patterns to optimize allocations.
+- Implement resource overcommitment strategies suitable for your environment.
+- Use Pod Priority and Preemption for critical workloads.
+- Consider using Priority Classes for workload prioritization.
+- Implement proactive resource planning with capacity management.
+
+## Security Best Practices
+- Apply the principle of least privilege with RBAC.
+- Use network policies to restrict pod communication.
+- Implement Pod Security Standards (Restricted, Baseline, Privileged).
+- Secure etcd with encryption at rest and proper authentication.
+- Implement runtime security monitoring.
+- Regularly audit Kubernetes RBAC configurations.
+- Use admission controllers for policy enforcement.
+- Implement service mesh for mTLS between services.
+- Secure the supply chain with image signing and verification.
+- Consider implementing OPA Gatekeeper for policy enforcement.
+
+## Observability & Monitoring
+- Implement comprehensive logging strategy with centralized storage.
+- Use structured logging in JSON format.
+- Implement distributed tracing for service interactions.
+- Set up metrics collection with Prometheus or similar systems.
+- Create meaningful dashboards for different stakeholders.
+- Implement alerting based on SLOs, not just resource utilization.
+- Consider implementing the RED method (Rate, Errors, Duration) for service monitoring.
+- Use service mesh for advanced observability features.
+- Implement audit logging for security events.
+- Consider implementing custom metrics for business-level monitoring.
+
+## Stateful Applications
+- Use StatefulSets for stateful applications requiring stable identities.
+- Implement proper backup and restore procedures for persistent data.
+- Consider using operators for complex stateful applications (databases, message queues).
+- Use persistent volumes with appropriate storage classes.
+- Implement proper data migration strategies.
+- Consider data locality for performance-sensitive applications.
+- Implement proper lifecycle management for stateful components.
+- Design for data resilience across zone or region failures.
+- Consider using storage orchestrators for advanced storage management.
+- Implement proper scaling procedures for stateful applications.
+
+## CI/CD Integration
+- Implement GitOps workflows with tools like Flux or ArgoCD.
+- Use semantic versioning for container images.
+- Implement proper testing in the CI pipeline before deployment.
+- Consider progressive delivery with canary deployments.
+- Implement automated rollbacks for failed deployments.
+- Use Helm or Kustomize for template-based deployments.
+- Implement proper secret management in CI/CD pipelines.
+- Consider environment promotion strategies (dev -> staging -> prod).
+- Implement artifact scanning in the deployment pipeline.
+- Use infrastructure as code for Kubernetes resources.

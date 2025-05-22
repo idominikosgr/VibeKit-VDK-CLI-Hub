@@ -1,0 +1,195 @@
+---
+description: "Best practices for utilizing the Memory MCP server to enhance AI code generation through persistent context and pattern recognition."
+globs: []
+alwaysApply: false
+version: "2.0.0"
+lastUpdated: "2025-05-14"
+compatibleWith:
+  - "Memory-MCP"
+  - "Sequential-Thinking-Advanced"
+---
+
+
+# Memory MCP for Code Generation
+
+## Overview
+
+The Memory MCP server provides persistent storage capabilities that allow AI assistants to remember important context, patterns, and preferences across sessions. For code generation, this is invaluable as it enables:
+
+- Maintaining consistent coding styles and patterns
+- Remembering project-specific conventions
+- Storing complex architectural decisions
+- Learning from previous code generation attempts
+- Building a knowledge base of project-specific patterns
+
+## Core Capabilities
+
+- **Create memories**: Store important information for future reference
+- **Retrieve memories**: Access previously stored information
+- **Update memories**: Refine stored information as understanding evolves
+- **Delete memories**: Remove outdated or incorrect information
+- **Search memories**: Find relevant information based on context
+- **Categorize memories**: Organize information with tags and categories
+
+## Memory Types for Code Generation
+
+### Pattern Memories
+
+These store recurring code patterns specific to the project:
+
+```json
+{
+  "title": "React Component Pattern",
+  "content": "Standard structure for React functional components with TypeScript",
+  "code_example": "import React from 'react'\n\ninterface Props {\n  // Props definition\n}\n\nexport const Component: React.FC<Props> = ({ }) => {\n  // Implementation\n  return (\n    <div>\n      {/* Component content */}\n    </div>\n  );\n};",
+  "tags": ["pattern", "react", "typescript", "component"],
+  "usage_context": "Use for all new UI components"
+}
+```
+
+### Convention Memories
+
+These store project-specific naming conventions, formatting rules, etc.:
+
+```json
+{
+  "title": "Naming Conventions",
+  "content": "File and component naming standards for the project",
+  "conventions": [
+    "React components: PascalCase",
+    "Utility functions: camelCase",
+    "Constants: UPPER_SNAKE_CASE",
+    "File names: kebab-case.tsx",
+    "Test files: ComponentName.test.tsx"
+  ],
+  "tags": ["conventions", "naming", "style"]
+}
+```
+
+### Architecture Memories
+
+These store high-level design decisions and architectural patterns:
+
+```json
+{
+  "title": "API Service Layer Pattern",
+  "content": "Architecture for API communication layer",
+  "design": "Services use a base ApiClient class with interceptors for auth and error handling. Each domain entity has its own service class.",
+  "folder_structure": "src/services/\n  - api-client.ts\n  - user-service.ts\n  - product-service.ts",
+  "tags": ["architecture", "api", "services"]
+}
+```
+
+### Error Pattern Memories
+
+These store common errors and their solutions:
+
+```json
+{
+  "title": "Redux Action Type Error",
+  "content": "Common error pattern when defining Redux action types",
+  "error_pattern": "Using string literals instead of const enums for action types",
+  "solution": "Define action types as const objects with 'as const' assertion",
+  "code_example": "export const ActionTypes = {\n  FETCH_START: 'FETCH_START',\n  FETCH_SUCCESS: 'FETCH_SUCCESS',\n  FETCH_ERROR: 'FETCH_ERROR'\n} as const;",
+  "tags": ["error", "redux", "typescript"]
+}
+```
+
+## Best Practices
+
+### Memory Creation
+
+- Create memories for patterns that appear frequently
+- Include concrete code examples with each pattern memory
+- Document the context where a pattern should be applied
+- Include rationale for architectural decisions
+- Store both good and anti-patterns
+- Create memories proactively during code analysis
+
+### Memory Organization
+
+- Use consistent tagging for easier retrieval
+- Create hierarchical relationships between memories
+- Group related memories by feature or component
+- Use clear, descriptive titles for memories
+- Include version information for evolving patterns
+
+### Memory Usage in Code Generation
+
+- Query relevant memories before generating code
+- Apply pattern memories to ensure consistent style
+- Reference architectural memories for structure decisions
+- Use convention memories to maintain naming consistency
+- Avoid patterns flagged in anti-pattern memories
+
+### Memory Maintenance
+
+- Update memories when project patterns evolve
+- Remove outdated or invalid memories
+- Refine memories with more details as they become available
+- Consolidate redundant or overlapping memories
+- Verify memory accuracy periodically
+
+## Memory MCP Command Patterns
+
+### Creating a New Memory
+
+```javascript
+create_memory({
+  title: "Utility Function Pattern",
+  content: "Standard pattern for utility functions including error handling and types",
+  tags: ["pattern", "utilities", "typescript"],
+  code_example: `export const utilityFunction = <T>(input: InputType): Result<T> => {\n  try {\n    // Implementation\n    return { success: true, data };\n  } catch (error) {\n    return { success: false, error };\n  }\n};`
+});
+```
+
+### Retrieving Relevant Memories
+
+```javascript
+const memories = search_memories({
+  query: "react component pattern",
+  tags: ["pattern", "react"],
+  limit: 5
+});
+```
+
+### Updating Existing Memory
+
+```javascript
+update_memory({
+  id: "memory_123",
+  title: "Updated React Component Pattern", 
+  content: "Revised standard structure for React functional components with TypeScript and hooks",
+  // Additional fields to update
+});
+```
+
+## Integration with Other MCP Services
+
+- Use Filesystem MCP to analyze existing code before creating memories
+- Use Sequential Thinking MCP to apply memories in logical sequence
+- Use External Services MCP to sync memories with team knowledge bases
+
+## Project-Specific Memory Guidelines
+
+- Create unique memories for each significant pattern in the codebase
+- Focus on patterns that would be hard to infer from a small code sample
+- Document intentional deviations from common framework patterns
+- Store information about custom libraries and utilities
+- Document refactoring targets and technical debt
+
+## Memory-Driven Code Generation
+
+1. **Query relevant memories** for the coding task
+2. **Extract patterns** applicable to the current context
+3. **Apply patterns** consistent with project standards
+4. **Validate generated code** against convention memories
+5. **Store new patterns** discovered during code generation
+
+## Common Pitfalls to Avoid
+
+- Creating overly generic memories with little actionable information
+- Storing contradictory patterns without context
+- Relying on outdated memories after project evolution
+- Creating too many overlapping memories
+- Failing to document exceptions to patterns

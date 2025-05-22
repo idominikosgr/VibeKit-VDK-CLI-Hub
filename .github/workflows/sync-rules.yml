@@ -1,0 +1,56 @@
+name: Sync GitHub Rules to Supabase
+
+on:
+  # Run on schedule (daily at midnight UTC)
+  schedule:
+    - cron: '0 0 * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+  
+  # Run when rule files are updated
+  push:
+    branches: [main]
+    paths:
+      - '.ai/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      # Create environment file for the sync script
+      - name: Create .env file
+        run: |
+          touch .env.local
+          # Use placeholder values - would be replaced in production with actual secrets
+          echo NEXT_PUBLIC_SUPABASE_URL="https://example-project.supabase.co" >> .env.local
+          echo NEXT_PUBLIC_SUPABASE_ANON_KEY="example-anon-key" >> .env.local
+          echo NEXT_SUPABASE_SERVICE_ROLE_KEY="example-service-key" >> .env.local
+          echo GITHUB_REPO_OWNER="idominikosgr" >> .env.local
+          echo GITHUB_REPO_NAME="ai.rules" >> .env.local
+      
+      - name: Run sync script directly
+        run: npm run sync-rules
+      
+      - name: Report status
+        if: always()
+        run: |
+          if [ "$?" -eq 0 ]; then
+            echo "Sync completed successfully"
+          else
+            echo "Sync failed"
+            exit 1
+          fi

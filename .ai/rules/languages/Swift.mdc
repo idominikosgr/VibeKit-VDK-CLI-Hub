@@ -1,0 +1,164 @@
+---
+description: Swift 5.9/6.0 best practices and patterns for modern iOS, macOS, and multiplatform development.
+globs: ["**/*.swift", "Package.swift", "*.xcodeproj/*", "*.xcworkspace/*"]
+alwaysApply: false
+version: "2.1.0"
+lastUpdated: "2025-05-18"
+compatibleWith: ["SwiftUI", "SwiftData", "Combine"]
+---
+
+# Swift 5.9/6.1 Best Practices
+
+## Project Structure & Organization
+- Use Swift Package Manager (SPM) for dependency management when possible.
+- Organize code into logical modules or frameworks to improve maintainability and compilation times.
+- Follow a clear directory structure: separate models, views, controllers, and services.
+- Use appropriate access control modifiers (`public`, `internal`, `fileprivate`, `private`) to enforce encapsulation.
+- For iOS/macOS apps, consider using feature-based directory organization rather than type-based.
+
+## Code Style & Formatting
+- Follow the [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/).
+- Use Swift's type inference when the type is obvious, but declare explicit types for public APIs.
+- Use SwiftLint, SwiftFormat, or similar tools to enforce consistent code style.
+- Naming conventions:
+  - Use `camelCase` for functions, methods, properties, and variables.
+  - Use `PascalCase` for types (classes, structs, enums, protocols).
+  - Use descriptive, meaningful names that clearly convey purpose.
+  - Avoid abbreviations unless they're well-known (e.g., `URL`, `HTML`).
+
+## Language Features & Idioms
+- Use Swift's type safety to your advantage; avoid force unwrapping (`!`) except where absolutely necessary.
+- Prefer `let` (immutable) over `var` (mutable) whenever possible.
+- Use Swift's powerful enums for representing finite sets of related values.
+- Leverage value types (`struct`, `enum`) for data models and reference types (`class`) for shared state.
+- Use extensions to organize code by functionality and conform to protocols.
+- Use property wrappers to encapsulate common property behaviors.
+- Use `guard` statements for early returns and preconditions.
+- Use `defer` to ensure cleanup code is executed when leaving scope.
+
+## Swift Macros (5.9+)
+- Use macros to eliminate boilerplate code and improve readability.
+- Types of macros to utilize:
+  - `@freestanding(expression)` for custom expression generation
+  - `@freestanding(declaration)` for generating declarations
+  - `@attached(peer)` for generating peer declarations
+  - `@attached(accessor)` for generating property accessors
+  - `@attached(memberAttribute)` for attaching attributes to members
+  - `@attached(member)` for generating additional members
+- Create custom macros for repeating patterns in your codebase.
+- Use well-tested macros from the Swift ecosystem rather than writing everything from scratch.
+- Document any custom macros with examples of the generated code.
+- Remember that macros are expanded at compile time, making debugging more complex.
+- Avoid overly complex macros that sacrifice clarity for brevity.
+
+## Memory Management
+- Understand Automatic Reference Counting (ARC) and its implications.
+- Be aware of and explicitly handle reference cycles with `weak` and `unowned` references.
+- Use `weak self` in closures that reference `self` and may outlive it.
+- Use `unowned` only when you're certain the reference will never be nil during the closure's lifetime.
+- Use memory debugging tools like Instruments to detect leaks.
+
+## Error Handling
+- Use Swift's `do-catch` mechanism for recoverable errors.
+- Create custom error types that conform to the `Error` protocol.
+- Use `Result<Success, Failure>` type for functions that may fail.
+- Consider using `throws` for functions that can encounter errors.
+- Provide meaningful error messages and context.
+- Avoid using optionals to represent errors when the nature of the error is important.
+
+## Concurrency
+- Use Swift's modern concurrency model (async/await) whenever possible.
+- Use structured concurrency with task groups for managing multiple parallel operations.
+- Use actors to protect shared mutable state.
+- Respect task priorities and task cancellation.
+- Be mindful of thread safety in concurrent code.
+- Use `@MainActor` for UI updates and code that must run on the main thread.
+- Consider backward compatibility needs when mixing async/await with completion handlers.
+
+## Protocol-Oriented Programming
+- Favor composition over inheritance where appropriate.
+- Use protocol extensions to provide default implementations.
+- Define protocols to represent capabilities or behaviors.
+- Use protocol inheritance to combine multiple protocols.
+- Consider using protocol witnesses for dynamic dispatch when performance is critical.
+
+## Testing
+- Write unit tests for all public interfaces.
+- Use XCTest for unit and UI testing.
+- Mock dependencies to isolate the code being tested.
+- Use test-driven development (TDD) where appropriate.
+- Aim for high test coverage, particularly for critical business logic.
+- Create testable code by following dependency injection principles.
+
+## Performance Optimization
+- Use the Instruments app to profile performance.
+- Understand the costs of value types versus reference types.
+- Be mindful of unnecessary copies with large value types.
+- Optimize critical paths once you've identified bottlenecks.
+- Use lazy properties for expensive calculations that might not be needed.
+- Consider using `Copy on Write` optimization for large value types.
+- Use the `@inlinable` attribute for performance-critical functions when appropriate.
+- Leverage Swift compiler optimization settings appropriately.
+- Enable ARC optimization where possible.
+- Use batch updates for UI changes.
+- Understand the performance impacts of Swift features like dynamic dispatch vs. static dispatch.
+- Implement the `os_signpost` API for custom instrumentation.
+- Be aware of allocation and copy costs in collection types.
+- Use Swift's fast enumeration patterns when possible.
+- Enable Swift Concurrency Instruments to profile async/await code.
+
+## Documentation
+- Write clear documentation comments (triple-slash `///`) for all public APIs.
+- Use markdown formatting in documentation comments.
+- Generate documentation with DocC or similar tools.
+- Include usage examples in documentation for complex APIs.
+- Document assumptions, preconditions, and postconditions.
+
+## Swift Package Management
+- Specify version requirements using semantic versioning.
+- Consider creating separate packages for reusable components.
+- Define clear package products and targets.
+- Use conditional dependencies where appropriate.
+- Pin dependency versions for reproducible builds.
+- Leverage Swift Package plugins for build-time tools integration.
+- Use package resources for bundling assets.
+- Set up package module mapping appropriately.
+- Understand the implications of dynamic vs. static linking.
+- Provide proper documentation for your packages.
+- Set up CI for packages to ensure compatibility across Swift versions.
+- Consider using swift-docc to generate package documentation.
+- Understand the security implications of downstream dependencies.
+- Set appropriate platform and Swift version constraints.
+- Specify version requirements using semantic versioning.
+- Consider creating separate packages for reusable components.
+- Define clear package products and targets.
+- Use conditional dependencies where appropriate.
+- Pin dependency versions for reproducible builds.
+
+## Swift Concurrency (Modern Patterns)
+- Use structured concurrency with `async`/`await` instead of completion handlers.
+- Follow the principle of "Don't detach unless you need to" - stay within the structured concurrency model.
+- Properly respect actor isolation; avoid reaching across actor boundaries frequently.
+- Use actors to encapsulate mutable state shared between tasks.
+- Leverage `@MainActor` for UI updates and state that must be accessed from the main thread.
+- Use `async let` for parallel execution of child tasks.
+- Use `TaskGroup` for dynamic parallel tasks.
+- Remember that Swift concurrency is cooperative, not preemptive.
+- Handle cancellation appropriately with `Task.checkCancellation()`.
+- Use `withTaskCancellationHandler` to set up custom cancellation handling.
+- Prefer the built-in task priority system over custom priority schemes.
+- Avoid long-running synchronous code in async functions as they block the thread.
+- Use `TaskLocal` values for propagating context down a task tree.
+- Consider the `Sendable` protocol for types crossing actor/task boundaries.
+- Make appropriate use of `@MainActor`, `@TaskLocal`, and `@Sendable` attributes.
+- Implement custom executors only when absolutely necessary.
+- Use Swift Distributed Actors for cross-process/device concurrency (when available).
+- Leverage Clock protocol and continuations for testing time-dependent async code.
+- Understand Task vs. Task.detached and their different cancellation behaviors.
+
+## Swift and Objective-C Interoperability
+- Use `@objc` attributes and `NSObject` subclasses when interfacing with Objective-C.
+- Be aware of how Swift types are represented in Objective-C.
+- Use `@objcMembers` for classes that need many members exposed to Objective-C.
+- Understand how optionals translate between Swift and Objective-C.
+- Use modern Swift APIs instead of older Objective-C ones when possible.
