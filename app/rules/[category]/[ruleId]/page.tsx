@@ -1,69 +1,86 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { notFound, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Icons } from '@/components/icons';
-import { RuleModal } from '@/components/rules/rule-modal';
-import { Rule } from '@/lib/types';
-import { getRule } from '@/lib/actions/rule-actions';
-import { AlertCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Icons } from "@/components/icons";
+import { Rule } from "@/lib/types";
+import { AlertCircle } from "lucide-react";
+import { RuleModal } from "@/components/rules/rule-modal";
+import { RuleActions } from "@/components/rules/rule-actions";
+import { createBrowserSupabaseClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 // Define the rule page props
 interface RulePageProps {
-  params: {
+  params: Promise<{
     category: string;
     ruleId: string;
-  };
+  }>;
 }
 
 export default function RulePage({ params }: RulePageProps) {
   const router = useRouter();
+  const [awaitedParams, setAwaitedParams] = useState<{ category: string; ruleId: string } | null>(null);
   const [rule, setRule] = useState<Rule | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const supabase = createBrowserSupabaseClient();
 
+  // Await params
+  useEffect(() => {
+    async function awaitParams() {
+      try {
+        const resolved = await params;
+        setAwaitedParams(resolved);
+      } catch (err) {
+        console.error('Error awaiting params:', err);
+        setError('Failed to load page parameters');
+      }
+    }
+    awaitParams();
+  }, [params]);
+
+  // Load rule data
   useEffect(() => {
     async function loadRule() {
+      if (!awaitedParams) return;
+      
       try {
         setLoading(true);
-        setError(null);
         
-        // Fetch the rule using the server action
-        const response = await getRule(params.ruleId);
+        // Fetch rule from API
+        const response = await fetch(`/api/rules/${awaitedParams.category}/${awaitedParams.ruleId}`);
         
-        if (!response.success) {
-          setError(response.error || 'Failed to load rule');
-          setLoading(false);
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError('Rule not found');
+          } else {
+            const errorData = await response.json();
+            setError(errorData.error || 'Failed to load rule');
+          }
           return;
         }
         
-        if (!response.data) {
-          setError('Rule not found');
-          setLoading(false);
-          return;
-        }
-        
-        setRule(response.data);
+        const data = await response.json();
+        setRule(data.rule);
       } catch (err) {
         console.error('Error loading rule:', err);
-        setError('An unexpected error occurred while loading the rule');
+        setError('Failed to load rule');
       } finally {
         setLoading(false);
       }
     }
     
     loadRule();
-  }, [params.ruleId]);
+  }, [awaitedParams]);
 
-  // Format the last updated date if available
+  // Format date for display
   const formattedDate = rule?.last_updated 
     ? new Date(rule.last_updated).toLocaleDateString(undefined, { 
         year: 'numeric', 
@@ -77,18 +94,85 @@ export default function RulePage({ params }: RulePageProps) {
     setModalOpen(true);
   };
 
-  // Show loading state while fetching the rule
-  if (loading) {
+  // Handle download with database increment
+  const handleDownload = async () => {
+    if (!rule) return;
+    
+    try {
+      // Create downloadable content with metadata
+      const content = `---
+title: ${rule.title}
+description: ${rule.description}
+version: ${rule.version}
+lastUpdated: ${rule.last_updated || new Date().toISOString()}
+category: ${rule.categoryName || awaitedParams?.category}
+---
+
+${rule.content}`;
+      
+      // Create blob and download link
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${rule.slug || rule.id}.mdc`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      // Increment download count in database
+      try {
+        await supabase.rpc('increment_rule_downloads', { rule_id: rule.id });
+        console.log('Download count incremented for rule:', rule.id);
+        
+        // Update local rule state to reflect new download count
+        setRule(prev => prev ? { ...prev, downloads: (prev.downloads || 0) + 1 } : null);
+        toast.success(`Downloaded ${rule.slug || rule.id}.mdc`);
+      } catch (dbError) {
+        console.error('Failed to increment download count:', dbError);
+        toast.success(`Downloaded ${rule.slug || rule.id}.mdc`);
+        // Don't fail the download if DB update fails
+      }
+    } catch (error) {
+      console.error('Failed to download rule:', error);
+      toast.error('Failed to download rule');
+    }
+  };
+
+  // Handle copy action  
+  const handleCopy = async () => {
+    if (!rule?.content) return;
+    
+    try {
+      await navigator.clipboard.writeText(rule.content);
+      toast.success('Rule content copied to clipboard');
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+      toast.error('Failed to copy to clipboard');
+    }
+  };
+
+  // Show loading state while params are being awaited or rule is being fetched
+  if (!awaitedParams || loading) {
     return (
       <div className="container py-10">
         <div className="flex items-center gap-1 text-sm text-muted-foreground mb-8">
           <Link href="/rules" className="hover:text-foreground">Rules</Link>
           <span>/</span>
-          <Link href={`/rules/${params.category}`} className="hover:text-foreground">
-            {params.category}
-          </Link>
-          <span>/</span>
-          <span className="text-foreground">Loading...</span>
+          {awaitedParams ? (
+            <>
+              <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
+                {awaitedParams.category}
+              </Link>
+              <span>/</span>
+              <span className="text-foreground">Loading...</span>
+            </>
+          ) : (
+            <span className="text-foreground">Loading...</span>
+          )}
         </div>
         
         <div className="animate-pulse space-y-6">
@@ -107,8 +191,8 @@ export default function RulePage({ params }: RulePageProps) {
         <div className="flex items-center gap-1 text-sm text-muted-foreground mb-8">
           <Link href="/rules" className="hover:text-foreground">Rules</Link>
           <span>/</span>
-          <Link href={`/rules/${params.category}`} className="hover:text-foreground">
-            {params.category}
+          <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
+            {awaitedParams.category}
           </Link>
           <span>/</span>
           <span className="text-foreground">Error</span>
@@ -144,8 +228,8 @@ export default function RulePage({ params }: RulePageProps) {
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Link href="/rules" className="hover:text-foreground">Rules</Link>
           <span>/</span>
-          <Link href={`/rules/${params.category}`} className="hover:text-foreground">
-            {params.category}
+          <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
+            {awaitedParams.category}
           </Link>
           <span>/</span>
           <span className="text-foreground">{rule.title}</span>
@@ -217,37 +301,23 @@ export default function RulePage({ params }: RulePageProps) {
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">Downloads</dt>
-                    <dd>{rule.downloads} {rule.downloads === 1 ? 'download' : 'downloads'}</dd>
+                    <dd>{rule.downloads || 0} {(rule.downloads || 0) === 1 ? 'download' : 'downloads'}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-muted-foreground">Votes</dt>
+                    <dd>{rule.votes || 0} {(rule.votes || 0) === 1 ? 'vote' : 'votes'}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-muted-foreground">Category</dt>
                     <dd className="flex items-center gap-1">
-                      <span>{rule.categoryName || params.category}</span>
+                      <span>{rule.categoryName || awaitedParams?.category}</span>
                     </dd>
                   </div>
-                  {rule.author && (
-                    <div>
-                      <dt className="text-sm font-medium text-muted-foreground">Author</dt>
-                      <dd>{rule.author}</dd>
-                    </div>
-                  )}
                 </dl>
               </CardContent>
-              <CardFooter className="flex justify-center border-t pt-4">
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Icons.download className="h-4 w-4 mr-1" />
-                    Download
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Icons.copy className="h-4 w-4 mr-1" />
-                    Copy
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Icons.thumbsUp className="h-4 w-4 mr-1" />
-                    Vote
-                  </Button>
-                </div>
+              <CardFooter className="border-t pt-4">
+                {/* Use the RuleActions component for proper functionality */}
+                <RuleActions rule={rule} onDownload={handleDownload} />
               </CardFooter>
             </Card>
             

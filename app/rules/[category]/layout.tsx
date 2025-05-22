@@ -1,29 +1,6 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-
-// Categories metadata for generateMetadata function
-const categoryMetadata = {
-  languages: {
-    title: "Programming Languages",
-    description: "Language-specific rules and best practices for various programming languages",
-    icon: "code"
-  },
-  tasks: {
-    title: "Development Tasks",
-    description: "Task-specific rules for different development activities and scenarios",
-    icon: "tasks"
-  },
-  technologies: {
-    title: "Technologies & Frameworks",
-    description: "Framework and tool-specific guidelines for various technologies",
-    icon: "settings"
-  },
-  aitools: {
-    title: "AI Tools",
-    description: "Guides for AI-enhanced development and workflows",
-    icon: "brain"
-  }
-}
+import { getCategory } from "@/lib/services/supabase-rule-service"
 
 type CategoryLayoutProps = {
   params: {
@@ -38,19 +15,27 @@ export async function generateMetadata(
   const awaitedParams = await params;
   const { category } = awaitedParams;
 
-  // Get info from our static metadata
-  const categoryInfo = categoryMetadata[category as keyof typeof categoryMetadata]
+  try {
+    // Get category info from database
+    const categoryData = await getCategory(category);
 
-  if (!categoryInfo) {
+    if (!categoryData) {
+      return {
+        title: "Category Not Found",
+        description: "The requested category could not be found."
+      }
+    }
+
+    return {
+      title: categoryData.title || categoryData.name,
+      description: categoryData.description
+    }
+  } catch (error) {
+    console.error('Error generating metadata for category:', error);
     return {
       title: "Category Not Found",
       description: "The requested category could not be found."
     }
-  }
-
-  return {
-    title: categoryInfo.title,
-    description: categoryInfo.description
   }
 }
 
@@ -60,16 +45,23 @@ export default async function CategoryLayout({
 }: CategoryLayoutProps) {
   const awaitedParams = await params;
   const { category } = awaitedParams;
-  const categoryInfo = categoryMetadata[category as keyof typeof categoryMetadata]
 
-  // Validate category exists
-  if (!categoryInfo) {
+  try {
+    // Fetch category from database
+    const categoryData = await getCategory(category);
+
+    // Validate category exists
+    if (!categoryData) {
+      notFound()
+    }
+
+    return (
+      <div className="category-layout">
+        {children}
+      </div>
+    )
+  } catch (error) {
+    console.error('Error loading category layout:', error);
     notFound()
   }
-
-  return (
-    <div className="category-layout">
-      {children}
-    </div>
-  )
 }

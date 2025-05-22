@@ -52,6 +52,7 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
   const handleDownload = async () => {
     try {
       setIsDownloading(true)
+      
       // Create a blob from the rule content
       const blob = new Blob([rule.content], { type: 'text/markdown' })
 
@@ -71,12 +72,24 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
       document.body.removeChild(link)
       URL.revokeObjectURL(link.href)
 
+      // Increment download count in database
+      try {
+        await supabase.rpc('increment_rule_downloads', { rule_id: rule.id })
+        console.log('Download count incremented for rule:', rule.id)
+      } catch (dbError) {
+        console.error('Failed to increment download count:', dbError)
+        // Don't fail the download if DB update fails
+      }
+
       // Call the server action to record download if provided
       if (onDownload) {
         await onDownload()
       }
 
       toast.success(`Downloaded ${filename}`)
+      
+      // Refresh to show updated download count
+      router.refresh()
     } catch (error) {
       console.error('Error downloading rule:', error)
       toast.error('Failed to download rule')
@@ -153,6 +166,19 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
             <Icons.download className="mr-2 h-4 w-4" />
             Download
           </>
+        )}
+      </Button>
+      <Button
+        variant={hasVoted ? "default" : "outline"}
+        size="icon"
+        onClick={handleVote}
+        disabled={isVoting}
+        title={hasVoted ? "Remove vote" : "Vote for this rule"}
+      >
+        {isVoting ? (
+          <Icons.loader className="h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.thumbsUp className={`h-4 w-4 ${hasVoted ? 'text-primary-foreground' : ''}`} />
         )}
       </Button>
       <Button

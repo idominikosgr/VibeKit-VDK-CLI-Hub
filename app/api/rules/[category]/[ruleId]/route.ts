@@ -65,9 +65,9 @@ export async function GET(
       );
     }
     
-    // Return the rule
+    // Return the rule with the expected format
     return NextResponse.json({
-      data: ensureSerializable(rule)
+      rule: ensureSerializable(rule)
     });
   } catch (error) {
     console.error(`[API] Error fetching rule:`, error);

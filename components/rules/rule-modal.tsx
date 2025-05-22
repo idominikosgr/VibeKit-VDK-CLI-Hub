@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,8 @@ import { Icons } from '@/components/icons';
 import { Rule } from '@/lib/types';
 import { toast } from 'sonner';
 import { incrementRuleDownloads } from '@/lib/services/supabase-rule-service';
+import { createBrowserSupabaseClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 import Markdown from 'react-markdown';
 
 interface RuleModalProps {
@@ -18,7 +20,12 @@ interface RuleModalProps {
 }
 
 export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
+  const router = useRouter();
+  const supabase = createBrowserSupabaseClient();
   const [downloading, setDownloading] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
+  const [voteCount, setVoteCount] = useState(0);
 
   if (!rule) return null;
 
@@ -31,8 +38,31 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
       })
     : 'Unknown';
 
-  // Extract author from rule if available
-  const author = rule.author || null;
+  // Initialize vote count and check user vote status
+  useEffect(() => {
+    setVoteCount(rule?.votes || 0);
+    
+    async function checkVoteStatus() {
+      if (!rule) return;
+      
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.user) {
+        return;
+      }
+
+      const { data } = await supabase
+        .from('user_votes')
+        .select('id')
+        .eq('rule_id', rule.id)
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+      setHasVoted(!!data);
+    }
+
+    checkVoteStatus();
+  }, [rule, supabase]);
 
   // Handle copying rule content to clipboard
   const copyToClipboard = async () => {
@@ -83,6 +113,48 @@ ${rule.content}`;
       toast.error('Failed to download rule');
     } finally {
       setDownloading(false);
+    }
+  };
+
+  // Handle voting for the rule
+  const handleVote = async () => {
+    try {
+      setIsVoting(true);
+
+      // Check if user is logged in
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.user) {
+        toast("Please sign in to vote", {
+          action: {
+            label: "Sign in",
+            onClick: () => router.push("/auth/login")
+          }
+        });
+        return;
+      }
+
+      if (hasVoted) {
+        // Remove vote
+        await supabase.rpc('remove_rule_vote', { rule_id: rule.id });
+        setHasVoted(false);
+        setVoteCount(count => Math.max(0, count - 1));
+        toast.success("Vote removed");
+      } else {
+        // Add vote
+        await supabase.rpc('vote_for_rule', { rule_id: rule.id });
+        setHasVoted(true);
+        setVoteCount(count => count + 1);
+        toast.success("Vote added");
+      }
+
+      // Refresh the page data
+      router.refresh();
+    } catch (error) {
+      console.error("Error voting:", error);
+      toast.error("Failed to register vote");
+    } finally {
+      setIsVoting(false);
     }
   };
 
@@ -202,13 +274,13 @@ ${rule.content}`;
                 <div className="flex items-center gap-2 text-sm">
                   <Download className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Downloads:</span>
-                  <span>{rule.downloads}</span>
+                  <span>{rule.downloads || 0}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
                   <ThumbsUp className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Votes:</span>
-                  <span>{rule.votes}</span>
+                  <span>{voteCount}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
@@ -216,14 +288,6 @@ ${rule.content}`;
                   <span className="font-medium text-muted-foreground">Version:</span>
                   <span>{rule.version}</span>
                 </div>
-                
-                {author && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium text-muted-foreground">Author:</span>
-                    <span>{author}</span>
-                  </div>
-                )}
                 
                 <div className="flex items-center gap-2 text-sm">
                   <Icons.code className="h-4 w-4 text-muted-foreground" />
@@ -264,11 +328,17 @@ ${rule.content}`;
                   {downloading ? 'Downloading...' : 'Download Rule'}
                 </Button>
                 <Button 
-                  variant="outline" 
+                  variant={hasVoted ? "default" : "outline"}
                   className="w-full justify-start"
+                  onClick={handleVote}
+                  disabled={isVoting}
                 >
-                  <ThumbsUp className="h-4 w-4 mr-2" />
-                  Vote for this Rule
+                  {isVoting ? (
+                    <Icons.loader className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <ThumbsUp className="h-4 w-4 mr-2" />
+                  )}
+                  {isVoting ? "Processing..." : hasVoted ? "Remove Vote" : "Vote for this Rule"}
                 </Button>
               </CardContent>
             </Card>
