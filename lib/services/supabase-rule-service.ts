@@ -9,8 +9,25 @@ type DbRule = Database['public']['Tables']['rules']['Row'];
 type DbCategory = Database['public']['Tables']['categories']['Row'];
 
 /**
+ * Safely serialize JSON data from database to ensure proper serialization
+ */
+function safeSerializeJson(jsonData: any): any {
+  if (jsonData === null || jsonData === undefined) {
+    return null;
+  }
+  
+  try {
+    // If it's already a plain object/array, ensure it's properly serialized
+    return JSON.parse(JSON.stringify(jsonData));
+  } catch (error) {
+    console.warn('Failed to serialize JSON data:', error);
+    return null;
+  }
+}
+
+/**
  * Map a database rule to the application Rule type
- * FIXED: Now properly handles snake_case DB fields
+ * FIXED: Now properly handles snake_case DB fields and ensures serialization
  */
 function mapDbRuleToRule(dbRule: DbRule, categoryName?: string, categorySlug?: string): Rule {
   return {
@@ -34,9 +51,9 @@ function mapDbRuleToRule(dbRule: DbRule, categoryName?: string, categorySlug?: s
     created_at: dbRule.created_at,
     updated_at: dbRule.updated_at,
     
-    // Handle JSONB fields properly
-    compatibility: dbRule.compatibility as Rule['compatibility'],
-    examples: dbRule.examples as Rule['examples'],
+    // Handle JSONB fields properly with safe serialization
+    compatibility: safeSerializeJson(dbRule.compatibility) as Rule['compatibility'],
+    examples: safeSerializeJson(dbRule.examples) as Rule['examples'],
     
     // Computed fields (these can use camelCase as they're not DB fields)
     categoryName: categoryName,
@@ -46,7 +63,7 @@ function mapDbRuleToRule(dbRule: DbRule, categoryName?: string, categorySlug?: s
 
 /**
  * Map a database category to the application RuleCategory type
- * FIXED: Now properly handles snake_case DB fields
+ * FIXED: Now properly handles snake_case DB fields and ensures serialization
  */
 function mapDbCategoryToCategory(dbCategory: DbCategory, ruleCount?: number): RuleCategory {
   return {
@@ -87,12 +104,10 @@ export async function getRuleCategories(): Promise<RuleCategory[]> {
   try {
     const supabase = await createServerSupabaseClient();
 
+    // Get categories without join to prevent serialization issues
     const { data, error } = await supabase
       .from('categories')
-      .select(`
-        *,
-        rules:rules(count)
-      `)
+      .select('*')
       .order('order_index', { ascending: true })
       .order('name');
 
@@ -100,9 +115,24 @@ export async function getRuleCategories(): Promise<RuleCategory[]> {
       throw handleDatabaseError(error, 'getRuleCategories');
     }
 
-    return (data || []).map(category => 
-      mapDbCategoryToCategory(category, category.rules?.length)
+    // For each category, get the rule count separately to avoid serialization issues
+    const categoriesWithCounts = await Promise.all(
+      (data || []).map(async (category) => {
+        try {
+          const { count } = await supabase
+            .from('rules')
+            .select('id', { count: 'exact', head: true })
+            .eq('category_id', category.id);
+          
+          return mapDbCategoryToCategory(category, count || 0);
+        } catch (error) {
+          console.warn(`Failed to get count for category ${category.id}:`, error);
+          return mapDbCategoryToCategory(category, 0);
+        }
+      })
     );
+
+    return categoriesWithCounts;
   } catch (error) {
     console.error('Error in getRuleCategories:', error);
     throw error;
@@ -116,13 +146,10 @@ export async function getCategory(category_idOrSlug: string): Promise<RuleCatego
   try {
     const supabase = await createServerSupabaseClient();
     
-    // First try to find by slug (most common case)
+    // First try to find by slug (most common case) - Remove join to prevent serialization issues
     let { data, error } = await supabase
       .from('categories')
-      .select(`
-        *,
-        rules:rules(count)
-      `)
+      .select('*')
       .eq('slug', category_idOrSlug)
       .maybeSingle();
 
@@ -130,10 +157,7 @@ export async function getCategory(category_idOrSlug: string): Promise<RuleCatego
     if (!data && !error && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(category_idOrSlug)) {
       const result = await supabase
         .from('categories')
-        .select(`
-          *,
-          rules:rules(count)
-        `)
+        .select('*')
         .eq('id', category_idOrSlug)
         .maybeSingle();
       
@@ -149,7 +173,18 @@ export async function getCategory(category_idOrSlug: string): Promise<RuleCatego
       return null;
     }
 
-    return mapDbCategoryToCategory(data, data.rules?.length);
+    // Get rule count separately to avoid serialization issues
+    try {
+      const { count } = await supabase
+        .from('rules')
+        .select('id', { count: 'exact', head: true })
+        .eq('category_id', data.id);
+      
+      return mapDbCategoryToCategory(data, count || 0);
+    } catch (countError) {
+      console.warn(`Failed to get count for category ${data.id}:`, countError);
+      return mapDbCategoryToCategory(data, 0);
+    }
   } catch (error) {
     console.error(`Error fetching category ${category_idOrSlug}:`, error);
     throw error;
@@ -196,10 +231,10 @@ export async function getRulesByCategory(
     const totalPages = Math.ceil((totalCount || 0) / pageSize);
     const startIndex = (page - 1) * pageSize;
     
-    // Build data query
+    // Build data query - FIXED: Remove join to prevent serialization issues
     let dataQuery = supabase
       .from('rules')
-      .select('*, categories(name)')
+      .select('*')
       .eq('category_id', category.id);
     
     // Add search filter if provided (for data)
@@ -217,7 +252,7 @@ export async function getRulesByCategory(
     }
 
     const mappedRules = (rules || []).map((rule: any) => 
-      mapDbRuleToRule(rule, rule.categories?.name || category.name, rule.categories?.slug || category.slug)
+      mapDbRuleToRule(rule, category.name, category.slug)
     );
 
     return {
@@ -245,7 +280,7 @@ export async function getRule(ruleIdOrSlug: string): Promise<Rule | null> {
     // First try to find by slug (most common case)
     let { data: rule, error } = await supabase
       .from('rules')
-      .select('*, categories(name, slug)')
+      .select('*')
       .eq('slug', ruleIdOrSlug)
       .maybeSingle();
 
@@ -253,7 +288,7 @@ export async function getRule(ruleIdOrSlug: string): Promise<Rule | null> {
     if (!rule && !error) {
       const result = await supabase
         .from('rules')
-        .select('*, categories(name, slug)')
+        .select('*')
         .eq('id', ruleIdOrSlug)
         .maybeSingle();
       
@@ -269,7 +304,10 @@ export async function getRule(ruleIdOrSlug: string): Promise<Rule | null> {
       return null;
     }
 
-    return mapDbRuleToRule(rule, rule.categories?.name, rule.categories?.slug);
+    // Get category information separately to avoid serialization issues
+    const category = await getCategory(rule.category_id);
+    
+    return mapDbRuleToRule(rule, category?.name, category?.slug);
   } catch (error) {
     console.error(`Error fetching rule ${ruleIdOrSlug}:`, error);
     throw error;
@@ -284,10 +322,10 @@ export async function findRuleByIdentifier(identifier: string): Promise<Rule | n
   try {
     const supabase = await createServerSupabaseClient();
     
-    // Try multiple ways to find the rule - first by slug
+    // Try multiple ways to find the rule - first by slug - FIXED: Remove join
     let { data: rule, error } = await supabase
       .from('rules')
-      .select('*, categories(name, slug)')
+      .select('*')
       .eq('slug', identifier)
       .maybeSingle();
 
@@ -295,7 +333,7 @@ export async function findRuleByIdentifier(identifier: string): Promise<Rule | n
     if (!rule && !error) {
       const result = await supabase
         .from('rules')
-        .select('*, categories(name, slug)')
+        .select('*')
         .eq('id', identifier)
         .maybeSingle();
       
@@ -307,7 +345,7 @@ export async function findRuleByIdentifier(identifier: string): Promise<Rule | n
     if (!rule && !error) {
       const result = await supabase
         .from('rules')
-        .select('*, categories(name, slug)')
+        .select('*')
         .eq('path', identifier)
         .maybeSingle();
       
@@ -323,7 +361,10 @@ export async function findRuleByIdentifier(identifier: string): Promise<Rule | n
       return null;
     }
 
-    return mapDbRuleToRule(rule, rule.categories?.name, rule.categories?.slug);
+    // Get category information separately to avoid serialization issues
+    const category = await getCategory(rule.category_id);
+
+    return mapDbRuleToRule(rule, category?.name, category?.slug);
   } catch (error) {
     console.error(`Error finding rule ${identifier}:`, error);
     throw error;
@@ -353,10 +394,10 @@ export async function getAllRules(
     const totalPages = Math.ceil((totalCount || 0) / pageSize);
     const startIndex = (page - 1) * pageSize;
     
-    // Build data query
+    // Build data query - FIXED: Remove join to prevent serialization issues
     const { data, error } = await supabase
       .from('rules')
-      .select('*, categories(name, slug)')
+      .select('*')
       .range(startIndex, startIndex + pageSize - 1)
       .order('title');
 
@@ -364,8 +405,8 @@ export async function getAllRules(
       throw handleDatabaseError(error, 'getAllRules');
     }
 
-    const mappedRules = (data || []).map((rule: any) =>
-      mapDbRuleToRule(rule, rule.categories?.name, rule.categories?.slug)
+    const mappedRules = (data || []).map((rule: any) => 
+      mapDbRuleToRule(rule, undefined, undefined)
     );
 
     return {
@@ -417,10 +458,16 @@ export async function searchRules(
     const totalPages = Math.ceil((totalCount || 0) / pageSize);
     const startIndex = (page - 1) * pageSize;
     
-    // Build data query
+    // Build data query - Get rules with category info
     const dataQuery = supabase
       .from('rules')
-      .select('*, categories(name, slug)')
+      .select(`
+        *,
+        categories!inner(
+          name,
+          slug
+        )
+      `)
       .or(`title.ilike.%${safeQuery}%,description.ilike.%${safeQuery}%,content.ilike.%${safeQuery}%`);
     
     // Get paginated search results
@@ -432,9 +479,11 @@ export async function searchRules(
       throw handleDatabaseError(error, `searchRules:${safeQuery}`);
     }
 
-    const mappedRules = (data || []).map((rule: any) =>
-      mapDbRuleToRule(rule, rule.categories?.name, rule.categories?.slug)
-    );
+    const mappedRules = (data || []).map((item: any) => {
+      const rule = item;
+      const category = item.categories;
+      return mapDbRuleToRule(rule, category?.name, category?.slug);
+    });
 
     return {
       data: mappedRules,

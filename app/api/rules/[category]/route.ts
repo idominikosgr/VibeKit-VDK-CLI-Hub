@@ -2,10 +2,53 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCategory, getRulesByCategory } from '@/lib/services/supabase-rule-service';
 
 /**
- * Helper to ensure objects are serializable
+ * Helper function to deeply ensure the object is serializable
  */
-function ensureSerializable(obj: any) {
-  return JSON.parse(JSON.stringify(obj));
+function ensureSerializable<T>(obj: T): T {
+  try {
+    // Deep clone to remove any non-serializable properties
+    const serialized = JSON.parse(JSON.stringify(obj));
+    
+    // Ensure dates are properly formatted as ISO strings
+    if (serialized && typeof serialized === 'object') {
+      // Handle arrays
+      if (Array.isArray(serialized)) {
+        return serialized.map(item => ensureSerializable(item)) as T;
+      }
+      
+      // Handle objects
+      Object.keys(serialized).forEach(key => {
+        const value = serialized[key];
+        
+        // Handle date strings
+        if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+          try {
+            const date = new Date(value);
+            if (!isNaN(date.getTime())) {
+              serialized[key] = date.toISOString();
+            }
+          } catch (e) {
+            // If it fails, keep the original value
+          }
+        }
+        
+        // Recursively handle nested objects
+        if (value && typeof value === 'object') {
+          serialized[key] = ensureSerializable(value);
+        }
+        
+        // Ensure null values are preserved (not undefined)
+        if (value === undefined) {
+          serialized[key] = null;
+        }
+      });
+    }
+    
+    return serialized;
+  } catch (error) {
+    console.error('Failed to serialize object:', error);
+    throw new Error('Data serialization error');
+  }
 }
 
 /**
@@ -54,10 +97,15 @@ export async function GET(
     // Fetch rules for the category with pagination
     const rules = await getRulesByCategory(category.id, page, limit, query || undefined);
     
+    // Ensure all data is properly serialized
+    const serializedCategory = ensureSerializable(category);
+    const serializedRules = ensureSerializable(rules.data);
+    const serializedPagination = ensureSerializable(rules.pagination);
+    
     return NextResponse.json({
-      category: ensureSerializable(category),
-      data: ensureSerializable(rules.data),
-      pagination: rules.pagination
+      category: serializedCategory,
+      data: serializedRules,
+      pagination: serializedPagination
     });
   } catch (error) {
     console.error('[API] Error processing category rules request:', error);

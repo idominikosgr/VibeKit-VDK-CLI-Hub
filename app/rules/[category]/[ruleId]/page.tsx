@@ -23,6 +23,37 @@ interface RulePageProps {
   }>;
 }
 
+// Helper function to sanitize rule data for React state
+function sanitizeRuleData(rule: any): Rule {
+  return {
+    id: rule.id || '',
+    title: rule.title || '',
+    slug: rule.slug || '',
+    path: rule.path || '',
+    description: rule.description || '',
+    content: rule.content || '',
+    version: rule.version || '1.0.0',
+    category_id: rule.category_id || '',
+    tags: Array.isArray(rule.tags) ? rule.tags : null,
+    globs: Array.isArray(rule.globs) ? rule.globs : null,
+    downloads: typeof rule.downloads === 'number' ? rule.downloads : 0,
+    votes: typeof rule.votes === 'number' ? rule.votes : 0,
+    compatibility: rule.compatibility && typeof rule.compatibility === 'object' ? {
+      ides: Array.isArray(rule.compatibility.ides) ? rule.compatibility.ides : [],
+      aiAssistants: Array.isArray(rule.compatibility.aiAssistants) ? rule.compatibility.aiAssistants : [],
+      frameworks: Array.isArray(rule.compatibility.frameworks) ? rule.compatibility.frameworks : [],
+      mcpServers: Array.isArray(rule.compatibility.mcpServers) ? rule.compatibility.mcpServers : []
+    } : null,
+    examples: rule.examples && typeof rule.examples === 'object' ? rule.examples : null,
+    always_apply: typeof rule.always_apply === 'boolean' ? rule.always_apply : null,
+    last_updated: typeof rule.last_updated === 'string' ? rule.last_updated : null,
+    created_at: typeof rule.created_at === 'string' ? rule.created_at : null,
+    updated_at: typeof rule.updated_at === 'string' ? rule.updated_at : null,
+    categoryName: typeof rule.categoryName === 'string' ? rule.categoryName : undefined,
+    categorySlug: typeof rule.categorySlug === 'string' ? rule.categorySlug : undefined,
+  };
+}
+
 export default function RulePage({ params }: RulePageProps) {
   const router = useRouter();
   const [awaitedParams, setAwaitedParams] = useState<{ category: string; ruleId: string } | null>(null);
@@ -68,7 +99,10 @@ export default function RulePage({ params }: RulePageProps) {
         }
         
         const data = await response.json();
-        setRule(data.rule);
+        
+        // Sanitize the rule data before setting it in state
+        const sanitizedRule = sanitizeRuleData(data.rule);
+        setRule(sanitizedRule);
       } catch (err) {
         console.error('Error loading rule:', err);
         setError('Failed to load rule');

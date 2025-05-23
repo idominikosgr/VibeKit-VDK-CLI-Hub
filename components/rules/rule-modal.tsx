@@ -19,6 +19,33 @@ interface RuleModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+// Helper function to safely get examples entries
+function getSafeExamples(examples: any): [string, any][] {
+  if (!examples || typeof examples !== 'object') {
+    return [];
+  }
+  
+  try {
+    return Object.entries(examples).filter(([key, value]) => 
+      typeof key === 'string' && key.length > 0
+    );
+  } catch (e) {
+    console.warn('Error processing examples:', e);
+    return [];
+  }
+}
+
+// Helper function to safely check compatibility arrays
+function hasCompatibilityData(compatibility: any): boolean {
+  if (!compatibility || typeof compatibility !== 'object') {
+    return false;
+  }
+  
+  return Object.values(compatibility).some(arr => 
+    Array.isArray(arr) && arr.length > 0
+  );
+}
+
 export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
   const router = useRouter();
   const supabase = createBrowserSupabaseClient();
@@ -37,6 +64,13 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
         day: 'numeric' 
       })
     : 'Unknown';
+
+  // Safely get examples data
+  const safeExamples = getSafeExamples(rule.examples);
+  const hasExamples = safeExamples.length > 0;
+
+  // Safely check compatibility
+  const hasCompatibility = hasCompatibilityData(rule.compatibility);
 
   // Initialize vote count and check user vote status
   useEffect(() => {
@@ -165,7 +199,7 @@ ${rule.content}`;
           <DialogTitle className="text-2xl">{rule.title}</DialogTitle>
           <DialogDescription className="text-base">{rule.description}</DialogDescription>
           
-          {rule.tags && rule.tags.length > 0 && (
+          {rule.tags && Array.isArray(rule.tags) && rule.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {rule.tags.map((tag) => (
                 <Badge key={tag} variant="secondary">{tag}</Badge>
@@ -180,7 +214,7 @@ ${rule.content}`;
               <TabsList className="mb-4">
                 <TabsTrigger value="content">Rule Content</TabsTrigger>
                 <TabsTrigger value="compatibility">Compatibility</TabsTrigger>
-                {rule.examples && Object.keys(rule.examples).length > 0 && (
+                {hasExamples && (
                   <TabsTrigger value="examples">Examples</TabsTrigger>
                 )}
               </TabsList>
@@ -198,9 +232,9 @@ ${rule.content}`;
               <TabsContent value="compatibility">
                 <Card>
                   <CardContent className="p-6">
-                    {rule.compatibility && Object.values(rule.compatibility).some(arr => arr && arr.length > 0) ? (
+                    {hasCompatibility ? (
                       <div className="space-y-4">
-                        {rule.compatibility.frameworks && rule.compatibility.frameworks.length > 0 && (
+                        {rule.compatibility?.frameworks && Array.isArray(rule.compatibility.frameworks) && rule.compatibility.frameworks.length > 0 && (
                           <div>
                             <h3 className="text-sm font-medium text-muted-foreground mb-2">Frameworks</h3>
                             <div className="flex flex-wrap gap-2">
@@ -211,7 +245,7 @@ ${rule.content}`;
                           </div>
                         )}
                         
-                        {rule.compatibility.ides && rule.compatibility.ides.length > 0 && (
+                        {rule.compatibility?.ides && Array.isArray(rule.compatibility.ides) && rule.compatibility.ides.length > 0 && (
                           <div>
                             <h3 className="text-sm font-medium text-muted-foreground mb-2">IDEs</h3>
                             <div className="flex flex-wrap gap-2">
@@ -222,7 +256,7 @@ ${rule.content}`;
                           </div>
                         )}
                         
-                        {rule.compatibility.aiAssistants && rule.compatibility.aiAssistants.length > 0 && (
+                        {rule.compatibility?.aiAssistants && Array.isArray(rule.compatibility.aiAssistants) && rule.compatibility.aiAssistants.length > 0 && (
                           <div>
                             <h3 className="text-sm font-medium text-muted-foreground mb-2">AI Assistants</h3>
                             <div className="flex flex-wrap gap-2">
@@ -240,15 +274,17 @@ ${rule.content}`;
                 </Card>
               </TabsContent>
               
-              {rule.examples && Object.keys(rule.examples).length > 0 && (
+              {hasExamples && (
                 <TabsContent value="examples">
                   <Card>
                     <CardContent className="p-6">
                       <div className="space-y-6">
-                        {Object.entries(rule.examples).map(([title, example]) => (
+                        {safeExamples.map(([title, example]) => (
                           <div key={title} className="space-y-2">
                             <h3 className="font-medium">{title}</h3>
-                            <pre className="bg-muted p-4 rounded-md text-sm overflow-auto">{typeof example === 'string' ? example : JSON.stringify(example, null, 2)}</pre>
+                            <pre className="bg-muted p-4 rounded-md text-sm overflow-auto">
+                              {typeof example === 'string' ? example : JSON.stringify(example, null, 2)}
+                            </pre>
                           </div>
                         ))}
                       </div>

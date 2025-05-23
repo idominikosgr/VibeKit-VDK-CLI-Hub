@@ -1,40 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRule } from '@/lib/services/supabase-rule-service';
 
-// Helper function to ensure the object is serializable
+// Helper function to deeply ensure the object is serializable
 function ensureSerializable<T>(obj: T): T {
   try {
-    return JSON.parse(JSON.stringify(obj));
+    // Deep clone to remove any non-serializable properties
+    const serialized = JSON.parse(JSON.stringify(obj));
+    
+    // Ensure dates are properly formatted as ISO strings
+    if (serialized && typeof serialized === 'object') {
+      Object.keys(serialized).forEach(key => {
+        const value = serialized[key];
+        
+        // Handle date strings
+        if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) {
+          try {
+            const date = new Date(value);
+            if (!isNaN(date.getTime())) {
+              serialized[key] = date.toISOString();
+            }
+          } catch (e) {
+            // If it fails, keep the original value
+          }
+        }
+        
+        // Ensure null values are preserved (not undefined)
+        if (value === undefined) {
+          serialized[key] = null;
+        }
+      });
+    }
+    
+    return serialized;
   } catch (error) {
     console.error('Failed to serialize object:', error);
     throw new Error('Data serialization error');
   }
-}
-
-// Helper to process dates to ensure they're serializable
-function formatDates(rule: any): any {
-  if (!rule) return rule;
-  
-  const processed = { ...rule };
-  
-  // Format lastUpdated if it exists
-  if (processed.lastUpdated) {
-    try {
-      // Convert to ISO string if it's a valid date
-      const date = new Date(processed.lastUpdated);
-      // Check if the date is valid before converting
-      if (!isNaN(date.getTime())) {
-        processed.lastUpdated = date.toISOString();
-      } else {
-        processed.lastUpdated = null;
-      }
-    } catch (e) {
-      console.error("Error formatting date:", e);
-      processed.lastUpdated = null;
-    }
-  }
-  
-  return processed;
 }
 
 export async function GET(
@@ -65,9 +66,12 @@ export async function GET(
       );
     }
     
+    // Ensure the rule is properly serialized
+    const serializedRule = ensureSerializable(rule);
+    
     // Return the rule with the expected format
     return NextResponse.json({
-      rule: ensureSerializable(rule)
+      rule: serializedRule
     });
   } catch (error) {
     console.error(`[API] Error fetching rule:`, error);
