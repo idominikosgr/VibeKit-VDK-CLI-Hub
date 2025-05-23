@@ -1,0 +1,1 @@
+INSERT INTO profiles (id, email, name) VALUES (gen_random_uuid(), 'dominikos@myroomieapp.com', 'Dominikos Pritis'); 

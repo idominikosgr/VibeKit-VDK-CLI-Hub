@@ -236,6 +236,16 @@ function MobileNav() {
         <Icons.settings className="mr-2 h-4 w-4" />
         Setup
       </Link>
+      <Link
+        href="/docs"
+        className={cn(
+          "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          pathname?.startsWith("/docs") && "bg-accent"
+        )}
+      >
+        <Icons.documentation className="mr-2 h-4 w-4" />
+        Documentation
+      </Link>
       {user && isAdmin && (
         <Link
           href="/admin"

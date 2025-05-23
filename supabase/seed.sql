@@ -9,7 +9,7 @@
 -- Replace this with your actual admin email in production
 INSERT INTO public.admins (email)
 VALUES
-  ('dominikospritis@example.com')  -- Replace with your actual email
+  ('dominikos@myroomieapp.com')  
 ON CONFLICT (email) DO NOTHING;
 
 ---------------------------------------

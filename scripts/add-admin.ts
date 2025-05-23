@@ -5,14 +5,18 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../lib/supabase/database.types';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.NEXT_SUPABASE_SERVICE_ROLE_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Missing required environment variables:');
   console.error('- NEXT_PUBLIC_SUPABASE_URL');
-  console.error('- NEXT_SUPABASE_SERVICE_ROLE_KEY');
+  console.error('- SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
 
@@ -112,9 +116,9 @@ function showUsage() {
   console.log('  npx tsx scripts/add-admin.ts list            - List all admins');
   console.log('');
   console.log('Examples:');
-  console.log('  npx tsx scripts/add-admin.ts add john@example.com');
+  console.log('  npx tsx scripts/add-admin.ts add dominikos@myroomieapp.com');
   console.log('  npx tsx scripts/add-admin.ts list');
-  console.log('  npx tsx scripts/add-admin.ts remove john@example.com');
+  console.log('  npx tsx scripts/add-admin.ts remove dominikos@myroomieapp.com');
 }
 
 // Main execution

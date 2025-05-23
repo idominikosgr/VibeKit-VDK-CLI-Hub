@@ -38,8 +38,7 @@ export const siteConfig: SiteConfig = {
     },
     {
       title: "Documentation",
-      href: "/docs",
-      disabled: true
+      href: "/docs"
     },
   ],
 }
