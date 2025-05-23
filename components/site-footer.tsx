@@ -19,7 +19,7 @@ export function SiteFooter() {
       variants={fadeInUp}
       transition={{ duration: 0.6 }}
     >
-      <div className="container max-w-screen-2xl mx-auto">
+      <div className="container max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-4 gap-8"
           variants={fadeInUp}

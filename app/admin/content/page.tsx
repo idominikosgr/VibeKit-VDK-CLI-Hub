@@ -28,7 +28,7 @@ interface Rule {
   id: string;
   title: string;
   category: string;
-  status: 'active' | 'draft' | 'archived';
+  status: 'active' | 'draft' | 'archived' | 'pending';
   downloads: number;
   created_at: string;
   updated_at: string;
@@ -47,7 +47,7 @@ export default function ContentManagementPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'draft' | 'archived'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'draft' | 'archived' | 'pending'>('all');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function ContentManagementPage() {
     }
   };
 
-  const updateRuleStatus = async (ruleId: string, status: 'active' | 'draft' | 'archived') => {
+  const updateRuleStatus = async (ruleId: string, status: 'active' | 'draft' | 'archived' | 'pending') => {
     try {
       const response = await fetch(`/api/admin/content/rules/${ruleId}`, {
         method: 'PATCH',
@@ -134,13 +134,15 @@ export default function ContentManagementPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-secondary" />;
       case 'draft':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-warning" />;
       case 'archived':
-        return <XCircle className="h-4 w-4 text-gray-500" />;
+        return <XCircle className="h-4 w-4 text-muted-foreground" />;
+      case 'pending':
+        return <Clock className="h-4 w-4 text-warning" />;
       default:
-        return <FileText className="h-4 w-4 text-gray-500" />;
+        return <FileText className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -151,6 +153,8 @@ export default function ContentManagementPage() {
       case 'draft':
         return 'secondary';
       case 'archived':
+        return 'outline';
+      case 'pending':
         return 'outline';
       default:
         return 'outline';
@@ -172,7 +176,7 @@ export default function ContentManagementPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <FileText className="h-4 w-4" />
+          <FileText className="h-4 w-4 text-primary" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -190,7 +194,7 @@ export default function ContentManagementPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-muted-foreground to-muted-foreground/80 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -213,7 +217,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-500" />
+                  <FileText className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{rules.length}</p>
                     <p className="text-xs text-muted-foreground">Total Rules</p>
@@ -224,7 +228,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{rules.filter(r => r.status === 'active').length}</p>
                     <p className="text-xs text-muted-foreground">Active</p>
@@ -235,7 +239,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-yellow-500" />
+                  <Clock className="w-4 h-4 text-warning" />
                   <div>
                     <p className="text-2xl font-bold">{rules.filter(r => r.status === 'draft').length}</p>
                     <p className="text-xs text-muted-foreground">Drafts</p>
@@ -246,7 +250,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Flag className="w-4 h-4 text-purple-500" />
+                  <Flag className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{categories.length}</p>
                     <p className="text-xs text-muted-foreground">Categories</p>
@@ -288,6 +292,7 @@ export default function ContentManagementPage() {
                     <option value="active">Active</option>
                     <option value="draft">Draft</option>
                     <option value="archived">Archived</option>
+                    <option value="pending">Pending</option>
                   </select>
                 </div>
               </CardContent>
@@ -342,13 +347,14 @@ export default function ContentManagementPage() {
                               <option value="active">Active</option>
                               <option value="draft">Draft</option>
                               <option value="archived">Archived</option>
+                              <option value="pending">Pending</option>
                             </select>
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => deleteRule(rule.id)}
                             >
-                              <Trash2 className="h-3 w-3 text-red-500" />
+                              <Trash2 className="h-3 w-3 text-destructive" />
                             </Button>
                           </div>
                         </TableCell>

@@ -154,13 +154,13 @@ export default function DatabaseManagementPage() {
   const getHealthIcon = (health: string) => {
     switch (health) {
       case 'healthy':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-secondary" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-warning" />;
       case 'error':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-destructive" />;
       default:
-        return <Database className="h-4 w-4 text-gray-500" />;
+        return <Database className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -209,7 +209,7 @@ export default function DatabaseManagementPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center">
                 <Database className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -243,7 +243,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <HardDrive className="w-4 h-4 text-blue-500" />
+                  <HardDrive className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-sm font-bold">{stats.totalSize}</p>
                     <p className="text-xs text-muted-foreground">Total Size</p>
@@ -254,7 +254,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-green-500" />
+                  <Activity className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-sm font-bold">{stats.performance.connectionCount}</p>
                     <p className="text-xs text-muted-foreground">Connections</p>
@@ -265,7 +265,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-purple-500" />
+                  <Clock className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-sm font-bold">{stats.performance.avgQueryTime}ms</p>
                     <p className="text-xs text-muted-foreground">Avg Query Time</p>
@@ -290,7 +290,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Archive className="w-4 w-4 text-blue-500" />
+                      <Archive className="w-4 w-4 text-primary" />
                       <h4 className="font-medium">Backup Database</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -323,7 +323,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 w-4 text-green-500" />
+                      <Zap className="w-4 w-4 text-secondary" />
                       <h4 className="font-medium">Optimize Tables</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -354,7 +354,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Trash2 className="w-4 w-4 text-red-500" />
+                      <Trash2 className="w-4 w-4 text-destructive" />
                       <h4 className="font-medium">Cleanup Old Data</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">

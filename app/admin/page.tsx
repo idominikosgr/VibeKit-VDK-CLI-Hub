@@ -82,7 +82,7 @@ export default function AdminDashboard() {
       description: 'Sync rules from GitHub, view sync logs, and manage rule database',
       icon: RefreshCw,
       href: '/admin/sync',
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-primary to-primary/80',
       stats: [`${stats.ruleCount} rules`, `${stats.categoryCount} categories`]
     },
     {
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
       description: 'Manage user accounts, permissions, and admin access',
       icon: Users,
       href: '/admin/users',
-      color: 'from-green-500 to-green-600',
+      color: 'from-secondary to-secondary/80',
       stats: [`${stats.userCount} users`, 'Roles & permissions']
     },
     {
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
       description: 'View usage statistics, download reports, and monitor system health',
       icon: BarChart3,
       href: '/admin/analytics',
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-accent to-accent/80',
       stats: ['Usage metrics', 'Performance data']
     },
     {
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
       description: 'Manage rules, categories, and content moderation',
       icon: FileText,
       href: '/admin/content',
-      color: 'from-orange-500 to-orange-600',
+      color: 'from-muted-foreground to-muted-foreground/80',
       stats: ['Content review', 'Category management']
     },
     {
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
       description: 'Configure system settings, API keys, and application behavior',
       icon: Settings,
       href: '/admin/settings',
-      color: 'from-gray-500 to-gray-600',
+      color: 'from-muted to-muted/80',
       stats: ['Configuration', 'Environment']
     },
     {
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
       description: 'Database backups, migrations, and direct database access',
       icon: Database,
       href: '/admin/database',
-      color: 'from-red-500 to-red-600',
+      color: 'from-destructive to-destructive/80',
       stats: ['Backups', 'Migrations']
     }
   ];
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-500" />
+                  <FileText className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.ruleCount}</p>
                     <p className="text-xs text-muted-foreground">Rules</p>
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Database className="w-4 h-4 text-green-500" />
+                  <Database className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.categoryCount}</p>
                     <p className="text-xs text-muted-foreground">Categories</p>
@@ -199,7 +199,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-purple-500" />
+                  <Users className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{stats.userCount}</p>
                     <p className="text-xs text-muted-foreground">Users</p>
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 text-orange-500" />
+                  <RefreshCw className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-bold">
                       {stats.lastSyncDate 

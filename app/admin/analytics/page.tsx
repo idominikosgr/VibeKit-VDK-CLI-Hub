@@ -156,7 +156,7 @@ export default function AnalyticsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -196,7 +196,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-blue-500" />
+                  <FileText className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalRules)}</p>
                     <p className="text-xs text-muted-foreground">Total Rules</p>
@@ -207,7 +207,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Download className="w-4 h-4 text-green-500" />
+                  <Download className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalDownloads)}</p>
                     <p className="text-xs text-muted-foreground">Downloads</p>
@@ -218,7 +218,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-purple-500" />
+                  <Users className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalUsers)}</p>
                     <p className="text-xs text-muted-foreground">Users</p>
@@ -229,7 +229,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Package className="w-4 h-4 text-orange-500" />
+                  <Package className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.setupPackagesGenerated)}</p>
                     <p className="text-xs text-muted-foreground">Packages</p>
@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-red-500" />
+                  <Clock className="w-4 h-4 text-destructive" />
                   <div>
                     <p className="text-lg font-bold">{formatDuration(data.overview.avgSyncTime)}</p>
                     <p className="text-xs text-muted-foreground">Avg Sync</p>
@@ -326,7 +326,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-green-500" />
+                    <Activity className="w-4 h-4 text-secondary" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.userActivity.dailyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Daily Active</p>
@@ -337,7 +337,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-blue-500" />
+                    <Calendar className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.userActivity.weeklyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Weekly Active</p>
@@ -348,7 +348,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-purple-500" />
+                    <TrendingUp className="w-4 h-4 text-accent" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.userActivity.monthlyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Monthly Active</p>
@@ -359,7 +359,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-orange-500" />
+                    <Users className="w-4 h-4 text-muted-foreground" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.userActivity.newUsersThisWeek)}</p>
                       <p className="text-xs text-muted-foreground">New This Week</p>
@@ -441,7 +441,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <GitBranch className="w-4 h-4 text-blue-500" />
+                    <GitBranch className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.syncMetrics.totalSyncs)}</p>
                       <p className="text-xs text-muted-foreground">Total Syncs</p>
@@ -452,7 +452,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-green-500" />
+                    <Clock className="w-4 h-4 text-secondary" />
                     <div>
                       <p className="text-lg font-bold">{formatDuration(data.syncMetrics.averageDuration)}</p>
                       <p className="text-xs text-muted-foreground">Avg Duration</p>
@@ -463,7 +463,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Activity className={`w-4 h-4 ${data.syncMetrics.lastSyncSuccess ? 'text-green-500' : 'text-red-500'}`} />
+                    <Activity className={`w-4 h-4 ${data.syncMetrics.lastSyncSuccess ? 'text-secondary' : 'text-destructive'}`} />
                     <div>
                       <p className="text-lg font-bold">
                         {data.syncMetrics.lastSyncSuccess ? 'Success' : 'Failed'}
@@ -476,7 +476,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className={`w-4 h-4 ${data.syncMetrics.errorRate < 5 ? 'text-green-500' : 'text-red-500'}`} />
+                    <TrendingUp className={`w-4 h-4 ${data.syncMetrics.errorRate < 5 ? 'text-secondary' : 'text-destructive'}`} />
                     <div>
                       <p className="text-lg font-bold">{data.syncMetrics.errorRate.toFixed(1)}%</p>
                       <p className="text-xs text-muted-foreground">Error Rate</p>

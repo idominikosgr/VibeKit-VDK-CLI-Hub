@@ -375,12 +375,12 @@ ${rule.content}`;
               stiffness: 200,
               damping: 15
             }}
-            className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-lg mb-6"
+            className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg mb-6"
           >
             <AlertCircle className="h-10 w-10 text-white" />
           </motion.div>
           <motion.h2 
-            className="text-3xl font-bold mb-4 bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent"
+            className="text-3xl font-bold mb-4 bg-gradient-to-r from-destructive to-destructive/80 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -415,7 +415,7 @@ ${rule.content}`;
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6">
+              <Button asChild className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-6">
                 <Link href="/rules">Browse All Rules</Link>
               </Button>
             </motion.div>
@@ -450,13 +450,13 @@ ${rule.content}`;
         
         {/* Enhanced Rule title and description */}
         <motion.div 
-          className="relative p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-200 dark:border-blue-800 backdrop-blur-sm"
+          className="relative p-8 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
           variants={itemVariants}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl"></div>
           <div className="relative">
             <motion.h1 
-              className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4"
+              className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -489,7 +489,7 @@ ${rule.content}`;
                   >
                     <Badge 
                       variant="secondary" 
-                      className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary dark:text-primary/90"
+                      className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary"
                     >
                       <Hash className="w-3 h-3 mr-1" />
                       {tag}
@@ -507,7 +507,7 @@ ${rule.content}`;
             className="md:col-span-2"
             variants={cardVariants}
           >
-            <Card className="bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-900/80 dark:to-gray-800/60 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-xl">
+            <Card className="bg-gradient-to-br from-background/80 to-muted/60 dark:from-background/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 dark:border-border/10 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <FileText className="w-5 h-5" />
@@ -519,8 +519,8 @@ ${rule.content}`;
               </CardHeader>
               <CardContent>
                 <motion.div 
-                  className="prose dark:prose-invert max-w-none border-2 rounded-lg p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-gray-200 dark:border-gray-700 overflow-auto max-h-[500px] relative"
-                  whileHover={{ borderColor: 'rgb(99 102 241)' }}
+                  className="prose dark:prose-invert max-w-none border-2 rounded-lg p-6 bg-gradient-to-br from-muted/50 to-muted/80 dark:from-muted/20 dark:to-muted/40 border-border dark:border-border overflow-auto max-h-[500px] relative"
+                  whileHover={{ borderColor: 'hsl(var(--primary))' }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
@@ -542,7 +542,7 @@ ${rule.content}`;
                       >
                         <Button 
                           onClick={handleOpenModal}
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                          className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                         >
                           <Eye className="w-4 h-4 mr-2" />
                           View Full Content
@@ -552,7 +552,7 @@ ${rule.content}`;
                   )}
                 </motion.div>
               </CardContent>
-              <CardFooter className="border-t bg-gradient-to-r from-white/40 to-white/20 dark:from-black/20 dark:to-black/10 pt-4">
+              <CardFooter className="border-t bg-gradient-to-r from-background/40 to-muted/20 dark:from-background/20 dark:to-muted/10 pt-4">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -591,13 +591,13 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-success/10 to-success/20 dark:from-success/10 dark:to-success/20 border border-success/30"
+                      className="p-3 rounded-lg bg-gradient-to-r from-muted/10 to-muted/20 dark:from-muted/10 dark:to-muted/20 border border-muted/30"
                     >
-                      <dt className="text-sm font-medium text-success dark:text-success/90 flex items-center gap-1">
+                      <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         Last Updated
                       </dt>
-                      <dd className="font-semibold text-success dark:text-success/90">{formattedDate}</dd>
+                      <dd className="font-semibold text-muted-foreground dark:text-muted-foreground/90">{formattedDate}</dd>
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
@@ -613,25 +613,25 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-warning/10 to-warning/20 dark:from-warning/10 dark:to-warning/20 border border-warning/30"
+                      className="p-3 rounded-lg bg-gradient-to-r from-secondary/10 to-secondary/20 dark:from-secondary/10 dark:to-secondary/20 border border-secondary/30"
                     >
-                      <dt className="text-sm font-medium text-warning dark:text-warning/90 flex items-center gap-1">
+                      <dt className="text-sm font-medium text-secondary dark:text-secondary/90 flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
                         Votes
                       </dt>
-                      <dd className="font-semibold text-warning dark:text-warning/90">
+                      <dd className="font-semibold text-secondary dark:text-secondary/90">
                         {rule.votes || 0} {(rule.votes || 0) === 1 ? 'vote' : 'votes'}
                       </dd>
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-info/10 to-info/20 dark:from-info/10 dark:to-info/20 border border-info/30"
+                      className="p-3 rounded-lg bg-gradient-to-r from-muted-foreground/10 to-muted-foreground/20 dark:from-muted-foreground/10 dark:to-muted-foreground/20 border border-muted-foreground/30"
                     >
-                      <dt className="text-sm font-medium text-info dark:text-info/90 flex items-center gap-1">
+                      <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
                         <Layers className="w-3 h-3" />
                         Category
                       </dt>
-                      <dd className="font-semibold text-info dark:text-info/90">
+                      <dd className="font-semibold text-muted-foreground dark:text-muted-foreground/90">
                         {rule.categoryName || category}
                       </dd>
                     </motion.div>
@@ -676,7 +676,7 @@ ${rule.content}`;
                             >
                               <Badge 
                                 variant="outline"
-                                className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border-primary/50 dark:border-primary/30 text-primary"
+                                className="bg-gradient-to-r from-secondary/20 to-secondary/30 dark:from-secondary/10 dark:to-secondary/20 border-secondary/50 dark:border-secondary/30 text-secondary"
                               >
                                 {framework}
                               </Badge>
@@ -707,7 +707,7 @@ ${rule.content}`;
                             >
                               <Badge 
                                 variant="outline"
-                                className="bg-gradient-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success"
+                                className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border-primary/50 dark:border-primary/30 text-primary"
                               >
                                 {ide}
                               </Badge>

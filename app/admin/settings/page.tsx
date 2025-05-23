@@ -236,7 +236,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-green-500" />
+                  <Globe className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-sm font-bold capitalize">{settings.system.environment}</p>
                     <p className="text-xs text-muted-foreground">Environment</p>
@@ -247,7 +247,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Database className={`w-4 h-4 ${settings.database.connectionStatus === 'connected' ? 'text-green-500' : 'text-red-500'}`} />
+                  <Database className={`w-4 h-4 ${settings.database.connectionStatus === 'connected' ? 'text-secondary' : 'text-destructive'}`} />
                   <div>
                     <p className="text-sm font-bold capitalize">{settings.database.connectionStatus}</p>
                     <p className="text-xs text-muted-foreground">Database</p>
@@ -258,7 +258,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-blue-500" />
+                  <Clock className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-sm font-bold">{formatUptime(settings.system.uptime)}</p>
                     <p className="text-xs text-muted-foreground">Uptime</p>
@@ -269,7 +269,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-purple-500" />
+                  <Shield className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-sm font-bold">v{settings.system.version}</p>
                     <p className="text-xs text-muted-foreground">Version</p>

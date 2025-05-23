@@ -211,7 +211,7 @@ export default function UserManagementPage() {
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-secondary/80 flex items-center justify-center">
               <Users className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -227,7 +227,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-blue-500" />
+                  <Users className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.totalUsers}</p>
                     <p className="text-xs text-muted-foreground">Total Users</p>
@@ -238,7 +238,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-green-500" />
+                  <Calendar className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.newUsersThisWeek}</p>
                     <p className="text-xs text-muted-foreground">New This Week</p>
@@ -249,7 +249,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-orange-500" />
+                  <Activity className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-2xl font-bold">{stats.activeUsersToday}</p>
                     <p className="text-xs text-muted-foreground">Active Today</p>
@@ -260,7 +260,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-4 h-4 text-purple-500" />
+                  <Crown className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{stats.totalAdmins}</p>
                     <p className="text-xs text-muted-foreground">Admins</p>

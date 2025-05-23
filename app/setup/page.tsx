@@ -69,12 +69,12 @@ export default function SetupPage() {
           </div>
 
           <motion.div
-            className="relative p-8 rounded-3xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-200 dark:border-blue-800 backdrop-blur-sm"
+            className="relative p-8 rounded-3xl bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-3xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-3xl"></div>
             
             <div className="relative space-y-6">
               <motion.div 
@@ -83,13 +83,13 @@ export default function SetupPage() {
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
               >
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
                   <Settings className="w-10 h-10 text-white" />
                 </div>
               </motion.div>
 
               <motion.h1 
-                className="text-5xl font-bold tracking-tight lg:text-6xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                className="text-5xl font-bold tracking-tight lg:text-6xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -114,9 +114,9 @@ export default function SetupPage() {
                 transition={{ delay: 0.6 }}
               >
                 {[
-                  { icon: Sparkles, color: "from-blue-400 to-blue-600", label: "Smart" },
-                  { icon: Wand2, color: "from-purple-400 to-purple-600", label: "Easy" },
-                  { icon: Zap, color: "from-green-400 to-green-600", label: "Fast" }
+                  { icon: Sparkles, color: "from-primary/60 to-primary", label: "Smart" },
+                  { icon: Wand2, color: "from-accent/60 to-accent", label: "Easy" },
+                  { icon: Zap, color: "from-secondary/60 to-secondary", label: "Fast" }
                 ].map((item, index) => (
                   <motion.div
                     key={item.label}

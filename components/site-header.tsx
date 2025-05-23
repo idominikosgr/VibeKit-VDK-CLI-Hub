@@ -39,7 +39,7 @@ export function SiteHeader() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="container flex h-16 items-center max-w-screen-2xl mx-auto">
+      <div className="container flex h-16 items-center max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
@@ -291,7 +291,7 @@ function AdminCTA() {
         href="/admin"
         className={cn(
           buttonVariants({ variant: "default", size: "sm" }),
-          "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 transition-all duration-200 hover:shadow-md"
+          "bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground border-0 transition-all duration-200 hover:shadow-md"
         )}
       >
         <Icons.security className="mr-2 h-4 w-4" />

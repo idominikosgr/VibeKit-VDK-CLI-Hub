@@ -36,7 +36,7 @@ export default function Error({
             type: "spring", 
             stiffness: 200 
           }}
-          className="mx-auto mb-8 w-20 h-20 rounded-full bg-gradient-to-br from-error/80 to-error flex items-center justify-center shadow-lg"
+          className="mx-auto mb-8 w-20 h-20 rounded-full bg-gradient-to-br from-destructive/80 to-destructive flex items-center justify-center shadow-lg"
         >
           <AlertTriangle className="w-10 h-10 text-white" />
         </motion.div>
@@ -45,7 +45,7 @@ export default function Error({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-3xl font-bold text-error mb-4"
+          className="text-3xl font-bold text-destructive mb-4"
         >
           Oops! Something went wrong
         </motion.h2>
@@ -96,9 +96,9 @@ export default function Error({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="mt-8 p-4 rounded-lg bg-gradient-to-br from-error/10 to-error/20 dark:from-error/10 dark:to-error/20 border border-error/30 backdrop-blur-sm"
+            className="mt-8 p-4 rounded-lg bg-gradient-to-br from-destructive/10 to-destructive/20 dark:from-destructive/10 dark:to-destructive/20 border border-destructive/30 backdrop-blur-sm"
           >
-            <p className="font-mono text-sm text-error dark:text-error/90 leading-relaxed">
+            <p className="font-mono text-sm text-destructive dark:text-destructive/90 leading-relaxed">
               {error.message}
             </p>
           </motion.div>
