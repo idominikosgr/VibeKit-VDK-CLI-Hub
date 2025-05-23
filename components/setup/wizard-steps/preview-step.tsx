@@ -38,25 +38,25 @@ export function PreviewStep({
         customRequirements: `Project: ${data.projectInfo.name}${data.projectInfo.description ? ` - ${data.projectInfo.description}` : ''}`
       }
 
-      // Convert to FormData for the server action
-      const formData = new FormData()
-      formData.append('stackChoices', JSON.stringify(wizardConfig.stackChoices))
-      formData.append('languageChoices', JSON.stringify(wizardConfig.languageChoices))
-      formData.append('toolPreferences', JSON.stringify(wizardConfig.toolPreferences))
-      formData.append('environmentDetails', JSON.stringify(wizardConfig.environmentDetails))
-      formData.append('outputFormat', String(wizardConfig.outputFormat))
-      if (wizardConfig.customRequirements) {
-        formData.append('customRequirements', wizardConfig.customRequirements)
+      // Call the setup generation API
+      const response = await fetch('/api/setup/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(wizardConfig)
+      })
+
+      const result = await response.json()
+      
+      if (!response.ok || result.error) {
+        toast.error(result.error || 'Failed to generate package')
+        return
       }
 
-      const result = await generateRulePackage(formData)
+      setGeneratedPackage(result.package)
+      toast.success('Rule package generated successfully!')
       
-      if (result.error) {
-        toast.error(result.error)
-      } else {
-        setGeneratedPackage(result.package)
-        toast.success('Rule package generated successfully!')
-      }
     } catch (error) {
       console.error('Error generating package:', error)
       toast.error('Failed to generate rule package')

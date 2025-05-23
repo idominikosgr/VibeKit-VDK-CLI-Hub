@@ -7,6 +7,7 @@
 import { createServerSupabaseClient } from '../supabase/server-client';
 import { Database } from '../supabase/database.types';
 import { WizardConfiguration, GeneratedPackage } from '../types';
+import crypto from 'crypto';
 
 type SupabaseClient = Awaited<ReturnType<typeof createServerSupabaseClient>>;
 type Tables = Database['public']['Tables'];
@@ -374,6 +375,12 @@ set -e
 echo "🚀 CodePilotRules Setup Script"
 echo "=============================="
 
+# Create rules directory structure
+RULES_DIR=".ai/rules"
+mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
+
+echo "📁 Setting up CodePilotRules directory structure..."
+
 `;
 
     // Group rules by level
@@ -387,43 +394,155 @@ echo "=============================="
         script += `# Rule: ${rule.title}\n`;
         script += `echo "  - ${rule.title}"\n`;
         
-        // Extract actionable commands from rule content
+        // Download the rule file to appropriate directory
+        const ruleCategory = this.extractRuleCategoryFromTags(rule.tags);
+        const ruleFileName = `${rule.id}.mdc`;
+        const rulePath = ruleCategory ? `"$RULES_DIR/${ruleCategory}/${ruleFileName}"` : `"$RULES_DIR/${ruleFileName}"`;
+        
+        script += `# Download rule: ${rule.title}\n`;
+        script += `cat > ${rulePath} << 'EOF'\n`;
+        script += `# ${rule.title}\n\n`;
+        script += `${rule.content}\n`;
+        script += `EOF\n\n`;
+        
+        // Extract and execute actionable commands from rule content
         const commands = this.extractBashCommands(rule.content);
-        for (const command of commands) {
-          script += `${command}\n`;
+        if (commands.length > 0) {
+          script += `# Execute commands from rule\n`;
+          for (const command of commands) {
+            script += `${command}\n`;
+          }
         }
+
+        // Extract and create configuration files
+        const configFiles = this.extractConfigurationFiles(rule.content);
+        for (const [fileName, fileContent] of Object.entries(configFiles)) {
+          script += `# Create configuration file: ${fileName}\n`;
+          script += `cat > "${fileName}" << 'EOF'\n`;
+          script += `${fileContent}\n`;
+          script += `EOF\n\n`;
+        }
+        
         script += '\n';
       }
     }
 
     script += `\necho "✅ Setup completed successfully!"\n`;
     script += `echo "📝 Applied ${rules.length} rules"\n`;
+    script += `echo "📁 Rules available in .ai/rules directory"\n`;
+    script += `echo "🔧 Configuration files created in project root"\n`;
 
     return script;
   }
 
   /**
-   * Generate zip archive from rules
+   * Generate zip archive from rules with actual file structure
    */
   private async generateZipArchive(rules: MatchedRule[], config: WizardConfigurationInput): Promise<Buffer> {
-    // This would normally use JSZip, but for now return a placeholder
-    // In a real implementation, you'd create individual files for each rule
-    const content = JSON.stringify({
-      configuration: config,
-      rules: rules.map(r => ({
-        id: r.id,
-        title: r.title,
-        content: r.content,
-        level: r.level,
-        matchScore: r.matchScore,
-        tags: r.tags,
-        alwaysApply: r.always_apply // FIXED: Use correct field name
-      })),
-      generatedAt: new Date().toISOString(),
-      instructions: 'Extract and apply rules according to their level (general -> stack -> language -> environment)'
-    }, null, 2);
+    const JSZip = (await import('jszip')).default;
+    const zip = new JSZip();
 
-    return Buffer.from(content, 'utf-8');
+    // Create directory structure
+    const rulesFolder = zip.folder('.ai/rules');
+    const assistantsFolder = rulesFolder?.folder('assistants');
+    const languagesFolder = rulesFolder?.folder('languages');
+    const stacksFolder = rulesFolder?.folder('stacks');
+    const tasksFolder = rulesFolder?.folder('tasks');
+    const technologiesFolder = rulesFolder?.folder('technologies');
+    const toolsFolder = rulesFolder?.folder('tools');
+
+    // Add configuration file
+    zip.file('codepilotrules-config.json', JSON.stringify({
+      configuration: config,
+      generatedAt: new Date().toISOString(),
+      rulesIncluded: rules.map(r => r.id),
+      instructions: `
+# CodePilotRules Setup
+
+This package contains ${rules.length} rules customized for your project.
+
+## Installation
+
+1. Extract this archive to your project root
+2. The rules will be available in .ai/rules/
+3. Configuration files are in the root directory
+4. Follow the setup instructions in SETUP.md
+
+## Usage
+
+The rules are organized by category:
+- assistants/ - AI assistant optimization rules
+- languages/ - Programming language specific rules  
+- stacks/ - Technology stack rules
+- tasks/ - Development task rules
+- technologies/ - Framework and technology rules
+- tools/ - Development tool rules
+      `.trim()
+    }, null, 2));
+
+    // Add setup instructions
+    zip.file('SETUP.md', this.generateSetupInstructions(rules, config));
+
+    // Group rules by category and add them to appropriate folders
+    for (const rule of rules) {
+      const category = this.extractRuleCategoryFromTags(rule.tags);
+      const fileName = `${rule.id}.mdc`;
+      
+      const ruleContent = `# ${rule.title}
+
+${rule.content}
+
+## Metadata
+- Category: ${category || 'general'}
+- Tags: ${rule.tags ? rule.tags.join(', ') : 'none'}
+- Always Apply: ${rule.always_apply ? 'Yes' : 'No'}
+- Match Score: ${rule.matchScore.toFixed(2)}
+`;
+
+      switch (category) {
+        case 'assistants':
+          assistantsFolder?.file(fileName, ruleContent);
+          break;
+        case 'languages':
+          languagesFolder?.file(fileName, ruleContent);
+          break;
+        case 'stacks':
+          stacksFolder?.file(fileName, ruleContent);
+          break;
+        case 'tasks':
+          tasksFolder?.file(fileName, ruleContent);
+          break;
+        case 'technologies':
+          technologiesFolder?.file(fileName, ruleContent);
+          break;
+        case 'tools':
+          toolsFolder?.file(fileName, ruleContent);
+          break;
+        default:
+          rulesFolder?.file(fileName, ruleContent);
+      }
+    }
+
+    // Extract and add configuration files to root
+    const allConfigFiles = new Map<string, string>();
+    for (const rule of rules) {
+      const configFiles = this.extractConfigurationFiles(rule.content);
+      for (const [fileName, content] of Object.entries(configFiles)) {
+        if (allConfigFiles.has(fileName)) {
+          // Merge configs if same filename
+          allConfigFiles.set(fileName, this.mergeConfigurationFiles(allConfigFiles.get(fileName)!, content, fileName));
+        } else {
+          allConfigFiles.set(fileName, content);
+        }
+      }
+    }
+
+    // Add merged configuration files to ZIP root
+    for (const [fileName, content] of Array.from(allConfigFiles.entries())) {
+      zip.file(fileName, content);
+    }
+
+    return await zip.generateAsync({ type: 'nodebuffer' });
   }
 
   /**
@@ -461,6 +580,7 @@ echo "=============================="
   /**
    * Store generated package in database
    * FIXED: Use correct database field names and handle nullable fields
+   * NOW: Actually uploads files to storage
    */
   private async storeGeneratedPackage(
     configurationId: string,
@@ -468,16 +588,36 @@ echo "=============================="
     content: Buffer | string,
     rules: MatchedRule[]
   ): Promise<GeneratedPackageOutput> {
-    const contentBuffer = content instanceof Buffer ? content : Buffer.from(content, 'utf-8');
+    const contentBuffer = Buffer.isBuffer(content) ? content : Buffer.from(content, 'utf-8');
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // Expire in 7 days
+
+    // Generate a unique package ID
+    const packageId = crypto.randomUUID();
+
+    // Upload the file to storage
+    let downloadUrl: string | null = null;
+    try {
+      // Import storage service
+      const { createStorageService } = await import('./storage/supabase-storage-provider');
+      const storageService = await createStorageService();
+      
+      // Upload the package file
+      const uploadResult = await storageService.uploadPackage(packageId, contentBuffer, packageType);
+      downloadUrl = uploadResult.publicUrl;
+    } catch (storageError) {
+      console.error('Error uploading to storage:', storageError);
+      // Continue without storage URL - package can still be generated inline
+    }
 
     // Use correct database field names (snake_case)
     const { data, error } = await this.supabase
       .from('generated_packages')
       .insert({
+        id: packageId, // Use our generated ID
         configuration_id: configurationId,
         package_type: packageType,
+        download_url: downloadUrl,
         file_size: contentBuffer.length,
         rule_count: rules.length,
         expires_at: expiresAt.toISOString(),
@@ -491,14 +631,12 @@ echo "=============================="
       throw new Error('Failed to store package');
     }
 
-    // In a real implementation, you'd upload the content to S3 or similar storage
-    // For now, we'll store a reference and handle download differently
-    
     // Return application-level interface (camelCase) while keeping DB consistency
     return {
       id: data.id,
       configurationId: data.configuration_id,
       packageType: data.package_type,
+      downloadUrl: data.download_url,
       fileSize: data.file_size,
       ruleCount: data.rule_count,
       downloadCount: data.download_count,
@@ -521,16 +659,42 @@ echo "=============================="
   private extractBashCommands(content: string): string[] {
     const commands: string[] = [];
     const lines = content.split('\n');
+    let inCodeBlock = false;
+    let codeBlockType = '';
     
     for (const line of lines) {
-      // Look for lines that start with shell commands
-      if (line.trim().startsWith('npm ') || 
-          line.trim().startsWith('yarn ') ||
-          line.trim().startsWith('pnpm ') ||
-          line.trim().startsWith('mkdir ') ||
-          line.trim().startsWith('touch ') ||
-          line.trim().startsWith('echo ')) {
-        commands.push(line.trim());
+      // Check for code block start/end
+      if (line.trim().startsWith('```')) {
+        if (!inCodeBlock) {
+          // Starting a code block
+          inCodeBlock = true;
+          codeBlockType = line.trim().substring(3).toLowerCase();
+        } else {
+          // Ending a code block
+          inCodeBlock = false;
+          codeBlockType = '';
+        }
+        continue;
+      }
+      
+      // If we're in a bash/shell code block, extract commands
+      if (inCodeBlock && (codeBlockType === 'bash' || codeBlockType === 'shell' || codeBlockType === 'sh')) {
+        const trimmedLine = line.trim();
+        if (trimmedLine && !trimmedLine.startsWith('#')) {
+          commands.push(trimmedLine);
+        }
+        continue;
+      }
+      
+      // Look for direct command lines outside code blocks
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('npm ') || 
+          trimmedLine.startsWith('yarn ') ||
+          trimmedLine.startsWith('pnpm ') ||
+          trimmedLine.startsWith('mkdir ') ||
+          trimmedLine.startsWith('touch ') ||
+          trimmedLine.startsWith('echo ')) {
+        commands.push(trimmedLine);
       }
     }
     
@@ -574,6 +738,99 @@ echo "=============================="
       console.warn('Error extracting eslint config:', error);
     }
     return {};
+  }
+
+  private extractRuleCategoryFromTags(tags: string[] | null): string | null {
+    if (!tags || tags.length === 0) return null;
+    const lowerTags = tags.map(tag => tag.toLowerCase());
+    if (lowerTags.includes('ai assistant') || lowerTags.includes('ai-assistant')) return 'assistants';
+    if (lowerTags.includes('language') || lowerTags.includes('languages')) return 'languages';
+    if (lowerTags.includes('stack') || lowerTags.includes('stacks')) return 'stacks';
+    if (lowerTags.includes('task') || lowerTags.includes('tasks')) return 'tasks';
+    if (lowerTags.includes('technology') || lowerTags.includes('technologies')) return 'technologies';
+    if (lowerTags.includes('tool') || lowerTags.includes('tools')) return 'tools';
+    return null;
+  }
+
+  private extractConfigurationFiles(content: string): Record<string, string> {
+    const configFiles: Record<string, string> = {};
+    const lines = content.split('\n');
+    let inCodeBlock = false;
+    let codeBlockType = '';
+    let currentFileName = '';
+    let currentFileContent: string[] = [];
+    
+    for (const line of lines) {
+      // Check for code block start/end
+      if (line.trim().startsWith('```')) {
+        if (!inCodeBlock) {
+          // Starting a code block
+          inCodeBlock = true;
+          const blockInfo = line.trim().substring(3);
+          
+          // Check if this is a file (has extension or known config file name)
+          if (blockInfo.includes('.') || 
+              ['package.json', 'tsconfig.json', '.eslintrc', '.prettierrc', 'Dockerfile', 'docker-compose.yml'].includes(blockInfo)) {
+            codeBlockType = 'file';
+            currentFileName = blockInfo;
+            currentFileContent = [];
+          } else {
+            codeBlockType = blockInfo.toLowerCase();
+          }
+        } else {
+          // Ending a code block
+          if (codeBlockType === 'file' && currentFileName && currentFileContent.length > 0) {
+            configFiles[currentFileName] = currentFileContent.join('\n');
+          }
+          inCodeBlock = false;
+          codeBlockType = '';
+          currentFileName = '';
+          currentFileContent = [];
+        }
+        continue;
+      }
+      
+      // If we're in a file code block, collect content
+      if (inCodeBlock && codeBlockType === 'file') {
+        currentFileContent.push(line);
+      }
+    }
+    
+    return configFiles;
+  }
+
+  private generateSetupInstructions(rules: MatchedRule[], config: WizardConfigurationInput): string {
+    return `
+# CodePilotRules Setup
+
+This package contains ${rules.length} rules customized for your project.
+
+## Installation
+
+1. Extract this archive to your project root
+2. The rules will be available in .ai/rules/
+3. Configuration files are in the root directory
+4. Follow the setup instructions in SETUP.md
+
+## Usage
+
+The rules are organized by category:
+- assistants/ - AI assistant optimization rules
+- languages/ - Programming language specific rules  
+- stacks/ - Technology stack rules
+- tasks/ - Development task rules
+- technologies/ - Framework and technology rules
+- tools/ - Development tool rules
+    `.trim();
+  }
+
+  private mergeConfigurationFiles(existing: string, newContent: string, fileName: string): string {
+    const existingConfig = JSON.parse(existing);
+    const newConfig = JSON.parse(newContent);
+    return JSON.stringify({
+      ...existingConfig,
+      ...newConfig
+    }, null, 2);
   }
 }
 

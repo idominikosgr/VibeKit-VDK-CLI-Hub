@@ -19,6 +19,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { GlobalSearch } from "./search/global-search"
 import { cn } from "@/lib/utils"
 import { useAuth } from "./auth/auth-provider"
+import { useAdmin } from "@/hooks/use-admin"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,13 +59,14 @@ export function SiteHeader() {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <div className="flex items-center gap-4">
               <GlobalSearch />
-              <div className="hidden sm:flex">
+              <div className="hidden sm:flex gap-2">
+                <AdminCTA />
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Link
                     href="/setup"
                     className={cn(
                       buttonVariants({ variant: "outline", size: "sm" }),
-                      "mr-2 transition-all duration-200 hover:shadow-md"
+                      "transition-all duration-200 hover:shadow-md"
                     )}
                   >
                     <Icons.settings className="mr-2 h-4 w-4" />
@@ -105,6 +107,7 @@ export function SiteHeader() {
 
 function AuthMenuButton() {
   const { user, isLoading, logout } = useAuth();
+  const { isAdmin } = useAdmin();
 
   // Show login button if not logged in
   if (!user && !isLoading) {
@@ -144,7 +147,7 @@ function AuthMenuButton() {
           <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user?.avatar_url || undefined} alt={user?.name || 'User'} />
-              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+              <AvatarFallback>{getInitials(user?.name || undefined)}</AvatarFallback>
             </Avatar>
           </Button>
         </motion.div>
@@ -157,6 +160,17 @@ function AuthMenuButton() {
           </div>
         </div>
         <DropdownMenuSeparator />
+        {isAdmin && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/admin" className="cursor-pointer">
+                <Icons.security className="mr-2 h-4 w-4" />
+                <span>Admin Dashboard</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem asChild>
           <Link href="/profile" className="cursor-pointer">
             <Icons.user className="mr-2 h-4 w-4" />
@@ -188,6 +202,7 @@ function AuthMenuButton() {
 function MobileNav() {
   const pathname = usePathname()
   const { user, isLoading } = useAuth();
+  const { isAdmin } = useAdmin();
 
   return (
     <div className="flex flex-col space-y-3 p-4">
@@ -221,6 +236,18 @@ function MobileNav() {
         <Icons.settings className="mr-2 h-4 w-4" />
         Setup
       </Link>
+      {user && isAdmin && (
+        <Link
+          href="/admin"
+          className={cn(
+            "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            pathname?.startsWith("/admin") && "bg-accent"
+          )}
+        >
+          <Icons.security className="mr-2 h-4 w-4" />
+          Admin
+        </Link>
+      )}
       {user && (
         <>
           <Link
@@ -247,4 +274,29 @@ function MobileNav() {
       )}
     </div>
   )
+}
+
+function AdminCTA() {
+  const { user } = useAuth();
+  const { isAdmin, isLoading } = useAdmin();
+
+  // Don't show anything if user is not authenticated or if still loading
+  if (!user || isLoading || !isAdmin) {
+    return null;
+  }
+
+  return (
+    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      <Link
+        href="/admin"
+        className={cn(
+          buttonVariants({ variant: "default", size: "sm" }),
+          "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 transition-all duration-200 hover:shadow-md"
+        )}
+      >
+        <Icons.security className="mr-2 h-4 w-4" />
+        Admin
+      </Link>
+    </motion.div>
+  );
 }

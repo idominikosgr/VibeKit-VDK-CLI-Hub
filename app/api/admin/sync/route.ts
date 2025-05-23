@@ -5,6 +5,7 @@ import { promisify } from 'util';
 import path from 'path';
 import { createServerSupabaseClient } from '@/lib/supabase/server-client';
 import { synchronizeRules, cleanupOrphanedRules } from '@/lib/services/rule-sync-service';
+import { requireAdmin } from '@/lib/middleware/admin-auth';
 
 const execAsync = promisify(exec);
 
@@ -27,6 +28,15 @@ async function isAdmin(email: string): Promise<boolean> {
  */
 export async function GET(request: NextRequest) {
   try {
+    // Check admin authorization
+    const authResult = await requireAdmin(request);
+    if (!authResult.isAdmin) {
+      return NextResponse.json(
+        { error: authResult.error || 'Admin access required' },
+        { status: 403 }
+      );
+    }
+
     const supabase = await createServerSupabaseClient();
     
     // Get count of rules and categories
@@ -69,6 +79,15 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check admin authorization
+    const authResult = await requireAdmin(request);
+    if (!authResult.isAdmin) {
+      return NextResponse.json(
+        { error: authResult.error || 'Admin access required' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { cleanup = true } = body;
     
