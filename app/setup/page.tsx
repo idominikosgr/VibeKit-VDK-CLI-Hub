@@ -43,7 +43,7 @@ export default function SetupPage() {
           {/* Background decorative elements */}
           <div className="absolute inset-0 -z-10">
             <motion.div
-              className="absolute -top-8 -left-8 w-16 h-16 bg-blue-200 dark:bg-blue-900/20 rounded-full blur-xl"
+              className="absolute -top-8 -left-8 w-16 h-16 bg-primary/20 dark:bg-primary/10 rounded-full blur-xl"
               animate={{ 
                 scale: [1, 1.2, 1],
                 rotate: [0, 180, 360]
@@ -55,7 +55,7 @@ export default function SetupPage() {
               }}
             />
             <motion.div
-              className="absolute -bottom-8 -right-8 w-20 h-20 bg-purple-200 dark:bg-purple-900/20 rounded-full blur-xl"
+              className="absolute -bottom-8 -right-8 w-20 h-20 bg-accent/20 dark:bg-accent/10 rounded-full blur-xl"
               animate={{ 
                 scale: [1.2, 1, 1.2],
                 rotate: [360, 180, 0]

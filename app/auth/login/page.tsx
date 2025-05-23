@@ -22,7 +22,7 @@ export default function LoginPage() {
         {/* Background decorative elements */}
         <div className="absolute inset-0 -z-10">
           <motion.div
-            className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 dark:bg-blue-900/20 rounded-full blur-3xl"
+            className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/20 dark:bg-primary/10 rounded-full blur-3xl"
             animate={{ 
               scale: [1, 1.2, 1],
               rotate: [0, 180, 360]
@@ -34,7 +34,7 @@ export default function LoginPage() {
             }}
           />
           <motion.div
-            className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-purple-200 dark:bg-purple-900/20 rounded-full blur-3xl"
+            className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-accent/20 dark:bg-accent/10 rounded-full blur-3xl"
             animate={{ 
               scale: [1.2, 1, 1.2],
               rotate: [360, 180, 0]

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/components/auth/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -35,9 +35,28 @@ export default function ProfilePage() {
   const [githubUsername, setGithubUsername] = useState(user?.github_username || '');
   const [preferredLanguage, setPreferredLanguage] = useState(user?.preferred_language || '');
 
-  if (!user) {
-    router.push('/auth/login');
-    return null;
+  // Handle redirect on client side only
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, isLoading, router]);
+
+  // Don't render anything if user is not loaded yet or if user is null
+  if (isLoading || !user) {
+    return (
+      <motion.div
+        className="container mx-auto py-10 flex items-center justify-center min-h-[50vh]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+          <div className="w-4 h-4 bg-primary rounded-full animate-pulse delay-100"></div>
+          <div className="w-4 h-4 bg-primary rounded-full animate-pulse delay-200"></div>
+        </div>
+      </motion.div>
+    );
   }
 
   const getInitials = (name: string) => {
@@ -315,8 +334,8 @@ export default function ProfilePage() {
                       </motion.div>
                     </div>
 
-                    <div className="p-4 rounded-lg border-2 border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/30 dark:to-red-900/30">
-                      <h3 className="font-medium mb-2 flex items-center gap-2 text-red-700 dark:text-red-300">
+                    <div className="p-4 rounded-lg border-2 border-error/50 dark:border-error/30 bg-gradient-to-r from-error/10 to-error/20 dark:from-error/10 dark:to-error/20">
+                      <h3 className="font-medium mb-2 flex items-center gap-2 text-error dark:text-error/90">
                         <Trash2 className="w-4 h-4" />
                         Danger Zone
                       </h3>
@@ -329,7 +348,7 @@ export default function ProfilePage() {
                       >
                         <Button 
                           variant="destructive"
-                          className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
+                          className="bg-gradient-to-r from-error to-error/80 hover:from-error/90 hover:to-error/70"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Delete Account

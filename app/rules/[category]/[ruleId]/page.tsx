@@ -489,7 +489,7 @@ ${rule.content}`;
                   >
                     <Badge 
                       variant="secondary" 
-                      className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300"
+                      className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary dark:text-primary/90"
                     >
                       <Hash className="w-3 h-3 mr-1" />
                       {tag}
