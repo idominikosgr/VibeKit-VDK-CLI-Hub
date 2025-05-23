@@ -18,10 +18,13 @@ const mapSupabaseUser = async (user: SupabaseUser): Promise<User> => {
   return {
     id: user.id,
     email: user.email || '',
-    name: profile?.name,
-    githubUsername: profile?.github_username,
-    avatarUrl: profile?.avatar_url,
-    preferredLanguage: profile?.preferred_language
+    name: profile?.name || null,
+    github_username: profile?.github_username || null,
+    avatar_url: profile?.avatar_url || null,
+    preferred_language: profile?.preferred_language || null,
+    preferred_theme: profile?.preferred_theme || null,
+    created_at: profile?.created_at || null,
+    updated_at: profile?.updated_at || null
   };
 };
 
@@ -77,7 +80,7 @@ export async function signUpWithEmail(email: string, password: string, name: str
       .from('profiles')
       .insert({
         id: data.user.id,
-        email: data.user.email,
+        email: data.user.email || '',
         name
       });
 
@@ -161,8 +164,10 @@ export async function updateUserProfile(user: User): Promise<{ success: boolean;
       .from('profiles')
       .update({
         name: user.name,
-        github_username: user.githubUsername,
-        preferred_language: user.preferredLanguage
+        github_username: user.github_username,
+        preferred_language: user.preferred_language,
+        avatar_url: user.avatar_url,
+        preferred_theme: user.preferred_theme
       })
       .eq('id', user.id);
 

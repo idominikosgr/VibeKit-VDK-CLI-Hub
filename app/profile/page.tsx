@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Github, Code, Settings, FolderOpen, Save, LogOut, Trash2, Lock, Plus } from 'lucide-react';
+import { User, Mail, Github, Code, Settings, FolderOpen, Save, LogOut, Trash2, Lock, Plus, Shield } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,19 +32,30 @@ export default function ProfilePage() {
   const { user, updateProfile, logout, isLoading } = useAuth();
   const router = useRouter();
 
-  const [name, setName] = useState(user?.name || '');
-  const [githubUsername, setGithubUsername] = useState(user?.github_username || '');
-  const [preferredLanguage, setPreferredLanguage] = useState(user?.preferred_language || '');
+  const [name, setName] = useState('');
+  const [githubUsername, setGithubUsername] = useState('');
+  const [preferredLanguage, setPreferredLanguage] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
 
-  // Handle redirect on client side only
+  // Handle redirect for non-authenticated users
   useEffect(() => {
     if (!isLoading && !user) {
       router.push('/auth/login');
     }
   }, [user, isLoading, router]);
 
-  // Don't render anything if user is not loaded yet or if user is null
-  if (isLoading || !user) {
+  // Sync local state with user data
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setGithubUsername(user.github_username || '');
+      setPreferredLanguage(user.preferred_language || '');
+      setAvatarUrl(user.avatar_url || '');
+    }
+  }, [user]);
+
+  // Show loading state
+  if (isLoading) {
     return (
       <motion.div
         className="container mx-auto py-10 flex items-center justify-center min-h-[50vh]"
@@ -57,6 +69,11 @@ export default function ProfilePage() {
         </div>
       </motion.div>
     );
+  }
+
+  // Show login redirect if no user
+  if (!user) {
+    return null; // Will redirect via useEffect
   }
 
   const getInitials = (name: string) => {
@@ -73,8 +90,13 @@ export default function ProfilePage() {
     await updateProfile({
       name,
       github_username: githubUsername,
-      preferred_language: preferredLanguage
+      preferred_language: preferredLanguage,
+      avatar_url: avatarUrl
     });
+  };
+
+  const handleAvatarUpdate = (newAvatarUrl: string) => {
+    setAvatarUrl(newAvatarUrl);
   };
 
   const handleLogout = async () => {
@@ -99,24 +121,24 @@ export default function ProfilePage() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <Avatar className="h-20 w-20 ring-4 ring-background dark:ring-border shadow-lg">
-              <AvatarImage src={user.avatar_url || undefined} alt={user.name || 'User'} />
+              <AvatarImage src={avatarUrl} alt={name || 'User'} />
               <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xl font-bold">
-                {user.name ? getInitials(user.name) : 'U'}
+                {name ? getInitials(name) : 'U'}
               </AvatarFallback>
             </Avatar>
           </motion.div>
           <div className="flex-1">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {user.name || 'User Profile'}
+              {name || 'User Profile'}
             </h1>
             <p className="text-muted-foreground text-lg mt-1 flex items-center gap-2">
               <Mail className="w-4 h-4" />
               {user.email}
             </p>
-            {user.github_username && (
+            {githubUsername && (
               <p className="text-muted-foreground mt-1 flex items-center gap-2">
                 <Github className="w-4 h-4" />
-                @{user.github_username}
+                @{githubUsername}
               </p>
             )}
           </div>
@@ -126,132 +148,147 @@ export default function ProfilePage() {
           <Tabs defaultValue="profile" className="w-full">
             <TabsList className="grid w-full md:w-[500px] grid-cols-3 h-12 p-1 bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30">
               <TabsTrigger 
-                value="profile" 
-                className="flex items-center gap-2 h-10 data-[state=active]:bg-surface-1 dark:data-[state=active]:bg-surface-3 data-[state=active]:shadow-md transition-all duration-300"
+                value="info"
+                className="flex items-center gap-2 h-10 data-[state=active]:bg-card dark:data-[state=active]:bg-card data-[state=active]:shadow-md transition-all duration-300"
               >
                 <User className="w-4 h-4" />
-                Profile
+                Info
               </TabsTrigger>
               <TabsTrigger 
-                value="collections" 
-                className="flex items-center gap-2 h-10 data-[state=active]:bg-surface-1 dark:data-[state=active]:bg-surface-3 data-[state=active]:shadow-md transition-all duration-300"
-              >
-                <FolderOpen className="w-4 h-4" />
-                Collections
-              </TabsTrigger>
-              <TabsTrigger 
-                value="settings" 
-                className="flex items-center gap-2 h-10 data-[state=active]:bg-surface-1 dark:data-[state=active]:bg-surface-3 data-[state=active]:shadow-md transition-all duration-300"
+                value="preferences"
+                className="flex items-center gap-2 h-10 data-[state=active]:bg-card dark:data-[state=active]:bg-card data-[state=active]:shadow-md transition-all duration-300"
               >
                 <Settings className="w-4 h-4" />
-                Settings
+                Preferences
+              </TabsTrigger>
+              <TabsTrigger 
+                value="danger"
+                className="flex items-center gap-2 h-10 data-[state=active]:bg-card dark:data-[state=active]:bg-card data-[state=active]:shadow-md transition-all duration-300"
+              >
+                <Shield className="w-4 h-4" />
+                Security
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="profile">
+            <TabsContent value="info">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
+                className="grid gap-6 lg:grid-cols-3"
               >
-                <Card className="bg-gradient-to-br from-surface-1/50 to-surface-2/30 dark:from-surface-1/50 dark:to-surface-2/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-xl">
-                      <User className="w-5 h-5" />
-                      Profile Information
-                    </CardTitle>
-                    <CardDescription>
-                      Update your personal information and preferences
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleUpdate} className="space-y-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Your name"
-                            className="pl-10 h-12 border-2 focus:border-primary transition-colors"
-                          />
-                        </div>
-                      </div>
+                {/* Avatar Upload Section */}
+                <div className="lg:col-span-1">
+                  <AvatarUpload
+                    userId={user.id}
+                    currentAvatarUrl={avatarUrl}
+                    userName={name || ''}
+                    onAvatarUpdate={handleAvatarUpdate}
+                    size="lg"
+                  />
+                </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="email"
-                            value={user.email}
-                            disabled
-                            readOnly
-                            className="pl-10 h-12 bg-muted/50"
-                          />
+                {/* Profile Form */}
+                <div className="lg:col-span-2">
+                  <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-xl">
+                        <User className="w-5 h-5" />
+                        Profile Information
+                      </CardTitle>
+                      <CardDescription>
+                        Update your personal information and preferences
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleUpdate} className="space-y-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="name"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              placeholder="Your name"
+                              className="pl-10 h-12 border-2 focus:border-primary transition-colors"
+                            />
+                          </div>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          Email cannot be changed
-                        </p>
-                      </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="githubUsername" className="text-sm font-medium">GitHub Username</Label>
-                        <div className="relative">
-                          <Github className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="githubUsername"
-                            value={githubUsername}
-                            onChange={(e) => setGithubUsername(e.target.value)}
-                            placeholder="Your GitHub username"
-                            className="pl-10 h-12 border-2 focus:border-primary transition-colors"
-                          />
+                        <div className="space-y-2">
+                          <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="email"
+                              value={user.email}
+                              disabled
+                              readOnly
+                              className="pl-10 h-12 bg-muted/50"
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Email cannot be changed
+                          </p>
                         </div>
-                      </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="preferredLanguage" className="text-sm font-medium">Preferred Programming Language</Label>
-                        <div className="relative">
-                          <Code className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="preferredLanguage"
-                            value={preferredLanguage}
-                            onChange={(e) => setPreferredLanguage(e.target.value)}
-                            placeholder="e.g. TypeScript, Python, etc."
-                            className="pl-10 h-12 border-2 focus:border-primary transition-colors"
-                          />
+                        <div className="space-y-2">
+                          <Label htmlFor="githubUsername" className="text-sm font-medium">GitHub Username</Label>
+                          <div className="relative">
+                            <Github className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="githubUsername"
+                              value={githubUsername}
+                              onChange={(e) => setGithubUsername(e.target.value)}
+                              placeholder="Your GitHub username"
+                              className="pl-10 h-12 border-2 focus:border-primary transition-colors"
+                            />
+                          </div>
                         </div>
-                      </div>
 
-                      <motion.div 
-                        className="pt-4"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Button 
-                          type="submit" 
-                          disabled={isLoading}
-                          className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
+                        <div className="space-y-2">
+                          <Label htmlFor="preferredLanguage" className="text-sm font-medium">Preferred Programming Language</Label>
+                          <div className="relative">
+                            <Code className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              id="preferredLanguage"
+                              value={preferredLanguage}
+                              onChange={(e) => setPreferredLanguage(e.target.value)}
+                              placeholder="e.g. TypeScript, Python, etc."
+                              className="pl-10 h-12 border-2 focus:border-primary transition-colors"
+                            />
+                          </div>
+                        </div>
+
+                        <motion.div 
+                          className="pt-4"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                         >
-                          <Save className="w-4 h-4 mr-2" />
-                          {isLoading ? 'Saving...' : 'Save Profile'}
-                        </Button>
-                      </motion.div>
-                    </form>
-                  </CardContent>
-                </Card>
+                          <Button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
+                          >
+                            <Save className="w-4 h-4 mr-2" />
+                            {isLoading ? 'Saving...' : 'Save Profile'}
+                          </Button>
+                        </motion.div>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </div>
               </motion.div>
             </TabsContent>
 
-            <TabsContent value="collections">
+            <TabsContent value="preferences">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <Card className="bg-gradient-to-br from-surface-1/50 to-surface-2/30 dark:from-surface-1/50 dark:to-surface-2/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <FolderOpen className="w-5 h-5" />
@@ -293,14 +330,14 @@ export default function ProfilePage() {
               </motion.div>
             </TabsContent>
 
-            <TabsContent value="settings">
+            <TabsContent value="danger">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
                 className="space-y-6"
               >
-                <Card className="bg-gradient-to-br from-surface-1/50 to-surface-2/30 dark:from-surface-1/50 dark:to-surface-2/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <Settings className="w-5 h-5" />
@@ -326,7 +363,7 @@ export default function ProfilePage() {
                         <Button 
                           variant="outline" 
                           onClick={() => router.push('/auth/change-password')}
-                          className="border-2 hover:bg-surface-1 dark:hover:bg-surface-3"
+                          className="border-2 hover:bg-card dark:hover:bg-card"
                         >
                           <Lock className="w-4 h-4 mr-2" />
                           Change Password
@@ -364,7 +401,7 @@ export default function ProfilePage() {
                         <Button 
                           variant="outline" 
                           onClick={handleLogout}
-                          className="w-full h-12 border-2 hover:bg-surface-1 dark:hover:bg-surface-3"
+                          className="w-full h-12 border-2 hover:bg-card dark:hover:bg-card"
                         >
                           <LogOut className="w-4 h-4 mr-2" />
                           Log Out

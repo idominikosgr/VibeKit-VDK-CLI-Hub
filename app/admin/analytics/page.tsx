@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons';
 import { 
@@ -19,9 +17,29 @@ import {
   Clock,
   Package,
   Zap,
-  Eye,
   GitBranch
 } from 'lucide-react';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
+import {
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  Area,
+  AreaChart,
+  Pie,
+  PieChart,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 
 interface AnalyticsData {
   overview: {
@@ -44,22 +62,35 @@ interface AnalyticsData {
       created_at: string;
       category: string;
     }>;
+    downloadsOverTime: Array<{
+      date: string;
+      downloads: number;
+      users: number;
+    }>;
   };
   userActivity: {
     dailyActiveUsers: number;
     weeklyActiveUsers: number;
     monthlyActiveUsers: number;
     newUsersThisWeek: number;
+    activityOverTime: Array<{
+      date: string;
+      daily: number;
+      weekly: number;
+      monthly: number;
+    }>;
   };
   setupWizard: {
     totalGenerations: number;
     popularStacks: Array<{
       name: string;
       count: number;
+      percentage: number;
     }>;
     outputFormats: Array<{
       format: string;
       count: number;
+      percentage: number;
     }>;
   };
   syncMetrics: {
@@ -67,8 +98,62 @@ interface AnalyticsData {
     averageDuration: number;
     lastSyncSuccess: boolean;
     errorRate: number;
+    syncHistory: Array<{
+      date: string;
+      syncs: number;
+      errors: number;
+      avgDuration: number;
+    }>;
   };
 }
+
+// Chart configurations
+const chartConfig = {
+  downloads: {
+    label: "Downloads",
+    color: "hsl(var(--chart-1))",
+  },
+  users: {
+    label: "Users", 
+    color: "hsl(var(--chart-2))",
+  },
+  daily: {
+    label: "Daily Active",
+    color: "hsl(var(--chart-1))",
+  },
+  weekly: {
+    label: "Weekly Active", 
+    color: "hsl(var(--chart-2))",
+  },
+  monthly: {
+    label: "Monthly Active",
+    color: "hsl(var(--chart-3))",
+  },
+  syncs: {
+    label: "Syncs",
+    color: "hsl(var(--chart-4))",
+  },
+  errors: {
+    label: "Errors",
+    color: "hsl(var(--destructive))",
+  },
+};
+
+// Color palette for pie charts using semantic chart colors
+const CHART_COLORS = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))", 
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+  "hsl(var(--chart-6))",
+  "hsl(var(--chart-7))",
+  "hsl(var(--chart-8))",
+  "hsl(var(--chart-9))",
+  "hsl(var(--chart-10))",
+  "hsl(var(--chart-11))",
+  "hsl(var(--chart-12))",
+];
 
 export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -262,63 +347,121 @@ export default function AnalyticsPage() {
 
           <TabsContent value="rules" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Most Downloaded Rules */}
+              {/* Most Downloaded Rules Chart */}
               <Card>
                 <CardHeader>
                   <CardTitle>Most Downloaded Rules</CardTitle>
                   <CardDescription>Popular rules by download count</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {data.ruleStats.mostDownloaded.map((rule, index) => (
-                      <div key={rule.id} className="flex items-center justify-between p-3 bg-muted rounded-md">
-                        <div className="flex items-center gap-3">
-                          <Badge variant="secondary" className="w-8 text-center">
-                            {index + 1}
-                          </Badge>
-                          <div>
-                            <p className="font-medium">{rule.title}</p>
-                            <p className="text-xs text-muted-foreground">{rule.category}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Download className="w-4 h-4 text-muted-foreground" />
-                          <span className="font-bold">{formatNumber(rule.downloads)}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <ChartContainer
+                    config={chartConfig}
+                    className="min-h-[300px]"
+                  >
+                    <BarChart
+                      data={data.ruleStats.mostDownloaded.slice(0, 8)}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 80,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="title" 
+                        tick={{ fontSize: 12 }}
+                        interval={0}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar 
+                        dataKey="downloads" 
+                        fill="var(--color-downloads)"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ChartContainer>
                 </CardContent>
               </Card>
 
-              {/* Recently Added Rules */}
+              {/* Downloads Over Time Chart */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Recently Added Rules</CardTitle>
-                  <CardDescription>Latest additions to the rule library</CardDescription>
+                  <CardTitle>Downloads Over Time</CardTitle>
+                  <CardDescription>Download trends and user acquisition</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {data.ruleStats.recentlyAdded.map((rule) => (
-                      <div key={rule.id} className="flex items-center justify-between p-3 bg-muted rounded-md">
-                        <div>
-                          <p className="font-medium">{rule.title}</p>
-                          <p className="text-xs text-muted-foreground">{rule.category}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm font-medium">
-                            {new Date(rule.created_at).toLocaleDateString()}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(rule.created_at).toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <ChartContainer
+                    config={chartConfig}
+                    className="min-h-[300px]"
+                  >
+                    <AreaChart
+                      data={data.ruleStats.downloadsOverTime}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <ChartLegend content={<ChartLegendContent />} />
+                      <Area
+                        type="monotone"
+                        dataKey="downloads"
+                        stackId="1"
+                        stroke="var(--color-downloads)"
+                        fill="var(--color-downloads)"
+                        fillOpacity={0.6}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="users"
+                        stackId="2"
+                        stroke="var(--color-users)"
+                        fill="var(--color-users)"
+                        fillOpacity={0.6}
+                      />
+                    </AreaChart>
+                  </ChartContainer>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Recently Added Rules Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recently Added Rules</CardTitle>
+                <CardDescription>Latest additions to the rule library</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {data.ruleStats.recentlyAdded.map((rule) => (
+                    <div key={rule.id} className="flex items-center justify-between p-3 bg-muted rounded-md">
+                      <div>
+                        <p className="font-medium">{rule.title}</p>
+                        <p className="text-xs text-muted-foreground">{rule.category}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {new Date(rule.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(rule.created_at).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
@@ -368,48 +511,147 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* User Activity Over Time Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>User Activity Over Time</CardTitle>
+                <CardDescription>Daily, weekly, and monthly active user trends</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={chartConfig}
+                  className="min-h-[400px]"
+                >
+                  <LineChart
+                    data={data.userActivity.activityOverTime}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Line
+                      type="monotone"
+                      dataKey="daily"
+                      stroke="var(--color-daily)"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="weekly"
+                      stroke="var(--color-weekly)"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="monthly"
+                      stroke="var(--color-monthly)"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="wizard" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Popular Tech Stacks */}
+              {/* Popular Tech Stacks Pie Chart */}
               <Card>
                 <CardHeader>
                   <CardTitle>Popular Tech Stacks</CardTitle>
                   <CardDescription>Most selected technologies in setup wizard</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {data.setupWizard.popularStacks.map((stack, index) => (
-                      <div key={stack.name} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Badge variant="outline" className="w-8 text-center">
-                            {index + 1}
-                          </Badge>
-                          <span className="font-medium">{stack.name}</span>
+                  <ChartContainer
+                    config={chartConfig}
+                    className="min-h-[300px]"
+                  >
+                    <PieChart>
+                      <Pie
+                        data={data.setupWizard.popularStacks}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percentage }) => `${name} (${percentage}%)`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {data.setupWizard.popularStacks.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                    </PieChart>
+                  </ChartContainer>
+                  <div className="mt-4 space-y-2">
+                    {data.setupWizard.popularStacks.slice(0, 6).map((stack, index) => (
+                      <div key={stack.name} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                          />
+                          <span>{stack.name}</span>
                         </div>
-                        <span className="text-muted-foreground">{formatNumber(stack.count)} uses</span>
+                        <span className="font-medium">{formatNumber(stack.count)} ({stack.percentage}%)</span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Output Format Distribution */}
+              {/* Output Format Distribution Pie Chart */}
               <Card>
                 <CardHeader>
                   <CardTitle>Output Format Distribution</CardTitle>
                   <CardDescription>Preferred package formats</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {data.setupWizard.outputFormats.map((format) => (
-                      <div key={format.format} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Package className="w-4 h-4 text-muted-foreground" />
-                          <span className="font-medium capitalize">{format.format}</span>
+                  <ChartContainer
+                    config={chartConfig}
+                    className="min-h-[300px]"
+                  >
+                    <PieChart>
+                      <Pie
+                        data={data.setupWizard.outputFormats}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ format, percentage }) => `${format} (${percentage}%)`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {data.setupWizard.outputFormats.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                    </PieChart>
+                  </ChartContainer>
+                  <div className="mt-4 space-y-2">
+                    {data.setupWizard.outputFormats.map((format, index) => (
+                      <div key={format.format} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                          />
+                          <span className="capitalize">{format.format}</span>
                         </div>
-                        <span className="text-muted-foreground">{formatNumber(format.count)} packages</span>
+                        <span className="font-medium">{formatNumber(format.count)} ({format.percentage}%)</span>
                       </div>
                     ))}
                   </div>
@@ -485,6 +727,63 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Sync Performance Over Time Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Sync Performance Over Time</CardTitle>
+                <CardDescription>Sync frequency, errors, and performance metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ChartContainer
+                  config={chartConfig}
+                  className="min-h-[400px]"
+                >
+                  <AreaChart
+                    data={data.syncMetrics.syncHistory}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis yAxisId="left" />
+                    <YAxis yAxisId="right" orientation="right" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Area
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="syncs"
+                      stackId="1"
+                      stroke="var(--color-syncs)"
+                      fill="var(--color-syncs)"
+                      fillOpacity={0.6}
+                    />
+                    <Area
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="errors"
+                      stackId="1"
+                      stroke="var(--color-errors)"
+                      fill="var(--color-errors)"
+                      fillOpacity={0.6}
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="avgDuration"
+                      stroke="#f59e0b"
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

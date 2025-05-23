@@ -507,7 +507,7 @@ ${rule.content}`;
             className="md:col-span-2"
             variants={cardVariants}
           >
-            <Card className="bg-gradient-to-br from-background/80 to-muted/60 dark:from-background/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 dark:border-border/10 shadow-xl">
+            <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <FileText className="w-5 h-5" />
@@ -552,7 +552,7 @@ ${rule.content}`;
                   )}
                 </motion.div>
               </CardContent>
-              <CardFooter className="border-t bg-gradient-to-r from-background/40 to-muted/20 dark:from-background/20 dark:to-muted/10 pt-4">
+              <CardFooter className="border-t bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -570,7 +570,7 @@ ${rule.content}`;
           <div className="space-y-6">
             {/* Enhanced Rule Information */}
             <motion.div variants={cardVariants}>
-              <Card className="bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+              <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5" />
@@ -637,7 +637,7 @@ ${rule.content}`;
                     </motion.div>
                   </dl>
                 </CardContent>
-                <CardFooter className="border-t bg-gradient-to-r from-surface-2/40 to-surface-2/20 dark:from-surface-2/20 dark:to-surface-2/10 pt-4">
+                <CardFooter className="border-t bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
                   {/* Use the RuleActions component for proper functionality */}
                   <RuleActions rule={rule} onDownload={handleDownload} />
                 </CardFooter>
@@ -647,7 +647,7 @@ ${rule.content}`;
             {/* Enhanced Compatibility Card */}
             {rule.compatibility && Object.values(rule.compatibility).some(arr => arr && arr.length > 0) && (
               <motion.div variants={cardVariants}>
-                <Card className="bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Cpu className="w-5 h-5" />

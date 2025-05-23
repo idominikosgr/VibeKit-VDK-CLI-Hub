@@ -14,19 +14,30 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loginWithGitHub, isLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login, loginWithGitHub } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success && onSuccess) {
-      onSuccess();
+    setIsSubmitting(true);
+    try {
+      const success = await login(email, password);
+      if (success && onSuccess) {
+        onSuccess();
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleGitHubLogin = async () => {
-    await loginWithGitHub();
-    // Note: GitHub login redirects, so onSuccess won't be called here
+    setIsSubmitting(true);
+    try {
+      await loginWithGitHub();
+      // Note: GitHub login redirects, so onSuccess won't be called here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -120,9 +131,9 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
               <Button 
                 type="submit" 
                 className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
-                disabled={isLoading}
+                disabled={isSubmitting}
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
               </Button>
             </motion.div>
           </motion.form>
@@ -152,7 +163,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
               variant="outline"
               className="w-full h-12 border-2 hover:bg-muted/50 transition-all duration-300"
               onClick={handleGitHubLogin}
-              disabled={isLoading}
+              disabled={isSubmitting}
               type="button"
             >
               <GitHubLogoIcon className="mr-2 h-5 w-5" />
@@ -187,19 +198,30 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { register, loginWithGitHub, isLoading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register, loginWithGitHub } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await register(email, password, name);
-    if (success && onSuccess) {
-      onSuccess();
+    setIsSubmitting(true);
+    try {
+      const success = await register(email, password, name);
+      if (success && onSuccess) {
+        onSuccess();
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleGitHubLogin = async () => {
-    await loginWithGitHub();
-    // Note: GitHub login redirects, so onSuccess won't be called here
+    setIsSubmitting(true);
+    try {
+      await loginWithGitHub();
+      // Note: GitHub login redirects, so onSuccess won't be called here
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -307,9 +329,9 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
               <Button 
                 type="submit" 
                 className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
-                disabled={isLoading}
+                disabled={isSubmitting}
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {isSubmitting ? 'Creating account...' : 'Create account'}
               </Button>
             </motion.div>
           </motion.form>
@@ -339,7 +361,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
               variant="outline"
               className="w-full h-12 border-2 hover:bg-muted/50 transition-all duration-300"
               onClick={handleGitHubLogin}
-              disabled={isLoading}
+              disabled={isSubmitting}
               type="button"
             >
               <GitHubLogoIcon className="mr-2 h-5 w-5" />

@@ -40,9 +40,10 @@ export async function GET(request: NextRequest) {
     const supabase = await createServerSupabaseClient();
     
     // Get count of rules and categories
-    const [rulesResult, categoriesResult, syncsResult] = await Promise.all([
+    const [rulesResult, categoriesResult, usersResult, syncsResult] = await Promise.all([
       supabase.from('rules').select('count'),
       supabase.from('categories').select('count'),
+      supabase.from('profiles').select('count'),
       supabase.from('sync_logs').select('*').order('created_at', { ascending: false }).limit(1)
     ]);
     
@@ -53,12 +54,17 @@ export async function GET(request: NextRequest) {
     if (categoriesResult.error) {
       throw categoriesResult.error;
     }
+
+    if (usersResult.error) {
+      throw usersResult.error;
+    }
     
     // Return the stats
     return NextResponse.json({
       stats: {
         ruleCount: rulesResult.count || 0,
         categoryCount: categoriesResult.count || 0,
+        userCount: usersResult.count || 0,
       },
       lastSync: syncsResult.data?.[0] || null
     });

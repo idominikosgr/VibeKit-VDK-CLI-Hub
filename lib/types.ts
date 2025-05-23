@@ -91,16 +91,21 @@ export interface SearchResult {
   excerpt: string;
 }
 
-// User profile type - ALIGNED WITH DATABASE SCHEMA
+// User profile type - ALIGNED WITH DATABASE SCHEMA AND APP USAGE
+// Note: Uses snake_case to match database fields and consistent app usage
 export interface User {
-  // Core DB fields (snake_case to match profiles table)
+  // Core fields
   id: string;
   email: string;
   name: string | null;
+  
+  // Database fields (snake_case)
   github_username: string | null;
   avatar_url: string | null;
   preferred_language: string | null;
   preferred_theme: string | null;
+  
+  // Timestamps
   created_at: string | null;
   updated_at: string | null;
 }

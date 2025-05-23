@@ -280,8 +280,21 @@ function AdminCTA() {
   const { user } = useAuth();
   const { isAdmin, isLoading } = useAdmin();
 
-  // Don't show anything if user is not authenticated or if still loading
-  if (!user || isLoading || !isAdmin) {
+  // Don't show anything if user is not authenticated
+  if (!user) {
+    return null;
+  }
+
+  // Show a placeholder while loading to prevent layout shift
+  if (isLoading) {
+    return (
+      <div className="w-20 h-8"> {/* Placeholder with approximate button dimensions */}
+      </div>
+    );
+  }
+
+  // Only show the admin button if user is confirmed admin
+  if (!isAdmin) {
     return null;
   }
 

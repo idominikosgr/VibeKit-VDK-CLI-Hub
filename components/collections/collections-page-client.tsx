@@ -121,7 +121,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                 custom={index}
               >
                 <Link href={`/collections/${collection.id}`}>
-                  <Card className="h-full overflow-hidden bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 hover:border-accent/50 dark:hover:border-accent/30 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                  <Card className="h-full overflow-hidden bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 hover:border-accent/50 dark:hover:border-accent/30 shadow-lg hover:shadow-2xl transition-all duration-300 group">
                     <CardHeader className="pb-3">
                       <div className="flex justify-between items-start gap-3">
                         <div className="flex-1 min-w-0">
@@ -169,7 +169,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                         </motion.div>
                       </div>
                     </CardContent>
-                    <CardFooter className="border-t border-border/20 pt-4 bg-gradient-to-r from-surface-2/40 to-surface-2/20 dark:from-surface-2/20 dark:to-surface-2/10">
+                    <CardFooter className="border-t border-border/20 pt-4 bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10">
                       <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
@@ -196,7 +196,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
             variants={itemVariants}
             className="flex justify-center py-16"
           >
-            <Card className="max-w-md w-full bg-gradient-to-br from-surface-1/50 to-surface-2/30 dark:from-surface-1/50 dark:to-surface-2/30 backdrop-blur-sm border-2 border-border/20 shadow-xl text-center">
+            <Card className="max-w-md w-full bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl text-center">
               <CardContent className="pt-8 pb-8">
                 <motion.div
                   initial={{ scale: 0, rotate: -90 }}

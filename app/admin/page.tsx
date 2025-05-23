@@ -65,7 +65,7 @@ export default function AdminDashboard() {
       setStats({
         ruleCount: data.stats?.ruleCount || 0,
         categoryCount: data.stats?.categoryCount || 0,
-        userCount: 0, // TODO: Add user count endpoint
+        userCount: data.stats?.userCount || 0,
         lastSyncDate: data.lastSync?.created_at || null
       });
     } catch (err) {

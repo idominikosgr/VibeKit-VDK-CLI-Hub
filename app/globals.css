@@ -1,9 +1,9 @@
-/* Optimized Tailwind CSS v4.1+ Configuration - Modern Best Practices */
+/* Complete Tailwind CSS v4.1+ Configuration - Charts & Gradients Enhanced */
 @import "tailwindcss";
 
-/* Modern dark mode configuration (v4.1+ approach) */
+/* Modern theme configuration with comprehensive chart colors */
 :root {
-  /* Font families - now defined at root level */
+  /* Font families */
   --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-code: "Fira Code", "Source Code Pro", Consolas, monospace;
@@ -34,6 +34,48 @@
   --warning: oklch(0.75 0.12 60);
   --info: oklch(0.7 0.1 220);
   --error: oklch(0.65 0.15 25);
+  
+  /* Chart Colors - Light Mode (12 distinct colors) */
+  --chart-1: oklch(0.7 0.15 15);      /* Warm Red */
+  --chart-2: oklch(0.75 0.12 60);     /* Golden Yellow */
+  --chart-3: oklch(0.65 0.12 140);    /* Forest Green */
+  --chart-4: oklch(0.68 0.15 220);    /* Ocean Blue */
+  --chart-5: oklch(0.7 0.18 280);     /* Royal Purple */
+  --chart-6: oklch(0.72 0.16 320);    /* Magenta Pink */
+  --chart-7: oklch(0.68 0.14 180);    /* Teal */
+  --chart-8: oklch(0.75 0.13 40);     /* Orange */
+  --chart-9: oklch(0.65 0.1 260);     /* Indigo */
+  --chart-10: oklch(0.73 0.14 120);   /* Lime Green */
+  --chart-11: oklch(0.69 0.13 350);   /* Rose */
+  --chart-12: oklch(0.66 0.11 200);   /* Cyan */
+  
+  /* Chart Background Colors (lighter versions) */
+  --chart-1-bg: oklch(0.95 0.03 15);
+  --chart-2-bg: oklch(0.96 0.03 60);
+  --chart-3-bg: oklch(0.95 0.03 140);
+  --chart-4-bg: oklch(0.95 0.03 220);
+  --chart-5-bg: oklch(0.95 0.04 280);
+  --chart-6-bg: oklch(0.95 0.03 320);
+  --chart-7-bg: oklch(0.95 0.03 180);
+  --chart-8-bg: oklch(0.96 0.03 40);
+  --chart-9-bg: oklch(0.95 0.02 260);
+  --chart-10-bg: oklch(0.96 0.03 120);
+  --chart-11-bg: oklch(0.95 0.03 350);
+  --chart-12-bg: oklch(0.95 0.02 200);
+  
+  /* Gradient Stops for Charts */
+  --gradient-primary-from: oklch(0.72 0.15 15);
+  --gradient-primary-to: oklch(0.85 0.08 15);
+  --gradient-secondary-from: oklch(0.75 0.12 60);
+  --gradient-secondary-to: oklch(0.88 0.06 60);
+  --gradient-accent-from: oklch(0.65 0.12 140);
+  --gradient-accent-to: oklch(0.82 0.06 140);
+  
+  /* Chart Grid and Axis Colors */
+  --chart-grid: oklch(0.9 0.01 30);
+  --chart-axis: oklch(0.7 0.02 30);
+  --chart-tick: oklch(0.6 0.02 30);
+  --chart-label: oklch(0.5 0.02 180);
 }
 
 .dark {
@@ -51,20 +93,62 @@
   --border: oklch(0.25 0.01 325);
   --input: oklch(0.25 0.01 325);
   
-  /* Adjust other colors for dark mode */
+  /* Extended semantic colors - Dark Mode */
   --success: oklch(0.8 0.1 140);
   --warning: oklch(0.85 0.1 60);
   --info: oklch(0.8 0.08 220);
+  
+  /* Chart Colors - Dark Mode (enhanced for dark backgrounds) */
+  --chart-1: oklch(0.75 0.16 15);      /* Bright Coral */
+  --chart-2: oklch(0.82 0.13 60);      /* Bright Gold */
+  --chart-3: oklch(0.75 0.14 140);     /* Bright Green */
+  --chart-4: oklch(0.78 0.16 220);     /* Bright Blue */
+  --chart-5: oklch(0.78 0.19 280);     /* Bright Purple */
+  --chart-6: oklch(0.8 0.17 320);      /* Bright Pink */
+  --chart-7: oklch(0.76 0.15 180);     /* Bright Teal */
+  --chart-8: oklch(0.82 0.15 40);      /* Bright Orange */
+  --chart-9: oklch(0.73 0.12 260);     /* Bright Indigo */
+  --chart-10: oklch(0.8 0.15 120);     /* Bright Lime */
+  --chart-11: oklch(0.77 0.15 350);    /* Bright Rose */
+  --chart-12: oklch(0.76 0.13 200);    /* Bright Cyan */
+  
+  /* Chart Background Colors - Dark Mode */
+  --chart-1-bg: oklch(0.25 0.04 15);
+  --chart-2-bg: oklch(0.25 0.03 60);
+  --chart-3-bg: oklch(0.25 0.03 140);
+  --chart-4-bg: oklch(0.25 0.04 220);
+  --chart-5-bg: oklch(0.25 0.05 280);
+  --chart-6-bg: oklch(0.25 0.04 320);
+  --chart-7-bg: oklch(0.25 0.04 180);
+  --chart-8-bg: oklch(0.25 0.03 40);
+  --chart-9-bg: oklch(0.25 0.03 260);
+  --chart-10-bg: oklch(0.25 0.04 120);
+  --chart-11-bg: oklch(0.25 0.04 350);
+  --chart-12-bg: oklch(0.25 0.03 200);
+  
+  /* Gradient Stops for Charts - Dark Mode */
+  --gradient-primary-from: oklch(0.75 0.16 15);
+  --gradient-primary-to: oklch(0.45 0.08 15);
+  --gradient-secondary-from: oklch(0.82 0.13 60);
+  --gradient-secondary-to: oklch(0.52 0.06 60);
+  --gradient-accent-from: oklch(0.75 0.14 140);
+  --gradient-accent-to: oklch(0.45 0.07 140);
+  
+  /* Chart Grid and Axis Colors - Dark Mode */
+  --chart-grid: oklch(0.3 0.02 325);
+  --chart-axis: oklch(0.5 0.03 325);
+  --chart-tick: oklch(0.6 0.02 325);
+  --chart-label: oklch(0.7 0.01 220);
 }
 
-/* Modern theme configuration using inline approach */
+/* Theme configuration using inline approach */
 @theme inline {
   /* Font families */
   --font-sans: var(--font-body);
   --font-mono: var(--font-code);
   --font-display: var(--font-display);
   
-  /* Colors - using the CSS variables */
+  /* Base colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -91,10 +175,44 @@
   --color-info: var(--info);
   --color-error: var(--error);
   
+  /* Chart colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+  --color-chart-9: var(--chart-9);
+  --color-chart-10: var(--chart-10);
+  --color-chart-11: var(--chart-11);
+  --color-chart-12: var(--chart-12);
+  
+  /* Chart background colors */
+  --color-chart-1-bg: var(--chart-1-bg);
+  --color-chart-2-bg: var(--chart-2-bg);
+  --color-chart-3-bg: var(--chart-3-bg);
+  --color-chart-4-bg: var(--chart-4-bg);
+  --color-chart-5-bg: var(--chart-5-bg);
+  --color-chart-6-bg: var(--chart-6-bg);
+  --color-chart-7-bg: var(--chart-7-bg);
+  --color-chart-8-bg: var(--chart-8-bg);
+  --color-chart-9-bg: var(--chart-9-bg);
+  --color-chart-10-bg: var(--chart-10-bg);
+  --color-chart-11-bg: var(--chart-11-bg);
+  --color-chart-12-bg: var(--chart-12-bg);
+  
+  /* Chart utility colors */
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-chart-tick: var(--chart-tick);
+  --color-chart-label: var(--chart-label);
+  
   /* Modern spacing system */
   --spacing: 0.25rem;
   
-  /* Typography scale with line heights */
+  /* Typography scale */
   --text-xs: 0.75rem;
   --text-xs--line-height: 1rem;
   --text-sm: 0.875rem;
@@ -126,14 +244,14 @@
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
   
-  /* Modern breakpoints */
+  /* Breakpoints */
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 96rem;
   
-  /* Container query breakpoints */
+  /* Container queries */
   --container-3xs: 16rem;
   --container-2xs: 18rem;
   --container-xs: 20rem;
@@ -148,7 +266,7 @@
   --container-6xl: 72rem;
   --container-7xl: 80rem;
   
-  /* Radius system */
+  /* Radius */
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -158,7 +276,7 @@
   --radius-3xl: 1.5rem;
   --radius-4xl: 2rem;
   
-  /* Shadow system using dynamic colors */
+  /* Shadows */
   --shadow-xs: 0 1px 2px 0 --alpha(var(--color-foreground) / 5%);
   --shadow-sm: 0 1px 3px 0 --alpha(var(--color-foreground) / 10%), 0 1px 2px -1px --alpha(var(--color-foreground) / 10%);
   --shadow-md: 0 4px 6px -1px --alpha(var(--color-foreground) / 10%), 0 2px 4px -2px --alpha(var(--color-foreground) / 10%);
@@ -166,18 +284,16 @@
   --shadow-xl: 0 20px 25px -5px --alpha(var(--color-foreground) / 10%), 0 8px 10px -6px --alpha(var(--color-foreground) / 10%);
   --shadow-2xl: 0 25px 50px -12px --alpha(var(--color-foreground) / 25%);
   
-  /* Animation system */
+  /* Animations */
   --animate-spin: spin 1s linear infinite;
   --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-bounce: bounce 1s infinite;
-  
-  /* Custom animations */
   --animate-fade-in: fade-in 0.3s ease-out;
   --animate-slide-up: slide-up 0.3s ease-out;
   --animate-scale-in: scale-in 0.3s ease-out;
   
-  /* Modern easing functions */
+  /* Easing */
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -185,7 +301,7 @@
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
 }
 
-/* Custom variants using modern syntax */
+/* Custom variants */
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant motion-safe (@media (prefers-reduced-motion: no-preference) { & });
 @custom-variant motion-reduce (@media (prefers-reduced-motion: reduce) { & });
@@ -248,21 +364,26 @@
   }
 }
 
-/* Custom utilities */
-@utility fade-in {
-  animation: var(--animate-fade-in);
-}
-
-@utility slide-up {
-  animation: var(--animate-slide-up);
-}
-
-@utility scale-in {
-  animation: var(--animate-scale-in);
-}
-
-@utility container {
+/* Custom utilities for charts and gradients */
+@utility chart-container {
   container-type: inline-size;
+  min-height: 200px;
+}
+
+@utility gradient-chart-primary {
+  background: linear-gradient(180deg, var(--gradient-primary-from) 0%, var(--gradient-primary-to) 100%);
+}
+
+@utility gradient-chart-secondary {
+  background: linear-gradient(180deg, var(--gradient-secondary-from) 0%, var(--gradient-secondary-to) 100%);
+}
+
+@utility gradient-chart-accent {
+  background: linear-gradient(180deg, var(--gradient-accent-from) 0%, var(--gradient-accent-to) 100%);
+}
+
+@utility gradient-radial-chart {
+  background: radial-gradient(circle at center, var(--gradient-primary-from) 0%, var(--gradient-primary-to) 70%);
 }
 
 /* Base styles */
@@ -286,28 +407,17 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Selection styling */
   ::selection {
     background-color: --alpha(var(--color-primary) / 20%);
     color: var(--color-foreground);
   }
 
-  /* Focus ring using modern approach */
   :focus-visible {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
 
-  /* Modern button reset */
-  button {
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0;
-  }
-
-  /* Input styling */
-  input, textarea, select {
+  button, input, textarea, select {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
@@ -316,7 +426,7 @@
 
 /* Component layer */
 @layer components {
-  /* Modern button component */
+  /* Button components */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2;
     @apply text-sm font-medium whitespace-nowrap;
@@ -334,11 +444,6 @@
       transform: translateY(-1px);
       box-shadow: var(--shadow-lg);
     }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: var(--shadow-md);
-    }
   }
 
   .btn-secondary {
@@ -349,32 +454,10 @@
     &:hover:not(:disabled) {
       background-color: var(--color-muted);
       border-color: --alpha(var(--color-primary) / 30%);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
     }
   }
 
-  .btn-outline {
-    background-color: transparent;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    
-    &:hover:not(:disabled) {
-      background-color: var(--color-primary);
-      color: var(--color-primary-foreground);
-    }
-  }
-
-  .btn-ghost {
-    background-color: transparent;
-    color: var(--color-foreground);
-    
-    &:hover:not(:disabled) {
-      background-color: var(--color-muted);
-    }
-  }
-
-  /* Modern card component */
+  /* Card component */
   .card {
     background-color: var(--color-card);
     color: var(--color-card-foreground);
@@ -383,46 +466,116 @@
     box-shadow: var(--shadow-sm);
     padding: --spacing(6);
     transition: all 0.2s var(--ease-out);
-    
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-      border-color: --alpha(var(--color-primary) / 20%);
-    }
   }
 
-  /* Modern input component */
+  /* Chart specific components */
+  .chart-container {
+    @apply chart-container relative overflow-hidden rounded-lg border bg-card;
+    padding: --spacing(6);
+  }
+
+  .chart-wrapper {
+    @apply w-full h-full min-h-[200px];
+  }
+
+  .chart-legend {
+    @apply flex flex-wrap gap-4 justify-center mt-4;
+  }
+
+  .chart-legend-item {
+    @apply flex items-center gap-2 text-sm;
+  }
+
+  .chart-legend-color {
+    @apply w-3 h-3 rounded-full flex-shrink-0;
+  }
+
+  .chart-tooltip {
+    @apply bg-popover text-popover-foreground border rounded-lg shadow-lg p-3;
+    @apply text-sm font-medium;
+  }
+
+  .chart-title {
+    @apply text-lg font-semibold text-foreground mb-2;
+  }
+
+  .chart-description {
+    @apply text-sm text-muted-foreground mb-4;
+  }
+
+  /* Gradient backgrounds for charts */
+  .chart-gradient-1 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-1) / 30%) 0%, 
+      --alpha(var(--color-chart-1) / 5%) 100%);
+  }
+
+  .chart-gradient-2 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-2) / 30%) 0%, 
+      --alpha(var(--color-chart-2) / 5%) 100%);
+  }
+
+  .chart-gradient-3 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-3) / 30%) 0%, 
+      --alpha(var(--color-chart-3) / 5%) 100%);
+  }
+
+  .chart-gradient-4 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-4) / 30%) 0%, 
+      --alpha(var(--color-chart-4) / 5%) 100%);
+  }
+
+  .chart-gradient-5 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-5) / 30%) 0%, 
+      --alpha(var(--color-chart-5) / 5%) 100%);
+  }
+
+  .chart-gradient-6 {
+    background: linear-gradient(180deg, 
+      --alpha(var(--color-chart-6) / 30%) 0%, 
+      --alpha(var(--color-chart-6) / 5%) 100%);
+  }
+
+  /* Input component */
   .input {
     @apply flex w-full rounded-lg border border-input bg-background px-3 py-2;
     @apply text-base transition-colors duration-200;
     @apply placeholder:text-muted-foreground;
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
     @apply disabled:cursor-not-allowed disabled:opacity-50;
-    
-    &:focus {
-      border-color: var(--color-ring);
-    }
   }
 
-  /* Badge component */
+  /* Badge components */
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
-    @apply transition-colors;
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors;
   }
 
-  .badge-default {
-    background-color: var(--color-primary);
-    color: var(--color-primary-foreground);
+  .badge-chart-1 {
+    background-color: var(--color-chart-1-bg);
+    color: var(--color-chart-1);
+    border: 1px solid --alpha(var(--color-chart-1) / 20%);
   }
 
-  .badge-secondary {
-    background-color: var(--color-secondary);
-    color: var(--color-secondary-foreground);
+  .badge-chart-2 {
+    background-color: var(--color-chart-2-bg);
+    color: var(--color-chart-2);
+    border: 1px solid --alpha(var(--color-chart-2) / 20%);
   }
 
-  .badge-outline {
-    color: var(--color-foreground);
-    border: 1px solid var(--color-border);
+  .badge-chart-3 {
+    background-color: var(--color-chart-3-bg);
+    color: var(--color-chart-3);
+    border: 1px solid --alpha(var(--color-chart-3) / 20%);
+  }
+
+  .badge-chart-4 {
+    background-color: var(--color-chart-4-bg);
+    color: var(--color-chart-4);
+    border: 1px solid --alpha(var(--color-chart-4) / 20%);
   }
 }
 
@@ -441,32 +594,34 @@
 @media (prefers-contrast: more) {
   :root {
     --border: oklch(0 0 0);
+    --chart-grid: oklch(0 0 0);
   }
   
   .dark {
     --border: oklch(1 0 0);
+    --chart-grid: oklch(1 0 0);
   }
 }
 
 @media (forced-colors: active) {
-  .btn {
+  .btn, .chart-container {
     forced-color-adjust: none;
   }
 }
 
-/* Container queries for responsive components */
+/* Container queries for responsive charts */
 @container (max-width: 28rem) {
-  .card {
+  .chart-container {
     padding: --spacing(4);
   }
   
-  .btn {
-    @apply w-full;
+  .chart-legend {
+    @apply flex-col gap-2;
   }
 }
 
 @container (min-width: 48rem) {
-  .card {
+  .chart-container {
     padding: --spacing(8);
   }
 }
@@ -480,9 +635,17 @@
     text-shadow: none !important;
   }
   
-  .btn {
+  .chart-container {
     border: 1px solid black;
     background: white !important;
-    color: black !important;
+  }
+  
+  .chart-gradient-1,
+  .chart-gradient-2,
+  .chart-gradient-3,
+  .chart-gradient-4,
+  .chart-gradient-5,
+  .chart-gradient-6 {
+    background: white !important;
   }
 }

@@ -129,7 +129,7 @@ export function ModernSetupWizard() {
     >
       {/* Enhanced Progress Bar */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+        <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
           <CardContent className="pt-8 pb-6">
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -185,7 +185,7 @@ export function ModernSetupWizard() {
                         ? 'bg-gradient-to-r from-accent/20 to-primary/20 dark:from-accent/10 dark:to-primary/10 border border-accent dark:border-accent/50'
                         : index < currentStep
                         ? 'bg-gradient-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border border-success/50 dark:border-success/30'
-                        : 'bg-surface-2 dark:bg-surface-3/50 border border-border hover:bg-muted dark:hover:bg-surface-3/70'
+                        : 'bg-card dark:bg-card border border-border hover:bg-muted dark:hover:bg-muted'
                     }`}
                     onClick={() => setCurrentStep(index)}
                   >
@@ -226,7 +226,7 @@ export function ModernSetupWizard() {
 
       {/* Enhanced Current Step Content */}
       <motion.div variants={itemVariants}>
-        <Card className="min-h-[700px] bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl overflow-hidden">
+        <Card className="min-h-[700px] bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl overflow-hidden">
           <div className="relative p-8">
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5"></div>
             
