@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { motion } from "framer-motion"
 
 import { siteConfig } from "@/config/site"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -31,8 +32,13 @@ export function SiteHeader() {
   const pathname = usePathname()
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
-      <div className="container flex h-16 items-center">
+    <motion.header 
+      className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      <div className="container flex h-16 items-center max-w-screen-2xl mx-auto">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
@@ -53,41 +59,47 @@ export function SiteHeader() {
             <div className="flex items-center gap-4">
               <GlobalSearch />
               <div className="hidden sm:flex">
-                <Link
-                  href="/setup"
-                  className={cn(
-                    buttonVariants({ variant: "outline", size: "sm" }),
-                    "mr-2"
-                  )}
-                >
-                  <Icons.settings className="mr-2 h-4 w-4" />
-                  Setup Wizard
-                </Link>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Link
+                    href="/setup"
+                    className={cn(
+                      buttonVariants({ variant: "outline", size: "sm" }),
+                      "mr-2 transition-all duration-200 hover:shadow-md"
+                    )}
+                  >
+                    <Icons.settings className="mr-2 h-4 w-4" />
+                    Setup Wizard
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
           <div className="flex items-center space-x-1">
-            <ThemeToggle />
-            <Link
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "icon"
-                })}
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <ThemeToggle />
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Link
+                href={siteConfig.links.github}
+                target="_blank"
+                rel="noreferrer"
               >
-                <Icons.github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </div>
-            </Link>
+                <div
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "icon"
+                  })}
+                >
+                  <Icons.github className="h-5 w-5" />
+                  <span className="sr-only">GitHub</span>
+                </div>
+              </Link>
+            </motion.div>
             <AuthMenuButton />
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
   )
 }
 
@@ -97,9 +109,11 @@ function AuthMenuButton() {
   // Show login button if not logged in
   if (!user && !isLoading) {
     return (
-      <Link href="/auth/login" className={buttonVariants({ variant: "outline", size: "sm" })}>
-        Sign In
-      </Link>
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+        <Link href="/auth/login" className={buttonVariants({ variant: "outline", size: "sm" })}>
+          Sign In
+        </Link>
+      </motion.div>
     );
   }
 
@@ -126,14 +140,16 @@ function AuthMenuButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.avatarUrl || undefined} alt={user?.name || 'User'} />
-            <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
-          </Avatar>
-        </Button>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user?.avatar_url || undefined} alt={user?.name || 'User'} />
+              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+            </Avatar>
+          </Button>
+        </motion.div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user?.name && <p className="font-medium">{user.name}</p>}
@@ -142,20 +158,20 @@ function AuthMenuButton() {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <Link href="/profile" className="cursor-pointer">
             <Icons.user className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/collections">
+          <Link href="/collections" className="cursor-pointer">
             <Icons.folder className="mr-2 h-4 w-4" />
             <span>My Collections</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer"
+          className="cursor-pointer text-error focus:text-error focus:bg-error/10 dark:focus:bg-error/20"
           onSelect={async (event) => {
             event.preventDefault();
             await logout();
@@ -203,65 +219,10 @@ function MobileNav() {
         )}
       >
         <Icons.settings className="mr-2 h-4 w-4" />
-        Setup Wizard
+        Setup
       </Link>
-      <Link
-        href="/docs"
-        className={cn(
-          "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          pathname?.startsWith("/docs") && "bg-accent"
-        )}
-      >
-        <Icons.brain className="mr-2 h-4 w-4" />
-        Documentation
-      </Link>
-      <Link
-        href={siteConfig.links.github}
-        target="_blank"
-        rel="noreferrer"
-        className="flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        <Icons.github className="mr-2 h-4 w-4" />
-        GitHub
-      </Link>
-
-      <div className="my-2 border-t border-border" />
-
-      {!user && !isLoading ? (
+      {user && (
         <>
-          <Link
-            href="/auth/login"
-            className={cn(
-              "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              pathname === "/auth/login" && "bg-accent"
-            )}
-          >
-            <Icons.login className="mr-2 h-4 w-4" />
-            Sign In
-          </Link>
-          <Link
-            href="/auth/register"
-            className={cn(
-              "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              pathname === "/auth/register" && "bg-accent"
-            )}
-          >
-            <Icons.userPlus className="mr-2 h-4 w-4" />
-            Register
-          </Link>
-        </>
-      ) : user ? (
-        <>
-          <Link
-            href="/profile"
-            className={cn(
-              "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              pathname === "/profile" && "bg-accent"
-            )}
-          >
-            <Icons.user className="mr-2 h-4 w-4" />
-            Profile
-          </Link>
           <Link
             href="/collections"
             className={cn(
@@ -270,10 +231,20 @@ function MobileNav() {
             )}
           >
             <Icons.folder className="mr-2 h-4 w-4" />
-            My Collections
+            Collections
+          </Link>
+          <Link
+            href="/profile"
+            className={cn(
+              "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              pathname?.startsWith("/profile") && "bg-accent"
+            )}
+          >
+            <Icons.user className="mr-2 h-4 w-4" />
+            Profile
           </Link>
         </>
-      ) : null}
+      )}
     </div>
   )
 }

@@ -394,10 +394,16 @@ export async function getAllRules(
     const totalPages = Math.ceil((totalCount || 0) / pageSize);
     const startIndex = (page - 1) * pageSize;
     
-    // Build data query - FIXED: Remove join to prevent serialization issues
+    // Build data query - JOIN with categories to get category info
     const { data, error } = await supabase
       .from('rules')
-      .select('*')
+      .select(`
+        *,
+        categories!inner(
+          name,
+          slug
+        )
+      `)
       .range(startIndex, startIndex + pageSize - 1)
       .order('title');
 
@@ -405,9 +411,11 @@ export async function getAllRules(
       throw handleDatabaseError(error, 'getAllRules');
     }
 
-    const mappedRules = (data || []).map((rule: any) => 
-      mapDbRuleToRule(rule, undefined, undefined)
-    );
+    const mappedRules = (data || []).map((item: any) => {
+      const rule = item;
+      const category = item.categories;
+      return mapDbRuleToRule(rule, category?.name, category?.slug);
+    });
 
     return {
       data: mappedRules,

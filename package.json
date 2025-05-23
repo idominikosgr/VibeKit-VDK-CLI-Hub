@@ -62,11 +62,13 @@
     "@radix-ui/react-visually-hidden": "^1.2.3",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.8",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^4.5.0",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -77,6 +79,7 @@
     "embla-carousel-react": "^8.6.0",
     "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.2",
+    "framer-motion": "^12.12.1",
     "glob": "^11.0.2",
     "gray-matter": "^4.0.3",
     "input-otp": "^1.4.2",
@@ -109,7 +112,7 @@
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "vitest": "^3.1.4",
-    "zod": "^3.25.21"
+    "zod": "^3.25.23"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.7",

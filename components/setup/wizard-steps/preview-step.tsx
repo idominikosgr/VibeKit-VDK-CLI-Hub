@@ -246,7 +246,7 @@ export function PreviewStep({
                 </>
               ) : (
                 <>
-                  <div className="text-sm text-green-600 bg-green-50 p-3 rounded-md dark:bg-green-950/20">
+                  <div className="text-sm text-success bg-success/10 p-3 rounded-md dark:bg-success/10">
                     ✅ Package generated successfully!
                   </div>
                   <div className="space-y-2 text-sm">

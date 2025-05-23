@@ -1,13 +1,25 @@
 import type { Config } from 'tailwindcss';
 
+// Minimal config for Tailwind CSS v4.1+
+// Most configuration is now done in CSS using @theme
 const config: Config = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './lib/**/*.{js,ts,jsx,tsx}',
+  // Content detection is automatic in v4.1+, no need to specify paths
+  // unless you want to override the defaults
+  
+  // Dark mode is now handled via CSS @media or .dark class
+  // No need for darkMode configuration
+  
+  // Only include this config if you need:
+  // 1. Third-party plugins that require JS configuration
+  // 2. Legacy compatibility
+  // 3. Advanced customization not possible in CSS
+
+  plugins: [
+    // Only add plugins that actually require JS configuration
+    // Most built-in features are now in core Tailwind
+    // require('@tailwindcss/typography'), // Example if needed
+    // require('@tailwindcss/forms'),      // Example if needed
   ],
-  plugins: [],
 };
 
 export default config;

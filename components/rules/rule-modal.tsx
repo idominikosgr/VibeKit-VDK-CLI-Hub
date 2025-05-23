@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clipboard, Download, ThumbsUp, Calendar, Users, Tag } from 'lucide-react';
+import { Clipboard, Download, ThumbsUp, Calendar, Tag } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icons } from '@/components/icons';
 import { Rule } from '@/lib/types';
@@ -11,7 +11,14 @@ import { toast } from 'sonner';
 import { incrementRuleDownloads } from '@/lib/services/supabase-rule-service';
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import Markdown from 'react-markdown';
+
+// Dynamic import for react-markdown to avoid SSR issues
+import dynamic from 'next/dynamic';
+
+const Markdown = dynamic(() => import('react-markdown'), {
+  ssr: false,
+  loading: () => <p className="text-muted-foreground">Loading content...</p>
+});
 
 interface RuleModalProps {
   rule: Rule | null;
@@ -46,6 +53,58 @@ function hasCompatibilityData(compatibility: any): boolean {
   );
 }
 
+// Safe content renderer with fallback
+function SafeContentRenderer({ content }: { content: string }) {
+  const [renderError, setRenderError] = useState(false);
+  
+  if (!content) {
+    return <p className="text-muted-foreground italic">No content available for this rule.</p>;
+  }
+
+  if (renderError) {
+    return (
+      <div className="space-y-4">
+        <p className="text-muted-foreground">Markdown rendering failed. Showing raw content:</p>
+        <pre className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md overflow-auto max-h-96">
+          {content}
+        </pre>
+      </div>
+    );
+  }
+
+  try {
+    return (
+      <div className="prose dark:prose-invert max-w-none">
+        <Markdown
+          components={{
+            // Safe rendering of code blocks
+            code: ({ children, ...props }) => (
+              <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
+                {children}
+              </code>
+            ),
+            pre: ({ children, ...props }) => (
+              <pre className="bg-muted p-4 rounded-md overflow-auto" {...props}>
+                {children}
+              </pre>
+            ),
+          }}
+        >
+          {content}
+        </Markdown>
+      </div>
+    );
+  } catch (error) {
+    console.error('Markdown rendering error:', error);
+    setRenderError(true);
+    return (
+      <pre className="whitespace-pre-wrap font-mono text-sm bg-muted p-4 rounded-md overflow-auto max-h-96">
+        {content}
+      </pre>
+    );
+  }
+}
+
 export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
   const router = useRouter();
   const supabase = createBrowserSupabaseClient();
@@ -54,7 +113,23 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
   const [isVoting, setIsVoting] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
 
-  if (!rule) return null;
+  // Early return if no rule
+  if (!rule) {
+    return null;
+  }
+
+  // Safely access rule properties
+  const safeRule = {
+    ...rule,
+    title: rule.title || 'Untitled Rule',
+    description: rule.description || 'No description available',
+    content: rule.content || '',
+    tags: Array.isArray(rule.tags) ? rule.tags : [],
+    votes: typeof rule.votes === 'number' ? rule.votes : 0,
+    downloads: typeof rule.downloads === 'number' ? rule.downloads : 0,
+    version: rule.version || '1.0.0',
+    categoryName: rule.categoryName || 'Unknown Category'
+  };
 
   // Format the date for display
   const formattedDate = rule.last_updated 
@@ -74,34 +149,38 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
 
   // Initialize vote count and check user vote status
   useEffect(() => {
-    setVoteCount(rule?.votes || 0);
+    setVoteCount(safeRule.votes);
     
     async function checkVoteStatus() {
       if (!rule) return;
       
-      const { data: { session } } = await supabase.auth.getSession();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
 
-      if (!session?.user) {
-        return;
+        if (!session?.user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from('user_votes')
+          .select('id')
+          .eq('rule_id', rule.id)
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        setHasVoted(!!data);
+      } catch (error) {
+        console.error('Error checking vote status:', error);
       }
-
-      const { data } = await supabase
-        .from('user_votes')
-        .select('id')
-        .eq('rule_id', rule.id)
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-      setHasVoted(!!data);
     }
 
     checkVoteStatus();
-  }, [rule, supabase]);
+  }, [rule, supabase, safeRule.votes]);
 
   // Handle copying rule content to clipboard
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(rule.content);
+      await navigator.clipboard.writeText(safeRule.content);
       toast.success('Rule content copied to clipboard');
     } catch (error) {
       console.error('Failed to copy to clipboard:', error);
@@ -116,14 +195,14 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
       
       // Create downloadable content (add metadata as YAML front matter)
       const content = `---
-title: ${rule.title}
-description: ${rule.description}
-version: ${rule.version}
+title: ${safeRule.title}
+description: ${safeRule.description}
+version: ${safeRule.version}
 lastUpdated: ${rule.last_updated || new Date().toISOString()}
-category: ${rule.categoryName || ''}
+category: ${safeRule.categoryName}
 ---
 
-${rule.content}`;
+${safeRule.content}`;
       
       // Create blob and download link
       const blob = new Blob([content], { type: 'text/markdown' });
@@ -196,12 +275,12 @@ ${rule.content}`;
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{rule.title}</DialogTitle>
-          <DialogDescription className="text-base">{rule.description}</DialogDescription>
+          <DialogTitle className="text-2xl">{safeRule.title}</DialogTitle>
+          <DialogDescription className="text-base">{safeRule.description}</DialogDescription>
           
-          {rule.tags && Array.isArray(rule.tags) && rule.tags.length > 0 && (
+          {safeRule.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
-              {rule.tags.map((tag) => (
+              {safeRule.tags.map((tag) => (
                 <Badge key={tag} variant="secondary">{tag}</Badge>
               ))}
             </div>
@@ -220,12 +299,8 @@ ${rule.content}`;
               </TabsList>
               
               <TabsContent value="content" className="min-h-[300px]">
-                <div className="prose dark:prose-invert max-w-none border rounded-md p-4 bg-muted/30 overflow-auto">
-                  {rule.content ? (
-                    <Markdown>{rule.content}</Markdown>
-                  ) : (
-                    <p className="text-muted-foreground italic">No content available for this rule.</p>
-                  )}
+                <div className="border rounded-md p-4 bg-muted/30 overflow-auto max-h-[400px]">
+                  <SafeContentRenderer content={safeRule.content} />
                 </div>
               </TabsContent>
               
@@ -310,7 +385,7 @@ ${rule.content}`;
                 <div className="flex items-center gap-2 text-sm">
                   <Download className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Downloads:</span>
-                  <span>{rule.downloads || 0}</span>
+                  <span>{safeRule.downloads}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
@@ -322,13 +397,13 @@ ${rule.content}`;
                 <div className="flex items-center gap-2 text-sm">
                   <Tag className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Version:</span>
-                  <span>{rule.version}</span>
+                  <span>{safeRule.version}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
                   <Icons.code className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Category:</span>
-                  <span>{rule.categoryName || 'Uncategorized'}</span>
+                  <span>{safeRule.categoryName}</span>
                 </div>
 
                 {rule.always_apply !== undefined && (

@@ -1,5 +1,4 @@
 import { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getCategory } from "@/lib/services/supabase-rule-service"
 
 type CategoryLayoutProps = {
@@ -43,25 +42,12 @@ export default async function CategoryLayout({
   children,
   params
 }: CategoryLayoutProps) {
-  const awaitedParams = await params;
-  const { category } = awaitedParams;
-
-  try {
-    // Fetch category from database
-    const categoryData = await getCategory(category);
-
-    // Validate category exists
-    if (!categoryData) {
-      notFound()
-    }
-
-    return (
-      <div className="category-layout">
-        {children}
-      </div>
-    )
-  } catch (error) {
-    console.error('Error loading category layout:', error);
-    notFound()
-  }
+  // Don't validate category existence here - let individual pages handle their own validation
+  // This prevents individual rule pages from being affected by category validation issues
+  
+  return (
+    <div className="category-layout">
+      {children}
+    </div>
+  )
 }

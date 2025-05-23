@@ -48,7 +48,7 @@ export function RulePreview({ rule, showCategory = false }: RulePreviewProps) {
             <CardTitle className="line-clamp-2">{rule.title}</CardTitle>
             {votes > 0 && (
               <div className="flex items-center gap-1 text-sm">
-                <Icons.thumbsUp className="h-3.5 w-3.5 text-green-500" />
+                <Icons.thumbsUp className="h-3.5 w-3.5 text-success" />
                 <span>{votes}</span>
               </div>
             )}

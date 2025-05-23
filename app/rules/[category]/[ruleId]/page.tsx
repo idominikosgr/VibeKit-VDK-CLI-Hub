@@ -1,19 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
+import { motion } from 'framer-motion';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icons } from "@/components/icons";
 import { Rule } from "@/lib/types";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ChevronRight, Download, Copy, Eye, Calendar, Hash, Cpu, Sparkles, FileText, Layers } from "lucide-react";
 import { RuleModal } from "@/components/rules/rule-modal";
 import { RuleActions } from "@/components/rules/rule-actions";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24
+    }
+  }
+};
 
 // Define the rule page props
 interface RulePageProps {
@@ -23,32 +61,27 @@ interface RulePageProps {
   }>;
 }
 
-// Helper function to sanitize rule data for React state
+// Helper function to sanitize rule data for client-side consumption
 function sanitizeRuleData(rule: any): Rule {
   return {
-    id: rule.id || '',
-    title: rule.title || '',
-    slug: rule.slug || '',
-    path: rule.path || '',
-    description: rule.description || '',
-    content: rule.content || '',
-    version: rule.version || '1.0.0',
-    category_id: rule.category_id || '',
+    id: typeof rule.id === 'string' ? rule.id : '',
+    title: typeof rule.title === 'string' ? rule.title : '',
+    slug: typeof rule.slug === 'string' ? rule.slug : '',
+    path: typeof rule.path === 'string' ? rule.path : '',
+    description: typeof rule.description === 'string' ? rule.description : '',
+    content: typeof rule.content === 'string' ? rule.content : '',
+    version: typeof rule.version === 'string' ? rule.version : '1.0.0',
+    category_id: typeof rule.category_id === 'string' ? rule.category_id : '',
+    votes: typeof rule.votes === 'number' ? rule.votes : null,
+    downloads: typeof rule.downloads === 'number' ? rule.downloads : null,
     tags: Array.isArray(rule.tags) ? rule.tags : null,
     globs: Array.isArray(rule.globs) ? rule.globs : null,
-    downloads: typeof rule.downloads === 'number' ? rule.downloads : 0,
-    votes: typeof rule.votes === 'number' ? rule.votes : 0,
-    compatibility: rule.compatibility && typeof rule.compatibility === 'object' ? {
-      ides: Array.isArray(rule.compatibility.ides) ? rule.compatibility.ides : [],
-      aiAssistants: Array.isArray(rule.compatibility.aiAssistants) ? rule.compatibility.aiAssistants : [],
-      frameworks: Array.isArray(rule.compatibility.frameworks) ? rule.compatibility.frameworks : [],
-      mcpServers: Array.isArray(rule.compatibility.mcpServers) ? rule.compatibility.mcpServers : []
-    } : null,
-    examples: rule.examples && typeof rule.examples === 'object' ? rule.examples : null,
-    always_apply: typeof rule.always_apply === 'boolean' ? rule.always_apply : null,
     last_updated: typeof rule.last_updated === 'string' ? rule.last_updated : null,
     created_at: typeof rule.created_at === 'string' ? rule.created_at : null,
     updated_at: typeof rule.updated_at === 'string' ? rule.updated_at : null,
+    always_apply: typeof rule.always_apply === 'boolean' ? rule.always_apply : null,
+    compatibility: typeof rule.compatibility === 'object' && rule.compatibility ? rule.compatibility : null,
+    examples: typeof rule.examples === 'object' && rule.examples ? rule.examples : null,
     categoryName: typeof rule.categoryName === 'string' ? rule.categoryName : undefined,
     categorySlug: typeof rule.categorySlug === 'string' ? rule.categorySlug : undefined,
   };
@@ -56,80 +89,138 @@ function sanitizeRuleData(rule: any): Rule {
 
 export default function RulePage({ params }: RulePageProps) {
   const router = useRouter();
-  const [awaitedParams, setAwaitedParams] = useState<{ category: string; ruleId: string } | null>(null);
+  
+  const [category, setCategory] = useState<string>('');
+  const [ruleId, setRuleId] = useState<string>('');
+  const [paramsLoaded, setParamsLoaded] = useState(false);
   const [rule, setRule] = useState<Rule | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const supabase = createBrowserSupabaseClient();
+  
+  // Create stable supabase client instance
+  const supabase = useMemo(() => createBrowserSupabaseClient(), []);
 
-  // Await params
+  // Debug effect to track component lifecycle
   useEffect(() => {
-    async function awaitParams() {
+    console.log('RulePage component mounted');
+    return () => {
+      console.log('RulePage component unmounting');
+    };
+  }, []);
+
+  // Memoize params to prevent unnecessary re-renders
+  const stableParams = useMemo(() => params, []);
+
+  // Load params first - use stable params
+  useEffect(() => {
+    let isMounted = true;
+    
+    async function loadParams() {
       try {
-        const resolved = await params;
-        setAwaitedParams(resolved);
+        console.log('Loading params...');
+        const resolvedParams = await stableParams;
+        console.log('Params resolved:', resolvedParams);
+        
+        if (isMounted) {
+          setCategory(resolvedParams.category);
+          setRuleId(resolvedParams.ruleId);
+          setParamsLoaded(true);
+          console.log('Params loaded successfully');
+        }
       } catch (err) {
-        console.error('Error awaiting params:', err);
-        setError('Failed to load page parameters');
+        console.error('Error loading params:', err);
+        if (isMounted) {
+          setError('Failed to load page parameters');
+          setLoading(false);
+        }
       }
     }
-    awaitParams();
-  }, [params]);
+    
+    loadParams();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [stableParams]);
 
-  // Load rule data
+  // Load rule data once params are available
   useEffect(() => {
+    if (!paramsLoaded || !category || !ruleId) {
+      console.log('Waiting for params...', { paramsLoaded, category, ruleId });
+      return;
+    }
+
+    let isMounted = true;
+    
     async function loadRule() {
-      if (!awaitedParams) return;
-      
       try {
+        console.log(`Starting to load rule: ${category}/${ruleId}`);
         setLoading(true);
+        setError(null);
         
         // Fetch rule from API
-        const response = await fetch(`/api/rules/${awaitedParams.category}/${awaitedParams.ruleId}`);
+        const response = await fetch(`/api/rules/${category}/${ruleId}`);
+        console.log('API response status:', response.status);
         
         if (!response.ok) {
           if (response.status === 404) {
-            setError('Rule not found');
+            console.log('Rule not found (404)');
+            if (isMounted) setError('Rule not found');
           } else {
             const errorData = await response.json();
-            setError(errorData.error || 'Failed to load rule');
+            console.error('API error:', errorData);
+            if (isMounted) setError(errorData.error || 'Failed to load rule');
           }
           return;
         }
         
         const data = await response.json();
+        console.log('Raw rule data received:', data);
         
         // Sanitize the rule data before setting it in state
         const sanitizedRule = sanitizeRuleData(data.rule);
-        setRule(sanitizedRule);
+        console.log('Rule sanitized and about to set in state:', sanitizedRule.title);
+        
+        if (isMounted) {
+          setRule(sanitizedRule);
+          console.log('Rule set in state successfully');
+        }
       } catch (err) {
         console.error('Error loading rule:', err);
-        setError('Failed to load rule');
+        if (isMounted) setError('Failed to load rule');
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+          console.log('Loading finished');
+        }
       }
     }
     
     loadRule();
-  }, [awaitedParams]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [paramsLoaded, category, ruleId]);
 
-  // Format date for display
-  const formattedDate = rule?.last_updated 
-    ? new Date(rule.last_updated).toLocaleDateString(undefined, { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    : 'Unknown';
+  // Memoize date formatting to prevent re-renders
+  const formattedDate = useMemo(() => {
+    return rule?.last_updated 
+      ? new Date(rule.last_updated).toLocaleDateString(undefined, { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })
+      : 'Unknown';
+  }, [rule?.last_updated]);
 
-  // Handle the rule modal open state
-  const handleOpenModal = () => {
+  // Stable callback functions
+  const handleOpenModal = useCallback(() => {
     setModalOpen(true);
-  };
+  }, []);
 
-  // Handle download with database increment
-  const handleDownload = async () => {
+  const handleDownload = useCallback(async () => {
     if (!rule) return;
     
     try {
@@ -139,7 +230,7 @@ title: ${rule.title}
 description: ${rule.description}
 version: ${rule.version}
 lastUpdated: ${rule.last_updated || new Date().toISOString()}
-category: ${rule.categoryName || awaitedParams?.category}
+category: ${rule.categoryName || category}
 ---
 
 ${rule.content}`;
@@ -174,10 +265,9 @@ ${rule.content}`;
       console.error('Failed to download rule:', error);
       toast.error('Failed to download rule');
     }
-  };
+  }, [rule, category, supabase]);
 
-  // Handle copy action  
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     if (!rule?.content) return;
     
     try {
@@ -187,214 +277,479 @@ ${rule.content}`;
       console.error('Failed to copy to clipboard:', error);
       toast.error('Failed to copy to clipboard');
     }
-  };
+  }, [rule?.content]);
 
-  // Show loading state while params are being awaited or rule is being fetched
-  if (!awaitedParams || loading) {
+  // Show loading state while params or rule are being fetched
+  if (!paramsLoaded || loading) {
     return (
-      <div className="container py-10">
-        <div className="flex items-center gap-1 text-sm text-muted-foreground mb-8">
-          <Link href="/rules" className="hover:text-foreground">Rules</Link>
-          <span>/</span>
-          {awaitedParams ? (
-            <>
-              <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
-                {awaitedParams.category}
-              </Link>
-              <span>/</span>
-              <span className="text-foreground">Loading...</span>
-            </>
+      <motion.div 
+        className="container py-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Link href="/rules" className="hover:text-foreground transition-colors">Rules</Link>
+          <ChevronRight className="w-4 h-4" />
+          {category ? (
+            <Link href={`/rules/${category}`} className="hover:text-foreground transition-colors">
+              {category}
+            </Link>
           ) : (
-            <span className="text-foreground">Loading...</span>
+            <span>Loading...</span>
           )}
-        </div>
+          <ChevronRight className="w-4 h-4" />
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="w-4 h-4 bg-muted rounded animate-pulse"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+            <span>Loading...</span>
+          </div>
+        </motion.div>
         
-        <div className="animate-pulse space-y-6">
-          <div className="h-12 w-3/4 bg-muted rounded"></div>
-          <div className="h-6 w-1/2 bg-muted rounded"></div>
-          <div className="h-64 w-full bg-muted rounded"></div>
-        </div>
-      </div>
+        <motion.div 
+          className="space-y-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {[1, 2, 3].map((i) => (
+            <motion.div
+              key={i}
+              variants={itemVariants}
+              className="animate-pulse space-y-4"
+            >
+              <div className="h-8 w-3/4 bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
+              <div className="h-4 w-1/2 bg-gradient-to-r from-muted via-muted/60 to-muted rounded"></div>
+              <div className="h-32 w-full bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
     );
   }
 
   // Show error state
   if (error || !rule) {
     return (
-      <div className="container py-10">
-        <div className="flex items-center gap-1 text-sm text-muted-foreground mb-8">
-          <Link href="/rules" className="hover:text-foreground">Rules</Link>
-          <span>/</span>
-          <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
-            {awaitedParams.category}
+      <motion.div 
+        className="container py-10"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Link href="/rules" className="hover:text-foreground transition-colors">Rules</Link>
+          <ChevronRight className="w-4 h-4" />
+          <Link href={`/rules/${category}`} className="hover:text-foreground transition-colors">
+            {category}
           </Link>
-          <span>/</span>
-          <span className="text-foreground">Error</span>
-        </div>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-destructive">Error</span>
+        </motion.div>
         
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <AlertCircle className="h-16 w-16 text-destructive mb-4" />
-          <h2 className="text-2xl font-bold mb-2">
+        <motion.div 
+          className="flex flex-col items-center justify-center py-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ 
+              delay: 0.3,
+              type: "spring", 
+              stiffness: 200,
+              damping: 15
+            }}
+            className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-lg mb-6"
+          >
+            <AlertCircle className="h-10 w-10 text-white" />
+          </motion.div>
+          <motion.h2 
+            className="text-3xl font-bold mb-4 bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
             {error || 'Rule not found'}
-          </h2>
-          <p className="text-muted-foreground mb-6">
+          </motion.h2>
+          <motion.p 
+            className="text-muted-foreground mb-8 text-lg max-w-md leading-relaxed"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
             {error === 'Rule not found'
-              ? 'The requested rule could not be found.'
-              : 'There was a problem loading this rule.'}
-          </p>
-          <div className="flex gap-4">
-            <Button variant="outline" onClick={() => router.back()}>
-              Go Back
-            </Button>
-            <Button asChild>
-              <Link href="/rules">Browse All Rules</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
+              ? 'The requested rule could not be found. It might have been moved or deleted.'
+              : 'There was a problem loading this rule. Please try again later.'}
+          </motion.p>
+          <motion.div 
+            className="flex gap-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button variant="outline" onClick={() => router.back()} className="px-6">
+                Go Back
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6">
+                <Link href="/rules">Browse All Rules</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="container py-10">
+    <motion.div 
+      key={`${category}-${ruleId}`}
+      className="container py-10"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="flex flex-col gap-8">
-        {/* Breadcrumb navigation */}
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Link href="/rules" className="hover:text-foreground">Rules</Link>
-          <span>/</span>
-          <Link href={`/rules/${awaitedParams.category}`} className="hover:text-foreground">
-            {awaitedParams.category}
+        {/* Enhanced Breadcrumb navigation */}
+        <motion.div 
+          className="flex items-center gap-2 text-sm text-muted-foreground"
+          variants={itemVariants}
+        >
+          <Link href="/rules" className="hover:text-primary transition-colors">Rules</Link>
+          <ChevronRight className="w-4 h-4" />
+          <Link href={`/rules/${category}`} className="hover:text-primary transition-colors">
+            {category}
           </Link>
-          <span>/</span>
-          <span className="text-foreground">{rule.title}</span>
-        </div>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-foreground font-medium">{rule.title}</span>
+        </motion.div>
         
-        {/* Rule title and description */}
-        <div>
-          <h1 className="text-3xl font-bold">{rule.title}</h1>
-          <p className="mt-2 text-lg text-muted-foreground">{rule.description}</p>
-          
-          {rule.tags && rule.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {rule.tags.map((tag: string) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Enhanced Rule title and description */}
+        <motion.div 
+          className="relative p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border border-blue-200 dark:border-blue-800 backdrop-blur-sm"
+          variants={itemVariants}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-2xl"></div>
+          <div className="relative">
+            <motion.h1 
+              className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              {rule.title}
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-muted-foreground leading-relaxed mb-6"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              {rule.description}
+            </motion.p>
+            
+            {rule.tags && rule.tags.length > 0 && (
+              <motion.div 
+                className="flex flex-wrap gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                {rule.tags.map((tag: string, index: number) => (
+                  <motion.div
+                    key={tag}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + index * 0.05 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300"
+                    >
+                      <Hash className="w-3 h-3 mr-1" />
+                      {tag}
+                    </Badge>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
         
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
-            <Card>
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Enhanced Rule Content */}
+          <motion.div 
+            className="md:col-span-2"
+            variants={cardVariants}
+          >
+            <Card className="bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-900/80 dark:to-gray-800/60 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-xl">
               <CardHeader>
-                <CardTitle>Rule Content</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <FileText className="w-5 h-5" />
+                  Rule Content
+                </CardTitle>
                 <CardDescription>
-                  Read the full rule content or view it in a larger modal
+                  Read the full rule content or view it in a larger modal for better readability
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="prose dark:prose-invert max-w-none border rounded-md p-4 bg-muted/30 overflow-auto max-h-[500px]">
-                  <div className="whitespace-pre-wrap font-mono text-sm">
+                <motion.div 
+                  className="prose dark:prose-invert max-w-none border-2 rounded-lg p-6 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-gray-200 dark:border-gray-700 overflow-auto max-h-[500px] relative"
+                  whileHover={{ borderColor: 'rgb(99 102 241)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
                     {rule.content.length > 1000 
                       ? `${rule.content.substring(0, 1000)}...`
                       : rule.content}
                   </div>
                   
                   {rule.content.length > 1000 && (
-                    <div className="mt-4 text-center">
-                      <Button onClick={handleOpenModal}>View Full Content</Button>
-                    </div>
+                    <motion.div 
+                      className="mt-6 text-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Button 
+                          onClick={handleOpenModal}
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Full Content
+                        </Button>
+                      </motion.div>
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
               </CardContent>
-              <CardFooter className="border-t pt-4">
-                <Button variant="outline" onClick={handleOpenModal} className="w-full">
-                  <Icons.expand className="h-4 w-4 mr-2" />
-                  Open in Modal
-                </Button>
+              <CardFooter className="border-t bg-gradient-to-r from-white/40 to-white/20 dark:from-black/20 dark:to-black/10 pt-4">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full"
+                >
+                  <Button variant="outline" onClick={handleOpenModal} className="w-full border-2 hover:bg-muted/50">
+                    <Icons.expand className="h-4 w-4 mr-2" />
+                    Open in Modal
+                  </Button>
+                </motion.div>
               </CardFooter>
             </Card>
-          </div>
+          </motion.div>
           
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Rule Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <dl className="space-y-4">
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">Version</dt>
-                    <dd>{rule.version}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">Last Updated</dt>
-                    <dd>{formattedDate}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">Downloads</dt>
-                    <dd>{rule.downloads || 0} {(rule.downloads || 0) === 1 ? 'download' : 'downloads'}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">Votes</dt>
-                    <dd>{rule.votes || 0} {(rule.votes || 0) === 1 ? 'vote' : 'votes'}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-muted-foreground">Category</dt>
-                    <dd className="flex items-center gap-1">
-                      <span>{rule.categoryName || awaitedParams?.category}</span>
-                    </dd>
-                  </div>
-                </dl>
-              </CardContent>
-              <CardFooter className="border-t pt-4">
-                {/* Use the RuleActions component for proper functionality */}
-                <RuleActions rule={rule} onDownload={handleDownload} />
-              </CardFooter>
-            </Card>
-            
-            {rule.compatibility && Object.values(rule.compatibility).some(arr => arr && arr.length > 0) && (
-              <Card>
+            {/* Enhanced Rule Information */}
+            <motion.div variants={cardVariants}>
+              <Card className="bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                 <CardHeader>
-                  <CardTitle>Compatibility</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Rule Information
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {rule.compatibility.frameworks && rule.compatibility.frameworks.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2">Frameworks</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {rule.compatibility.frameworks.map((framework: string) => (
-                          <Badge key={framework} variant="outline">{framework}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {rule.compatibility.ides && rule.compatibility.ides.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2">IDEs</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {rule.compatibility.ides.map((ide: string) => (
-                          <Badge key={ide} variant="outline">{ide}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {rule.compatibility.aiAssistants && rule.compatibility.aiAssistants.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-muted-foreground mb-2">AI Assistants</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {rule.compatibility.aiAssistants.map((assistant: string) => (
-                          <Badge key={assistant} variant="outline">{assistant}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                <CardContent>
+                  <dl className="space-y-4">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 rounded-lg bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20 border border-primary/30"
+                    >
+                      <dt className="text-sm font-medium text-primary dark:text-primary/90 flex items-center gap-1">
+                        <Hash className="w-3 h-3" />
+                        Version
+                      </dt>
+                      <dd className="font-semibold text-primary dark:text-primary/90">{rule.version}</dd>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 rounded-lg bg-gradient-to-r from-success/10 to-success/20 dark:from-success/10 dark:to-success/20 border border-success/30"
+                    >
+                      <dt className="text-sm font-medium text-success dark:text-success/90 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        Last Updated
+                      </dt>
+                      <dd className="font-semibold text-success dark:text-success/90">{formattedDate}</dd>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 rounded-lg bg-gradient-to-r from-accent/10 to-accent/20 dark:from-accent/10 dark:to-accent/20 border border-accent/30"
+                    >
+                      <dt className="text-sm font-medium text-accent-foreground dark:text-accent-foreground/90 flex items-center gap-1">
+                        <Download className="w-3 h-3" />
+                        Downloads
+                      </dt>
+                      <dd className="font-semibold text-accent-foreground dark:text-accent-foreground/90">
+                        {rule.downloads || 0} {(rule.downloads || 0) === 1 ? 'download' : 'downloads'}
+                      </dd>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 rounded-lg bg-gradient-to-r from-warning/10 to-warning/20 dark:from-warning/10 dark:to-warning/20 border border-warning/30"
+                    >
+                      <dt className="text-sm font-medium text-warning dark:text-warning/90 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
+                        Votes
+                      </dt>
+                      <dd className="font-semibold text-warning dark:text-warning/90">
+                        {rule.votes || 0} {(rule.votes || 0) === 1 ? 'vote' : 'votes'}
+                      </dd>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="p-3 rounded-lg bg-gradient-to-r from-info/10 to-info/20 dark:from-info/10 dark:to-info/20 border border-info/30"
+                    >
+                      <dt className="text-sm font-medium text-info dark:text-info/90 flex items-center gap-1">
+                        <Layers className="w-3 h-3" />
+                        Category
+                      </dt>
+                      <dd className="font-semibold text-info dark:text-info/90">
+                        {rule.categoryName || category}
+                      </dd>
+                    </motion.div>
+                  </dl>
                 </CardContent>
+                <CardFooter className="border-t bg-gradient-to-r from-surface-2/40 to-surface-2/20 dark:from-surface-2/20 dark:to-surface-2/10 pt-4">
+                  {/* Use the RuleActions component for proper functionality */}
+                  <RuleActions rule={rule} onDownload={handleDownload} />
+                </CardFooter>
               </Card>
+            </motion.div>
+            
+            {/* Enhanced Compatibility Card */}
+            {rule.compatibility && Object.values(rule.compatibility).some(arr => arr && arr.length > 0) && (
+              <motion.div variants={cardVariants}>
+                <Card className="bg-gradient-to-br from-surface-1/80 to-surface-2/60 dark:from-surface-1/80 dark:to-surface-2/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Cpu className="w-5 h-5" />
+                      Compatibility
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {rule.compatibility.frameworks && rule.compatibility.frameworks.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                      >
+                        <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                          <Layers className="w-3 h-3" />
+                          Frameworks
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {rule.compatibility.frameworks.map((framework: string, index: number) => (
+                            <motion.div
+                              key={framework}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.2 + index * 0.05 }}
+                              whileHover={{ scale: 1.05 }}
+                            >
+                              <Badge 
+                                variant="outline"
+                                className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border-primary/50 dark:border-primary/30 text-primary"
+                              >
+                                {framework}
+                              </Badge>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                    
+                    {rule.compatibility.ides && rule.compatibility.ides.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                          <Cpu className="w-3 h-3" />
+                          IDEs
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {rule.compatibility.ides.map((ide: string, index: number) => (
+                            <motion.div
+                              key={ide}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.3 + index * 0.05 }}
+                              whileHover={{ scale: 1.05 }}
+                            >
+                              <Badge 
+                                variant="outline"
+                                className="bg-gradient-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success"
+                              >
+                                {ide}
+                              </Badge>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                    
+                    {rule.compatibility.aiAssistants && rule.compatibility.aiAssistants.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" />
+                          AI Assistants
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {rule.compatibility.aiAssistants.map((assistant: string, index: number) => (
+                            <motion.div
+                              key={assistant}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.4 + index * 0.05 }}
+                              whileHover={{ scale: 1.05 }}
+                            >
+                              <Badge 
+                                variant="outline"
+                                className="bg-gradient-to-r from-accent/20 to-accent/30 dark:from-accent/10 dark:to-accent/20 border-accent/50 dark:border-accent/30 text-accent-foreground"
+                              >
+                                {assistant}
+                              </Badge>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
             )}
           </div>
         </div>
@@ -406,6 +761,6 @@ ${rule.content}`;
         open={modalOpen}
         onOpenChange={setModalOpen}
       />
-    </div>
+    </motion.div>
   );
 }

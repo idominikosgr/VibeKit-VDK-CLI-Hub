@@ -203,7 +203,7 @@ export function ToolPreferencesStep({
         className={cn(
           "cursor-pointer transition-all duration-200 hover:shadow-md",
           isSelected && "ring-2 ring-primary bg-primary/5",
-          isRequired && "border-green-200 bg-green-50/50 dark:bg-green-950/20"
+          isRequired && "border-success/50 bg-success/10 dark:bg-success/10"
         )}
         onClick={() => handleToolToggle(tool.id)}
       >
@@ -212,7 +212,7 @@ export function ToolPreferencesStep({
             <CardTitle className="text-base">{tool.name}</CardTitle>
             <div className="flex gap-1">
               {isRequired && (
-                <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                <Badge variant="secondary" className="text-xs bg-success/20 text-success dark:text-success/90">
                   Recommended
                 </Badge>
               )}
@@ -262,7 +262,7 @@ export function ToolPreferencesStep({
 
       {/* Recommended Tools Section */}
       {requiredTools.length > 0 && (
-        <Card className="bg-green-50/50 border-green-200 dark:bg-green-950/20 dark:border-green-800">
+        <Card className="bg-success/10 border-success/50 dark:bg-success/10 dark:border-success/30">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Recommended Tools</CardTitle>
             <CardDescription>

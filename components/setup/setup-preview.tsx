@@ -358,12 +358,12 @@ ${rule.content}`;
                       <div className="flex items-center">
                         {item.type === "folder" ? (
                           <>
-                            <Folder className="h-4 w-4 mr-2 text-blue-500" />
+                            <Folder className="h-4 w-4 mr-2 text-primary" />
                             <span className="font-medium">{item.name}/</span>
                           </>
                         ) : (
                           <>
-                            <File className="h-4 w-4 mr-2 text-gray-500" />
+                            <File className="h-4 w-4 mr-2 text-muted-foreground" />
                             <span>{item.name}</span>
                           </>
                         )}

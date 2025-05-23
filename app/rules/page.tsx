@@ -1,75 +1,126 @@
+"use client"
+
+import React, { useState, useTransition, useEffect } from "react"
 import Link from "next/link"
+import { motion } from "framer-motion"
+import { useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
 import { Icons } from "@/components/icons"
-import { getRuleCategories, searchRules, getAllRules } from "@/lib/services/supabase-rule-service"
+import { fetchRuleCategories, fetchSearchRules, fetchAllRules, fetchSingleRule } from "@/lib/services/client-rule-service"
 import { SearchBar } from "@/components/search/search-bar"
 import { CategoryGridSkeleton } from '@/components/ui/loading'
 import { RuleCategory, Rule } from '@/lib/types'
 import { AlertCircle } from 'lucide-react'
+import { CategoryCard } from "@/components/rules/category-card"
+import { RuleCard } from "@/components/rules/rule-card"
+import { ViewToggle } from "@/components/ui/view-toggle"
+import { RuleModal } from "@/components/rules/rule-modal"
 
-
-interface RulesCatalogPageProps {
-  searchParams?: { q?: string; tab?: string };
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
 }
 
-export default async function RulesCatalogPage({ searchParams }: RulesCatalogPageProps) {
-  // Access searchParams after awaiting it
-  const params = await searchParams;
-  const searchQuery = params?.q || "";
-  const tab = params?.tab || "categories";
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
 
-  // Fetch categories from Supabase
-  let categories: RuleCategory[] = [];
-  let rules: Rule[] = [];
-  let error = null;
+export default function RulesCatalogPage() {
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('q') || ""
+  const tab = searchParams.get('tab') || "categories"
+  
+  const [categoriesView, setCategoriesView] = useState<"cards" | "details">("cards")
+  const [rulesView, setRulesView] = useState<"cards" | "details">("details")
+  const [categories, setCategories] = useState<RuleCategory[]>([])
+  const [rules, setRules] = useState<Rule[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+  
+  // Modal state
+  const [selectedRule, setSelectedRule] = useState<Rule | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalLoading, setModalLoading] = useState(false)
 
-  try {
-    // Use the supabase-rule-service implementation
-    categories = await getRuleCategories();
-    console.log(`Loaded ${categories.length} categories from Supabase`);
+  // Load data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        // Load categories
+        const categoriesData = await fetchRuleCategories()
+        setCategories(categoriesData)
+        console.log(`Loaded ${categoriesData.length} categories from API`)
 
-    // If we're on the rules tab, fetch rules
-    if (tab === "rules") {
-      if (searchQuery) {
-        // Search for specific rules
-        const rulesResult = await searchRules(searchQuery, 1, 50);
-        rules = rulesResult.data;
-        console.log(`Loaded ${rules.length} rules from search: "${searchQuery}"`);
-      } else {
-        // Get all rules
-        const rulesResult = await getAllRules(1, 50);
-        rules = rulesResult.data;
-        console.log(`Loaded ${rules.length} rules from Supabase (all rules)`);
+        // If we're on the rules tab, fetch rules
+        if (tab === "rules") {
+          if (searchQuery) {
+            const rulesResult = await fetchSearchRules(searchQuery, 1, 50)
+            setRules(rulesResult.data)
+            console.log(`Loaded ${rulesResult.data.length} rules from search: "${searchQuery}"`)
+          } else {
+            const rulesResult = await fetchAllRules(1, 50)
+            setRules(rulesResult.data)
+            console.log(`Loaded ${rulesResult.data.length} rules from API (all rules)`)
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch data:', err)
+        setError('Failed to load data. Please try again.')
+      } finally {
+        setLoading(false)
       }
     }
-  } catch (err) {
-    console.error('Failed to fetch data:', err);
-    error = 'Failed to load data. Please try again.';
+
+    loadData()
+  }, [searchQuery, tab])
+
+  // Handle modal open for rule preview
+  const handleOpenRuleModal = async (rule: Rule) => {
+    try {
+      setModalLoading(true)
+      setModalOpen(true)
+      
+      // Fetch the full rule data
+      const fullRule = await fetchSingleRule(rule.id, rule.categorySlug)
+      setSelectedRule(fullRule)
+    } catch (err) {
+      console.error('Failed to load rule for modal:', err)
+      setError('Failed to load rule details')
+      setModalOpen(false)
+    } finally {
+      setModalLoading(false)
+    }
   }
 
-  // Get icon component based on icon name
-  const getIconComponent = (iconName: string) => {
-    switch (iconName) {
-      case "code": return <Icons.code className="h-4 w-4" />;
-      case "tasks": return <Icons.tasks className="h-4 w-4" />;
-      case "settings": return <Icons.settings className="h-4 w-4" />;
-      case "brain": return <Icons.brain className="h-4 w-4" />;
-      case "layers": return <Icons.code className="h-4 w-4" />; // Fallback to code icon
-      case "tool": return <Icons.settings className="h-4 w-4" />; // Use settings icon instead
-      case "robot": return <Icons.logo className="h-4 w-4" />; // Use logo icon instead
-      default: return <Icons.code className="h-4 w-4" />;
-    }
-  };
+  // Handle modal close
+  const handleCloseModal = () => {
+    setModalOpen(false)
+    setSelectedRule(null)
+  }
 
   return (
     <div className="container py-10">
-      <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8">
+      <motion.div 
+        className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8"
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants}
+        transition={{ duration: 0.6 }}
+      >
         <div className="flex-1 space-y-4">
-          <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl">
+          <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
             Rules Catalog
           </h1>
           <p className="text-xl text-muted-foreground">
@@ -78,181 +129,178 @@ export default async function RulesCatalogPage({ searchParams }: RulesCatalogPag
         </div>
         <div className="flex items-center gap-2">
           <Link href="/setup">
-            <Button>
+            <Button className="hover:scale-105 transition-transform duration-200">
               <Icons.settings className="mr-2 h-4 w-4" />
               Setup Wizard
             </Button>
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       <Tabs defaultValue={tab} className="mt-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-          <TabsList>
+        <motion.div 
+          className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6"
+          initial="hidden"
+          animate="visible"
+          variants={itemVariants}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <TabsList className="bg-background border">
             <TabsTrigger value="categories" asChild>
-              <Link href="/rules?tab=categories">Categories</Link>
+              <Link href="/rules?tab=categories" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <Icons.folder className="mr-2 h-4 w-4" />
+                Categories
+              </Link>
             </TabsTrigger>
             <TabsTrigger value="rules" asChild>
-              <Link href="/rules?tab=rules">All Rules</Link>
+              <Link href="/rules?tab=rules" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <Icons.code className="mr-2 h-4 w-4" />
+                All Rules
+              </Link>
             </TabsTrigger>
           </TabsList>
-          <div className="w-full max-w-sm">
-            <SearchBar
-              placeholder={tab === "rules" ? "Search rules..." : "Search categories..."}
+          
+          <div className="flex items-center gap-4">
+            <div className="w-full max-w-sm">
+              <SearchBar
+                placeholder={tab === "rules" ? "Search rules..." : "Search categories..."}
+              />
+            </div>
+            <ViewToggle
+              view={tab === "categories" ? categoriesView : rulesView}
+              onViewChange={(view) => {
+                if (tab === "categories") {
+                  setCategoriesView(view)
+                } else {
+                  setRulesView(view)
+                }
+              }}
             />
           </div>
-        </div>
+        </motion.div>
 
         {error ? (
-          // Error state
-          <div className="flex flex-col items-center justify-center py-16 text-center">
+          <motion.div 
+            className="flex flex-col items-center justify-center py-16 text-center"
+            initial="hidden"
+            animate="visible"
+            variants={itemVariants}
+          >
             <AlertCircle className="h-16 w-16 text-destructive mb-4" />
             <h3 className="text-2xl font-bold mb-2">Failed to load data</h3>
             <p className="text-muted-foreground mb-6">{error}</p>
             <Button variant="outline" asChild>
               <Link href="/rules">Try Again</Link>
             </Button>
-          </div>
+          </motion.div>
         ) : (
           <>
             <TabsContent value="categories">
-              {categories.length > 0 ? (
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {categories.map((category) => (
-                    <Link href={`/rules/${category.slug}`} key={category.id}>
-                      <Card className="h-full overflow-hidden transition-colors hover:bg-muted/50">
-                        <CardHeader>
-                          <div className="flex items-center gap-2">
-                            {getIconComponent(category.icon || 'code')}
-                            <CardTitle>{category.title || category.name}</CardTitle>
-                          </div>
-                          <CardDescription>{category.description}</CardDescription>
-                        </CardHeader>
-                        <CardFooter>
-                          <p className="text-sm text-muted-foreground">
-                            {category.count} {category.count === 1 ? 'rule' : 'rules'}
-                          </p>
-                        </CardFooter>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
+              {loading ? (
                 <CategoryGridSkeleton count={8} />
+              ) : categories.length > 0 ? (
+                <motion.div 
+                  className={
+                    categoriesView === "cards" 
+                      ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                      : "grid gap-4 sm:grid-cols-1 lg:grid-cols-2"
+                  }
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                >
+                  {categories.map((category, index) => (
+                    <motion.div
+                      key={category.id}
+                      variants={itemVariants}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <CategoryCard 
+                        category={category} 
+                        view={categoriesView}
+                      />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div 
+                  className="flex flex-col items-center justify-center py-16 text-center"
+                  initial="hidden"
+                  animate="visible"
+                  variants={itemVariants}
+                >
+                  <Icons.folder className="h-16 w-16 text-muted-foreground mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">No categories found</h3>
+                  <p className="text-muted-foreground mb-6">
+                    No rule categories are available at this time.
+                  </p>
+                </motion.div>
               )}
             </TabsContent>
 
             <TabsContent value="rules">
-              {rules.length > 0 ? (
-                <div className="space-y-6">
-                  {rules.map((rule) => (
-                    <Card key={rule.id} className="overflow-hidden transition-colors hover:bg-muted/50">
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <CardTitle className="text-xl">
-                              <Link 
-                                href={`/rules/${rule.categorySlug || 'core'}/${rule.id}`}
-                                className="hover:text-primary"
-                              >
-                                {rule.title}
-                              </Link>
-                            </CardTitle>
-                            <CardDescription className="mt-2">
-                              {rule.description}
-                            </CardDescription>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{rule.votes} votes</span>
-                            <span>•</span>
-                            <span>{rule.downloads} downloads</span>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex flex-wrap gap-2">
-                          {rule.tags?.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex justify-between items-center">
-                        <div className="text-sm text-muted-foreground">
-                          Version {rule.version} • Category: {rule.categoryName}
-                        </div>
-                        <Button variant="outline" size="sm" asChild>
-                          <Link href={`/rules/${rule.categorySlug || 'core'}/${rule.id}`}>
-                            View Rule
-                          </Link>
-                        </Button>
-                      </CardFooter>
-                    </Card>
+              {loading ? (
+                <CategoryGridSkeleton count={6} />
+              ) : rules.length > 0 ? (
+                <motion.div 
+                  className={
+                    rulesView === "cards"
+                      ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                      : "space-y-4"
+                  }
+                  initial="hidden"
+                  animate="visible"
+                  variants={containerVariants}
+                >
+                  {rules.map((rule, index) => (
+                    <motion.div
+                      key={rule.id}
+                      variants={itemVariants}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <RuleCard 
+                        rule={rule} 
+                        view={rulesView}
+                        onOpenModal={handleOpenRuleModal}
+                      />
+                    </motion.div>
                   ))}
-                </div>
-              ) : tab === "rules" ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
+                </motion.div>
+              ) : (
+                <motion.div 
+                  className="flex flex-col items-center justify-center py-16 text-center"
+                  initial="hidden"
+                  animate="visible"
+                  variants={itemVariants}
+                >
                   <AlertCircle className="h-16 w-16 text-muted-foreground mb-4" />
                   <h3 className="text-2xl font-bold mb-2">No rules found</h3>
                   <p className="text-muted-foreground mb-6">
                     {searchQuery 
                       ? `No rules match "${searchQuery}".`
-                      : 'No rules available at the moment.'
+                      : "No rules are available at this time."
                     }
                   </p>
-                  {searchQuery && (
-                    <Button variant="outline" asChild>
-                      <Link href="/rules?tab=rules">Clear Search</Link>
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <CategoryGridSkeleton count={8} />
+                  <Button variant="outline" asChild>
+                    <Link href="/setup">
+                      <Icons.settings className="mr-2 h-4 w-4" />
+                      Setup Wizard
+                    </Link>
+                  </Button>
+                </motion.div>
               )}
             </TabsContent>
           </>
         )}
       </Tabs>
 
-      <div className="mt-16">
-        <h2 className="text-2xl font-bold tracking-tight mb-6">Featured Rule Collections</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Next.js Enterprise Stack</CardTitle>
-              <CardDescription>Complete guidelines for Next.js with server components, Supabase, and more</CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Link href="/collections/nextjs-enterprise">
-                <Button variant="outline" size="sm">View Collection</Button>
-              </Link>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Modern Swift & SwiftUI</CardTitle>
-              <CardDescription>Comprehensive rules for Swift 5.9/6.0, SwiftUI, and SwiftData</CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Link href="/collections/modern-swift">
-                <Button variant="outline" size="sm">View Collection</Button>
-              </Link>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>AI Development Tools</CardTitle>
-              <CardDescription>Memory management, sequential thinking, and AI workflow integration</CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Link href="/collections/ai-tools">
-                <Button variant="outline" size="sm">View Collection</Button>
-              </Link>
-            </CardFooter>
-          </Card>
-        </div>
-      </div>
+      {selectedRule && (
+        <RuleModal
+          rule={selectedRule}
+          open={modalOpen}
+          onOpenChange={handleCloseModal}
+        />
+      )}
     </div>
   )
 }
