@@ -616,6 +616,14 @@ export type Database = {
           votes: number | null
         }[]
       }
+      get_table_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          table_name: string
+          row_count: number
+          size_bytes: number
+        }[]
+      }
       gtrgm_compress: {
         Args: { "": unknown }
         Returns: unknown
@@ -637,7 +645,7 @@ export type Database = {
         Returns: unknown
       }
       increment_rule_downloads: {
-        Args: { rule_id: string }
+        Args: { target_rule_id: string }
         Returns: undefined
       }
       is_admin: {
@@ -645,7 +653,7 @@ export type Database = {
         Returns: boolean
       }
       remove_rule_vote: {
-        Args: { rule_id: string }
+        Args: { target_rule_id: string }
         Returns: undefined
       }
       search_rules: {
@@ -684,7 +692,7 @@ export type Database = {
         Returns: string[]
       }
       vote_for_rule: {
-        Args: { rule_id: string }
+        Args: { target_rule_id: string }
         Returns: undefined
       }
     }
@@ -810,3 +818,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+

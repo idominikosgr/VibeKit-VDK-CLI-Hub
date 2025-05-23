@@ -250,7 +250,7 @@ ${rule.content}`;
       
       // Increment download count in database
       try {
-        await supabase.rpc('increment_rule_downloads', { rule_id: rule.id });
+        await supabase.rpc('increment_rule_downloads', { target_rule_id: rule.id });
         console.log('Download count incremented for rule:', rule.id);
         
         // Update local rule state to reflect new download count

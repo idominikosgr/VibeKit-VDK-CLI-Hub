@@ -331,7 +331,7 @@ export async function incrementDownload(ruleId: string) {
   const supabase = await createServerSupabaseClient();
   
   try {
-    await supabase.rpc('increment_rule_downloads', { rule_id: ruleId });
+    await supabase.rpc('increment_rule_downloads', { target_rule_id: ruleId });
     return { success: true };
   } catch (error) {
     console.error('Error incrementing downloads:', error);

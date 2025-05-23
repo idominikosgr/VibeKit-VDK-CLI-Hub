@@ -515,7 +515,7 @@ export async function incrementRuleDownloads(ruleId: string): Promise<void> {
   try {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.rpc('increment_rule_downloads', {
-      rule_id: ruleId
+      target_rule_id: ruleId
     });
 
     if (error) {

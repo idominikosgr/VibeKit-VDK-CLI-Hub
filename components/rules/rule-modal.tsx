@@ -235,7 +235,13 @@ ${safeRule.content}`;
       setIsVoting(true);
 
       // Check if user is logged in
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        toast.error("Authentication error");
+        return;
+      }
 
       if (!session?.user) {
         toast("Please sign in to vote", {
@@ -247,15 +253,45 @@ ${safeRule.content}`;
         return;
       }
 
+      console.log("Voting for rule:", rule.id, "User:", session.user.id);
+
       if (hasVoted) {
         // Remove vote
-        await supabase.rpc('remove_rule_vote', { rule_id: rule.id });
+        console.log("Removing vote...");
+        const { error } = await supabase.rpc('remove_rule_vote', { target_rule_id: rule.id });
+        
+        if (error) {
+          console.error("Remove vote error:", error);
+          console.error("Error details:", {
+            message: error.message,
+            code: error.code,
+            hint: error.hint,
+            details: error.details
+          });
+          toast.error(`Failed to remove vote: ${error.message || error.code || 'Unknown error'}`);
+          return;
+        }
+        
         setHasVoted(false);
         setVoteCount(count => Math.max(0, count - 1));
         toast.success("Vote removed");
       } else {
         // Add vote
-        await supabase.rpc('vote_for_rule', { rule_id: rule.id });
+        console.log("Adding vote...");
+        const { error } = await supabase.rpc('vote_for_rule', { target_rule_id: rule.id });
+        
+        if (error) {
+          console.error("Add vote error:", error);
+          console.error("Error details:", {
+            message: error.message,
+            code: error.code,
+            hint: error.hint,
+            details: error.details
+          });
+          toast.error(`Failed to add vote: ${error.message || error.code || 'Unknown error'}`);
+          return;
+        }
+        
         setHasVoted(true);
         setVoteCount(count => count + 1);
         toast.success("Vote added");
