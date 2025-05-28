@@ -36,7 +36,7 @@ function SidebarItem({ page, level, isSelected, onSelect, onCreateChild, onDelet
       <div 
         className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-150 group ${
           isSelected 
-            ? 'bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 text-primary shadow-sm' 
+            ? 'bg-linear-to-r from-primary/10 to-accent/10 border border-primary/20 text-primary shadow-sm' 
             : 'hover:bg-muted/50 text-foreground/80 hover:text-foreground'
         }`}
         style={{ paddingLeft: `${level * 16 + 12}px` }}
@@ -318,7 +318,7 @@ export default function DocsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/50">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-background/50">
       <div className="flex h-screen">
         {/* Sidebar */}
         <div className="w-80 bg-card/80 backdrop-blur-sm border-r border-border/50 flex flex-col shadow-sm">
@@ -326,7 +326,7 @@ export default function DocsPage() {
           <div className="p-6 border-b border-border/30">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center">
                   <FileText className="w-4 h-4 text-primary-foreground" />
                 </div>
                 <h1 className="text-lg font-semibold text-foreground">Documentation</h1>
@@ -383,9 +383,9 @@ export default function DocsPage() {
           {/* Footer */}
           {!user && (
             <div className="p-4 border-t border-border/30">
-              <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-4 border border-primary/10">
+              <div className="bg-linear-to-r from-primary/5 to-accent/5 rounded-lg p-4 border border-primary/10">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-r from-primary to-accent flex items-center justify-center">
                     <UserPlus className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -394,7 +394,7 @@ export default function DocsPage() {
                   </div>
                 </div>
                 <Link href="/auth/login" className="block">
-                  <Button size="sm" className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  <Button size="sm" className="w-full bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
                     <LogIn className="w-3 h-3 mr-2" />
                     Sign In
                   </Button>
@@ -461,7 +461,7 @@ export default function DocsPage() {
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center max-w-md mx-auto px-6">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <FileText className="w-10 h-10 text-primary/70" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to Documentation</h2>
@@ -471,7 +471,7 @@ export default function DocsPage() {
                 {user ? (
                   <Button 
                     onClick={() => handleCreatePage()}
-                    className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
+                    className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
                     size="lg"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -481,7 +481,7 @@ export default function DocsPage() {
                   <div className="space-y-4">
                     <Link href="/auth/login">
                       <Button 
-                        className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
+                        className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
                         size="lg"
                       >
                         <UserPlus className="w-4 h-4 mr-2" />

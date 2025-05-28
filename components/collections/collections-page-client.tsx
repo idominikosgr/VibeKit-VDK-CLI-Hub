@@ -67,14 +67,14 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
     >
       <div className="flex flex-col gap-8">
         <motion.div 
-          className="flex items-center justify-between p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 dark:from-accent/20 dark:to-primary/20 border border-accent dark:border-accent/50 backdrop-blur-sm"
+          className="flex items-center justify-between p-6 rounded-2xl bg-linear-to-br from-accent/10 to-primary/10 dark:from-accent/20 dark:to-primary/20 border border-accent dark:border-accent/50 backdrop-blur-sm"
           variants={itemVariants}
         >
           <div className="flex items-center gap-4">
             <motion.div
               whileHover={{ rotate: 12, scale: 1.1 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg"
+              className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg"
             >
               <FolderOpen className="w-6 h-6 text-white" />
             </motion.div>
@@ -93,7 +93,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
           >
             <Button 
               asChild
-              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
+              className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
             >
               <Link href="/collections/new">
                 <Plus className="mr-2 h-5 w-5" />
@@ -121,7 +121,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                 custom={index}
               >
                 <Link href={`/collections/${collection.id}`}>
-                  <Card className="h-full overflow-hidden bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 hover:border-accent/50 dark:hover:border-accent/30 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                  <Card className="h-full overflow-hidden bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 hover:border-accent/50 dark:hover:border-accent/30 shadow-lg hover:shadow-2xl transition-all duration-300 group">
                     <CardHeader className="pb-3">
                       <div className="flex justify-between items-start gap-3">
                         <div className="flex-1 min-w-0">
@@ -136,7 +136,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           {collection.is_public ? (
                             <Badge 
                               variant="outline" 
-                              className="bg-gradient-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success dark:text-success/90"
+                              className="bg-linear-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success dark:text-success/90"
                             >
                               <Eye className="w-3 h-3 mr-1" />
                               Public
@@ -144,7 +144,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           ) : (
                             <Badge 
                               variant="outline"
-                              className="bg-gradient-to-r from-muted to-muted/80 dark:from-muted/30 dark:to-muted/20 border-border dark:border-border/50 text-muted-foreground"
+                              className="bg-linear-to-r from-muted to-muted/80 dark:from-muted/30 dark:to-muted/20 border-border dark:border-border/50 text-muted-foreground"
                             >
                               <Lock className="w-3 h-3 mr-1" />
                               Private
@@ -169,7 +169,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                         </motion.div>
                       </div>
                     </CardContent>
-                    <CardFooter className="border-t border-border/20 pt-4 bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10">
+                    <CardFooter className="border-t border-border/20 pt-4 bg-linear-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10">
                       <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
@@ -178,7 +178,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           </span>
                         </div>
                         <motion.div
-                          className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-sm"
+                          className="w-6 h-6 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-sm"
                           whileHover={{ scale: 1.2, rotate: 180 }}
                           transition={{ type: "spring", stiffness: 300 }}
                         >
@@ -196,7 +196,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
             variants={itemVariants}
             className="flex justify-center py-16"
           >
-            <Card className="max-w-md w-full bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl text-center">
+            <Card className="max-w-md w-full bg-linear-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl text-center">
               <CardContent className="pt-8 pb-8">
                 <motion.div
                   initial={{ scale: 0, rotate: -90 }}
@@ -207,7 +207,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                     stiffness: 200,
                     damping: 15
                   }}
-                  className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6"
+                  className="mx-auto w-20 h-20 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6"
                 >
                   <FolderOpen className="w-10 h-10 text-white" />
                 </motion.div>
@@ -236,7 +236,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                 >
                   <Button 
                     asChild
-                    className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
+                    className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
                   >
                     <Link href="/collections/new">
                       <Plus className="mr-2 h-5 w-5" />

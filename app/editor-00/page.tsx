@@ -239,11 +239,11 @@ export default function EditorDemoPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/50">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-background/50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center mx-auto mb-6 shadow-lg">
             <Sparkles className="w-8 h-8 text-primary/70" />
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">Enhanced Documentation Editor</h1>
@@ -275,7 +275,7 @@ export default function EditorDemoPage() {
           {features.map((feature, index) => (
             <Card key={index} className="bg-card/60 backdrop-blur-sm border-border/50 hover:shadow-lg transition-all duration-200">
               <CardHeader className="pb-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-3">
                   <feature.icon className="w-5 h-5 text-primary/70" />
                 </div>
                 <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -324,7 +324,7 @@ export default function EditorDemoPage() {
         </Card>
 
         {/* Usage Instructions */}
-        <Card className="mt-8 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20">
+        <Card className="mt-8 bg-linear-to-r from-primary/5 to-accent/5 border-primary/20">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Code className="w-5 h-5 text-primary" />

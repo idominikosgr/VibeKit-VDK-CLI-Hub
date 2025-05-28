@@ -120,7 +120,7 @@ export default function RulesCatalogPage() {
         transition={{ duration: 0.6 }}
       >
         <div className="flex-1 space-y-4">
-          <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+          <h1 className="inline-block text-4xl font-bold tracking-tight lg:text-5xl bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
             Rules Catalog
           </h1>
           <p className="text-xl text-muted-foreground">

@@ -19,7 +19,7 @@ export function SiteFooter() {
       variants={fadeInUp}
       transition={{ duration: 0.6 }}
     >
-      <div className="container max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container max-w-(--breakpoint-2xl) mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-4 gap-8"
           variants={fadeInUp}
@@ -32,7 +32,7 @@ export function SiteFooter() {
               transition={{ duration: 0.2 }}
             >
               <Icons.logo className="h-6 w-6 text-primary" />
-              <span className="font-bold text-lg bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              <span className="font-bold text-lg bg-linear-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                 CodePilotRules Hub
               </span>
             </motion.div>

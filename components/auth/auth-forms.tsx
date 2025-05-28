@@ -46,13 +46,13 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-2xl">
+      <Card className="w-full max-w-md mx-auto bg-linear-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-2xl">
         <CardHeader className="space-y-4">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg"
+            className="mx-auto w-16 h-16 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg"
           >
             <Lock className="w-8 h-8 text-white" />
           </motion.div>
@@ -61,7 +61,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold text-center bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
               Welcome Back
             </CardTitle>
             <CardDescription className="text-center text-base mt-2">
@@ -130,7 +130,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             >
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
@@ -230,13 +230,13 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-2xl">
+      <Card className="w-full max-w-md mx-auto bg-linear-to-br from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-sm border-2 border-white/20 dark:border-white/10 shadow-2xl">
         <CardHeader className="space-y-4">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-success to-primary flex items-center justify-center shadow-lg"
+            className="mx-auto w-16 h-16 rounded-full bg-linear-to-br from-success to-primary flex items-center justify-center shadow-lg"
           >
             <User className="w-8 h-8 text-white" />
           </motion.div>
@@ -328,7 +328,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             >
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Creating account...' : 'Create account'}

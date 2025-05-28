@@ -326,9 +326,9 @@ ${rule.content}`;
               variants={itemVariants}
               className="animate-pulse space-y-4"
             >
-              <div className="h-8 w-3/4 bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
-              <div className="h-4 w-1/2 bg-gradient-to-r from-muted via-muted/60 to-muted rounded"></div>
-              <div className="h-32 w-full bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
+              <div className="h-8 w-3/4 bg-linear-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
+              <div className="h-4 w-1/2 bg-linear-to-r from-muted via-muted/60 to-muted rounded"></div>
+              <div className="h-32 w-full bg-linear-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
             </motion.div>
           ))}
         </motion.div>
@@ -375,12 +375,12 @@ ${rule.content}`;
               stiffness: 200,
               damping: 15
             }}
-            className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg mb-6"
+            className="mx-auto w-20 h-20 rounded-full bg-linear-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg mb-6"
           >
             <AlertCircle className="h-10 w-10 text-white" />
           </motion.div>
           <motion.h2 
-            className="text-3xl font-bold mb-4 bg-gradient-to-r from-destructive to-destructive/80 bg-clip-text text-transparent"
+            className="text-3xl font-bold mb-4 bg-linear-to-r from-destructive to-destructive/80 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -415,7 +415,7 @@ ${rule.content}`;
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button asChild className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-6">
+              <Button asChild className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 px-6">
                 <Link href="/rules">Browse All Rules</Link>
               </Button>
             </motion.div>
@@ -450,13 +450,13 @@ ${rule.content}`;
         
         {/* Enhanced Rule title and description */}
         <motion.div 
-          className="relative p-8 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
+          className="relative p-8 rounded-2xl bg-linear-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
           variants={itemVariants}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-accent/5 rounded-2xl"></div>
           <div className="relative">
             <motion.h1 
-              className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-4"
+              className="text-4xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent mb-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -489,7 +489,7 @@ ${rule.content}`;
                   >
                     <Badge 
                       variant="secondary" 
-                      className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary"
+                      className="bg-linear-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary"
                     >
                       <Hash className="w-3 h-3 mr-1" />
                       {tag}
@@ -507,7 +507,7 @@ ${rule.content}`;
             className="md:col-span-2"
             variants={cardVariants}
           >
-            <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+            <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <FileText className="w-5 h-5" />
@@ -519,7 +519,7 @@ ${rule.content}`;
               </CardHeader>
               <CardContent>
                 <motion.div 
-                  className="prose dark:prose-invert max-w-none border-2 rounded-lg p-6 bg-gradient-to-br from-muted/50 to-muted/80 dark:from-muted/20 dark:to-muted/40 border-border dark:border-border overflow-auto max-h-[500px] relative"
+                  className="prose dark:prose-invert max-w-none border-2 rounded-lg p-6 bg-linear-to-br from-muted/50 to-muted/80 dark:from-muted/20 dark:to-muted/40 border-border dark:border-border overflow-auto max-h-[500px] relative"
                   whileHover={{ borderColor: 'hsl(var(--primary))' }}
                   transition={{ duration: 0.3 }}
                 >
@@ -542,7 +542,7 @@ ${rule.content}`;
                       >
                         <Button 
                           onClick={handleOpenModal}
-                          className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                          className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                         >
                           <Eye className="w-4 h-4 mr-2" />
                           View Full Content
@@ -552,7 +552,7 @@ ${rule.content}`;
                   )}
                 </motion.div>
               </CardContent>
-              <CardFooter className="border-t bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
+              <CardFooter className="border-t bg-linear-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -570,7 +570,7 @@ ${rule.content}`;
           <div className="space-y-6">
             {/* Enhanced Rule Information */}
             <motion.div variants={cardVariants}>
-              <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+              <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5" />
@@ -581,7 +581,7 @@ ${rule.content}`;
                   <dl className="space-y-4">
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20 border border-primary/30"
+                      className="p-3 rounded-lg bg-linear-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20 border border-primary/30"
                     >
                       <dt className="text-sm font-medium text-primary dark:text-primary/90 flex items-center gap-1">
                         <Hash className="w-3 h-3" />
@@ -591,7 +591,7 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-muted/10 to-muted/20 dark:from-muted/10 dark:to-muted/20 border border-muted/30"
+                      className="p-3 rounded-lg bg-linear-to-r from-muted/10 to-muted/20 dark:from-muted/10 dark:to-muted/20 border border-muted/30"
                     >
                       <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
@@ -601,7 +601,7 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-accent/10 to-accent/20 dark:from-accent/10 dark:to-accent/20 border border-accent/30"
+                      className="p-3 rounded-lg bg-linear-to-r from-accent/10 to-accent/20 dark:from-accent/10 dark:to-accent/20 border border-accent/30"
                     >
                       <dt className="text-sm font-medium text-accent-foreground dark:text-accent-foreground/90 flex items-center gap-1">
                         <Download className="w-3 h-3" />
@@ -613,7 +613,7 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-secondary/10 to-secondary/20 dark:from-secondary/10 dark:to-secondary/20 border border-secondary/30"
+                      className="p-3 rounded-lg bg-linear-to-r from-secondary/10 to-secondary/20 dark:from-secondary/10 dark:to-secondary/20 border border-secondary/30"
                     >
                       <dt className="text-sm font-medium text-secondary dark:text-secondary/90 flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
@@ -625,7 +625,7 @@ ${rule.content}`;
                     </motion.div>
                     <motion.div
                       whileHover={{ scale: 1.02 }}
-                      className="p-3 rounded-lg bg-gradient-to-r from-muted-foreground/10 to-muted-foreground/20 dark:from-muted-foreground/10 dark:to-muted-foreground/20 border border-muted-foreground/30"
+                      className="p-3 rounded-lg bg-linear-to-r from-muted-foreground/10 to-muted-foreground/20 dark:from-muted-foreground/10 dark:to-muted-foreground/20 border border-muted-foreground/30"
                     >
                       <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
                         <Layers className="w-3 h-3" />
@@ -637,7 +637,7 @@ ${rule.content}`;
                     </motion.div>
                   </dl>
                 </CardContent>
-                <CardFooter className="border-t bg-gradient-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
+                <CardFooter className="border-t bg-linear-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
                   {/* Use the RuleActions component for proper functionality */}
                   <RuleActions rule={rule} onDownload={handleDownload} />
                 </CardFooter>
@@ -647,7 +647,7 @@ ${rule.content}`;
             {/* Enhanced Compatibility Card */}
             {rule.compatibility && Object.values(rule.compatibility).some(arr => arr && arr.length > 0) && (
               <motion.div variants={cardVariants}>
-                <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Cpu className="w-5 h-5" />
@@ -676,7 +676,7 @@ ${rule.content}`;
                             >
                               <Badge 
                                 variant="outline"
-                                className="bg-gradient-to-r from-secondary/20 to-secondary/30 dark:from-secondary/10 dark:to-secondary/20 border-secondary/50 dark:border-secondary/30 text-secondary"
+                                className="bg-linear-to-r from-secondary/20 to-secondary/30 dark:from-secondary/10 dark:to-secondary/20 border-secondary/50 dark:border-secondary/30 text-secondary"
                               >
                                 {framework}
                               </Badge>
@@ -707,7 +707,7 @@ ${rule.content}`;
                             >
                               <Badge 
                                 variant="outline"
-                                className="bg-gradient-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border-primary/50 dark:border-primary/30 text-primary"
+                                className="bg-linear-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border-primary/50 dark:border-primary/30 text-primary"
                               >
                                 {ide}
                               </Badge>
@@ -738,7 +738,7 @@ ${rule.content}`;
                             >
                               <Badge 
                                 variant="outline"
-                                className="bg-gradient-to-r from-accent/20 to-accent/30 dark:from-accent/10 dark:to-accent/20 border-accent/50 dark:border-accent/30 text-accent-foreground"
+                                className="bg-linear-to-r from-accent/20 to-accent/30 dark:from-accent/10 dark:to-accent/20 border-accent/50 dark:border-accent/30 text-accent-foreground"
                               >
                                 {assistant}
                               </Badge>

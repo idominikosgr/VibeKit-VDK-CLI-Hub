@@ -161,7 +161,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center">
               <Shield className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
             <Card key={action.title} className="group hover:shadow-lg transition-all duration-300">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center shadow-md`}>
+                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${action.color} flex items-center justify-center shadow-md`}>
                     <action.icon className="w-5 h-5 text-white" />
                   </div>
                   <div>

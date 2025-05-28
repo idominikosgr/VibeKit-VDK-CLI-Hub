@@ -209,7 +209,7 @@ export default function DatabaseManagementPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-linear-to-br from-destructive to-destructive/80 flex items-center justify-center">
                 <Database className="w-6 h-6 text-white" />
               </div>
               <div>

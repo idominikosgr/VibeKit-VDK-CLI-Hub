@@ -194,7 +194,7 @@ export default function ContentManagementPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-muted-foreground to-muted-foreground/80 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-linear-to-br from-muted-foreground to-muted-foreground/80 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>

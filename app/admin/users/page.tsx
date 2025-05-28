@@ -211,7 +211,7 @@ export default function UserManagementPage() {
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-secondary/80 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-linear-to-br from-secondary to-secondary/80 flex items-center justify-center">
               <Users className="w-6 h-6 text-white" />
             </div>
             <div>

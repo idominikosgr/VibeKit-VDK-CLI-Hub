@@ -113,7 +113,7 @@ export default function ProfilePage() {
     >
       <div className="max-w-4xl mx-auto">
         <motion.div 
-          className="flex items-center gap-6 mb-8 p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
+          className="flex items-center gap-6 mb-8 p-6 rounded-2xl bg-linear-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
           variants={itemVariants}
         >
           <motion.div
@@ -122,13 +122,13 @@ export default function ProfilePage() {
           >
             <Avatar className="h-20 w-20 ring-4 ring-background dark:ring-border shadow-lg">
               <AvatarImage src={avatarUrl} alt={name || 'User'} />
-              <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-xl font-bold">
+              <AvatarFallback className="bg-linear-to-br from-primary to-accent text-primary-foreground text-xl font-bold">
                 {name ? getInitials(name) : 'U'}
               </AvatarFallback>
             </Avatar>
           </motion.div>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
               {name || 'User Profile'}
             </h1>
             <p className="text-muted-foreground text-lg mt-1 flex items-center gap-2">
@@ -146,7 +146,7 @@ export default function ProfilePage() {
 
         <motion.div variants={itemVariants}>
           <Tabs defaultValue="profile" className="w-full">
-            <TabsList className="grid w-full md:w-[500px] grid-cols-3 h-12 p-1 bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30">
+            <TabsList className="grid w-full md:w-[500px] grid-cols-3 h-12 p-1 bg-linear-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30">
               <TabsTrigger 
                 value="info"
                 className="flex items-center gap-2 h-10 data-[state=active]:bg-card dark:data-[state=active]:bg-card data-[state=active]:shadow-md transition-all duration-300"
@@ -190,7 +190,7 @@ export default function ProfilePage() {
 
                 {/* Profile Form */}
                 <div className="lg:col-span-2">
-                  <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                  <Card className="bg-linear-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2 text-xl">
                         <User className="w-5 h-5" />
@@ -269,7 +269,7 @@ export default function ProfilePage() {
                           <Button 
                             type="submit" 
                             disabled={isLoading}
-                            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
+                            className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
                           >
                             <Save className="w-4 h-4 mr-2" />
                             {isLoading ? 'Saving...' : 'Save Profile'}
@@ -288,7 +288,7 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-linear-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <FolderOpen className="w-5 h-5" />
@@ -304,7 +304,7 @@ export default function ProfilePage() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                        className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-success to-primary flex items-center justify-center shadow-lg mb-4"
+                        className="mx-auto w-16 h-16 rounded-full bg-linear-to-br from-success to-primary flex items-center justify-center shadow-lg mb-4"
                       >
                         <FolderOpen className="w-8 h-8 text-white" />
                       </motion.div>
@@ -318,7 +318,7 @@ export default function ProfilePage() {
                         <Button 
                           variant="outline" 
                           onClick={() => router.push('/collections/new')}
-                          className="h-12 px-6 border-2 hover:bg-gradient-to-r hover:from-success/10 hover:to-primary/10 dark:hover:from-success/10 dark:hover:to-primary/10 transition-all duration-300"
+                          className="h-12 px-6 border-2 hover:bg-linear-to-r hover:from-success/10 hover:to-primary/10 dark:hover:from-success/10 dark:hover:to-primary/10 transition-all duration-300"
                         >
                           <Plus className="w-4 h-4 mr-2" />
                           Create Your First Collection
@@ -337,7 +337,7 @@ export default function ProfilePage() {
                 transition={{ delay: 0.2 }}
                 className="space-y-6"
               >
-                <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+                <Card className="bg-linear-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <Settings className="w-5 h-5" />
@@ -348,7 +348,7 @@ export default function ProfilePage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="p-4 rounded-lg border-2 border-primary/30 bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20">
+                    <div className="p-4 rounded-lg border-2 border-primary/30 bg-linear-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20">
                       <h3 className="font-medium mb-2 flex items-center gap-2">
                         <Lock className="w-4 h-4" />
                         Change Password
@@ -371,7 +371,7 @@ export default function ProfilePage() {
                       </motion.div>
                     </div>
 
-                    <div className="p-4 rounded-lg border-2 border-destructive/50 dark:border-destructive/30 bg-gradient-to-r from-destructive/10 to-destructive/20 dark:from-destructive/10 dark:to-destructive/20">
+                    <div className="p-4 rounded-lg border-2 border-destructive/50 dark:border-destructive/30 bg-linear-to-r from-destructive/10 to-destructive/20 dark:from-destructive/10 dark:to-destructive/20">
                       <h3 className="font-medium mb-2 flex items-center gap-2 text-destructive dark:text-destructive/90">
                         <Trash2 className="w-4 h-4" />
                         Danger Zone
@@ -385,7 +385,7 @@ export default function ProfilePage() {
                       >
                         <Button 
                           variant="destructive"
-                          className="bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70"
+                          className="bg-linear-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Delete Account

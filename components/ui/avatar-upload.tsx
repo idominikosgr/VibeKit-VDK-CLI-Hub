@@ -138,7 +138,7 @@ export function AvatarUpload({
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+    <Card className="bg-linear-to-br from-card/50 to-muted/30 dark:from-card/50 dark:to-muted/30 backdrop-blur-sm border-2 border-border/20 shadow-xl">
       <CardContent className="pt-6">
         <div className="space-y-6">
           {/* Avatar Preview */}
@@ -154,7 +154,7 @@ export function AvatarUpload({
                     alt={userName || 'User avatar'}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground text-lg font-bold">
+                  <AvatarFallback className="bg-linear-to-br from-primary to-accent text-primary-foreground text-lg font-bold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>

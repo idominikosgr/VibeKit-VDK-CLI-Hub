@@ -37,7 +37,7 @@ export default function Home() {
         transition={{ duration: 0.6 }}
       >
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
             Enhance Your AI-Assisted Development
           </h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl dark:text-muted-foreground">
@@ -68,7 +68,7 @@ export default function Home() {
       {/* Key Features */}
       <section className="container">
         <motion.div 
-          className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center"
+          className="mx-auto flex max-w-232 flex-col items-center space-y-4 text-center"
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
@@ -89,7 +89,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.aitools className="h-5 w-5 text-primary" />
@@ -106,7 +106,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.languages className="h-5 w-5 text-primary" />
@@ -123,7 +123,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.brain className="h-5 w-5 text-primary" />
@@ -140,7 +140,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.settings className="h-5 w-5 text-primary" />
@@ -157,7 +157,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.tasks className="h-5 w-5 text-primary" />
@@ -174,7 +174,7 @@ export default function Home() {
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <motion.div 
-                  className="rounded-md bg-gradient-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                   variants={cardHover}
                 >
                   <Icons.git className="h-5 w-5 text-primary" />
@@ -192,7 +192,7 @@ export default function Home() {
       {/* Categories */}
       <section className="container">
         <motion.div 
-          className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center"
+          className="mx-auto flex max-w-232 flex-col items-center space-y-4 text-center"
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
@@ -214,7 +214,7 @@ export default function Home() {
               <Card className="group flex h-full flex-col items-center justify-center py-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader className="text-center">
                   <motion.div 
-                    className="mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                    className="mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                     variants={cardHover}
                   >
                     <Icons.languages className="h-8 w-8 text-primary" />
@@ -231,7 +231,7 @@ export default function Home() {
               <Card className="group flex h-full flex-col items-center justify-center py-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader className="text-center">
                   <motion.div 
-                    className="mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                    className="mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                     variants={cardHover}
                   >
                     <Icons.technologies className="h-8 w-8 text-primary" />
@@ -248,7 +248,7 @@ export default function Home() {
               <Card className="group flex h-full flex-col items-center justify-center py-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader className="text-center">
                   <motion.div 
-                    className="mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                    className="mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                     variants={cardHover}
                   >
                     <Icons.tasks className="h-8 w-8 text-primary" />
@@ -265,7 +265,7 @@ export default function Home() {
               <Card className="group flex h-full flex-col items-center justify-center py-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
                 <CardHeader className="text-center">
                   <motion.div 
-                    className="mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                    className="mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
                     variants={cardHover}
                   >
                     <Icons.aitools className="h-8 w-8 text-primary" />
@@ -281,13 +281,13 @@ export default function Home() {
 
       {/* CTA */}
       <motion.section 
-        className="container bg-gradient-to-br from-primary/5 to-primary/10 py-16 rounded-3xl border border-primary/20"
+        className="container bg-linear-to-br from-primary/5 to-primary/10 py-16 rounded-3xl border border-primary/20"
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
         transition={{ duration: 0.6 }}
       >
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
+        <div className="mx-auto flex max-w-232 flex-col items-center justify-center gap-4 text-center">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
             Ready to enhance your AI-assisted development?
           </h2>

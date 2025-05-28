@@ -129,7 +129,7 @@ export function ModernSetupWizard() {
     >
       {/* Enhanced Progress Bar */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
+        <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
           <CardContent className="pt-8 pb-6">
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -145,7 +145,7 @@ export function ModernSetupWizard() {
                   </span>
                 </motion.div>
                 <motion.span 
-                  className="text-sm font-medium text-muted-foreground px-3 py-1 rounded-full bg-gradient-to-r from-accent/20 to-primary/20 dark:from-accent/10 dark:to-primary/10"
+                  className="text-sm font-medium text-muted-foreground px-3 py-1 rounded-full bg-linear-to-r from-accent/20 to-primary/20 dark:from-accent/10 dark:to-primary/10"
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3 }}
@@ -162,7 +162,7 @@ export function ModernSetupWizard() {
               >
                 <Progress 
                   value={progressPercentage} 
-                  className="h-3 bg-gradient-to-r from-muted to-muted/80 dark:from-muted/30 dark:to-muted/20"
+                  className="h-3 bg-linear-to-r from-muted to-muted/80 dark:from-muted/30 dark:to-muted/20"
                 />
               </motion.div>
               
@@ -182,9 +182,9 @@ export function ModernSetupWizard() {
                     whileHover={{ scale: 1.05 }}
                     className={`group cursor-pointer p-3 rounded-lg transition-all duration-300 ${
                       index === currentStep
-                        ? 'bg-gradient-to-r from-accent/20 to-primary/20 dark:from-accent/10 dark:to-primary/10 border border-accent dark:border-accent/50'
+                        ? 'bg-linear-to-r from-accent/20 to-primary/20 dark:from-accent/10 dark:to-primary/10 border border-accent dark:border-accent/50'
                         : index < currentStep
-                        ? 'bg-gradient-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border border-success/50 dark:border-success/30'
+                        ? 'bg-linear-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border border-success/50 dark:border-success/30'
                         : 'bg-card dark:bg-card border border-border hover:bg-muted dark:hover:bg-muted'
                     }`}
                     onClick={() => setCurrentStep(index)}
@@ -226,9 +226,9 @@ export function ModernSetupWizard() {
 
       {/* Enhanced Current Step Content */}
       <motion.div variants={itemVariants}>
-        <Card className="min-h-[700px] bg-gradient-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl overflow-hidden">
+        <Card className="min-h-[700px] bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl overflow-hidden">
           <div className="relative p-8">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-accent/5"></div>
             
             <div className="relative">
               <motion.div 
@@ -240,7 +240,7 @@ export function ModernSetupWizard() {
                 <div className="flex items-center gap-3 mb-2">
                   <motion.div
                     whileHover={{ rotate: 5 }}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center"
+                    className="w-8 h-8 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center"
                   >
                     <span className="text-primary-foreground font-bold text-sm">{currentStep + 1}</span>
                   </motion.div>
@@ -295,9 +295,9 @@ export function ModernSetupWizard() {
             onClick={() => setCurrentStep(index)}
             className={`relative w-4 h-4 rounded-full transition-all duration-300 ${
               index === currentStep
-                ? 'bg-gradient-to-r from-primary to-accent scale-125 shadow-lg'
+                ? 'bg-linear-to-r from-primary to-accent scale-125 shadow-lg'
                 : index < currentStep
-                ? 'bg-gradient-to-r from-success/80 to-success'
+                ? 'bg-linear-to-r from-success/80 to-success'
                 : 'bg-muted hover:bg-muted/80'
             }`}
             whileHover={{ scale: index === currentStep ? 1.25 : 1.1 }}
@@ -306,7 +306,7 @@ export function ModernSetupWizard() {
           >
             {index === currentStep && (
               <motion.div
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-accent"
+                className="absolute inset-0 rounded-full bg-linear-to-r from-primary to-accent"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />

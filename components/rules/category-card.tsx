@@ -124,7 +124,7 @@ export function CategoryCard({ category, view = "cards", className }: CategoryCa
       <Link href={`/rules/${category.slug}`}>
         <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="text-center pb-4">
-            <div className="mx-auto mb-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
+            <div className="mx-auto mb-4 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 p-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
               {getIconComponent(category.icon || category.slug || "code", "h-8 w-8 text-primary")}
             </div>
             <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">

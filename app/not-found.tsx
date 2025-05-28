@@ -25,7 +25,7 @@ export default function NotFound() {
           }}
           className="mx-auto mb-8"
         >
-          <h1 className="text-8xl font-black bg-gradient-to-br from-accent via-primary to-secondary bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-8xl font-black bg-linear-to-br from-accent via-primary to-secondary bg-clip-text text-transparent drop-shadow-lg">
             404
           </h1>
         </motion.div>
@@ -34,7 +34,7 @@ export default function NotFound() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="text-3xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent mb-4"
+          className="text-3xl font-bold bg-linear-to-r from-foreground to-muted-foreground bg-clip-text text-transparent mb-4"
         >
           Page Not Found
         </motion.h2>
@@ -60,7 +60,7 @@ export default function NotFound() {
           >
             <Button 
               asChild
-              className="bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-linear-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Link href="/">
                 <Home className="w-4 h-4 mr-2" />
@@ -94,7 +94,7 @@ export default function NotFound() {
         >
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-lg bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
+            className="p-4 rounded-lg bg-linear-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10 border border-primary/20 dark:border-primary/30 backdrop-blur-sm"
           >
             <p className="text-sm text-muted-foreground mb-2">
               Lost? Try these popular destinations:
