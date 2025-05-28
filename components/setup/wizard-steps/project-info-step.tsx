@@ -75,7 +75,7 @@ export function ProjectInfoStep({
               className="min-h-[100px]"
             />
             <p className="text-sm text-muted-foreground">
-              Optional: Help us understand your project's purpose for better rule selection
+              Optional: Help us understand your project&apos;s purpose for better rule selection
             </p>
           </div>
         </CardContent>

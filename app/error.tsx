@@ -56,7 +56,7 @@ export default function Error({
           transition={{ delay: 0.4, duration: 0.5 }}
           className="text-lg text-muted-foreground mb-8 leading-relaxed"
         >
-          We apologize for the inconvenience. Don't worry, our team has been notified and is working on fixing this issue.
+          We&apos;re sorry, something went wrong. Please try refreshing the page or contact support if the problem persists.
         </motion.p>
 
         <motion.div 

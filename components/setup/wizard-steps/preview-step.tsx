@@ -283,7 +283,7 @@ export function PreviewStep({
           {/* Additional Information */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">What's Included</CardTitle>
+              <CardTitle className="text-base">What&apos;s Included</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">

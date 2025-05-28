@@ -172,7 +172,7 @@ export function StackSelectionStep({
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Choose Your Stack</h2>
         <p className="text-muted-foreground">
-          Select the frameworks and technologies you're using in your project
+          Select the frameworks and technologies you&apos;re using in your project
         </p>
         <div className="text-sm text-muted-foreground">
           Step {currentStep} of {totalSteps}

@@ -97,7 +97,7 @@ async function getRealAnalyticsData(supabase: any, period: string, days: number,
     // Process wizard stack data
     const stackCounts: Record<string, number> = {};
     const formatCounts: Record<string, number> = {};
-    let totalGenerations = wizardConfigs?.length || 0;
+    const totalGenerations = wizardConfigs?.length || 0;
 
     wizardConfigs?.forEach((config: any) => {
       const stacks = config.stack_choices || {};

@@ -1,54 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { documentationServiceServer } from '@/lib/services/documentation-service-server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
-import type { UpdateDocumentationPageRequest } from '@/types/documentation';
-
-// Simple admin check - you can replace this with your actual admin logic
-async function isAdmin(email: string): Promise<boolean> {
-  // For now, just check if it's a specific admin email
-  // You should replace this with your actual admin checking logic
-  const adminEmails = ['admin@example.com', 'dominik@example.com', 'dominikos@myroomieapp.com']; // Add your admin emails
-  return adminEmails.includes(email);
-}
-
-async function getCurrentUserEmail(): Promise<string | null> {
-  try {
-    const supabase = await createServerSupabaseClient();
-    const { data: { user }, error } = await supabase.auth.getUser();
-    
-    if (error || !user || !user.email) {
-      return null;
-    }
-    
-    return user.email;
-  } catch (error) {
-    console.error('Error getting current user:', error);
-    return null;
-  }
-}
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server-client'
+import { UpdatePageRequest } from '@/types/documentation'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const page = await documentationServiceServer.getPage(params.id, true);
-    
-    if (!page) {
-      return NextResponse.json(
-        { error: 'Page not found' },
-        { status: 404 }
-      );
+    const supabase = await createServerSupabaseClient()
+    const { id } = params
+
+    const { data: page, error } = await supabase
+      .from('document_pages')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Page not found' }, { status: 404 })
+      }
+      console.error('Error fetching page:', error)
+      return NextResponse.json({ error: 'Failed to fetch page' }, { status: 500 })
     }
 
-    return NextResponse.json(page);
-
+    return NextResponse.json({ page })
   } catch (error) {
-    console.error('Error fetching documentation page:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch page' },
-      { status: 500 }
-    );
+    console.error('Error in GET /api/docs/[id]:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -57,39 +36,45 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await getCurrentUserEmail();
+    const supabase = await createServerSupabaseClient()
+    const { id } = params
+    const body: UpdatePageRequest = await request.json()
+
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const userIsAdmin = await isAdmin(user);
-    if (!userIsAdmin) {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      );
-    }
-
-    const body: UpdateDocumentationPageRequest = await request.json();
-    
-    // Add editor information
-    const updateData = {
+    // Update the page
+    const updateData: any = {
       ...body,
-      last_edited_by: user,
-    };
+      last_edited_by: user.id,
+    }
 
-    const updatedPage = await documentationServiceServer.updatePage(params.id, updateData);
-    return NextResponse.json(updatedPage);
+    // Cast content to Json if provided
+    if (body.content) {
+      updateData.content = body.content as any
+    }
 
+    const { data: page, error } = await supabase
+      .from('document_pages')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Page not found' }, { status: 404 })
+      }
+      console.error('Error updating page:', error)
+      return NextResponse.json({ error: 'Failed to update page' }, { status: 500 })
+    }
+
+    return NextResponse.json({ page })
   } catch (error) {
-    console.error('Error updating documentation page:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update page' },
-      { status: 500 }
-    );
+    console.error('Error in PUT /api/docs/[id]:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -98,30 +83,28 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await getCurrentUserEmail();
+    const supabase = await createServerSupabaseClient()
+    const { id } = params
+
+    const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const userIsAdmin = await isAdmin(user);
-    if (!userIsAdmin) {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      );
+    // Delete the page (children will be deleted automatically due to CASCADE)
+    const { error } = await supabase
+      .from('document_pages')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Error deleting page:', error)
+      return NextResponse.json({ error: 'Failed to delete page' }, { status: 500 })
     }
 
-    await documentationServiceServer.deletePage(params.id);
-    return NextResponse.json({ success: true });
-
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting documentation page:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete page' },
-      { status: 500 }
-    );
+    console.error('Error in DELETE /api/docs/[id]:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 

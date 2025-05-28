@@ -127,4 +127,91 @@ async function processRuleFiles() {
   try {
     // Get a list of all .mdc files in the rules directory
     const files = glob.sync(`${RULES_DIR}/**/*.mdc`);
-    console.log(`
+    console.log(`Found ${files.length} rule files to process`);
+
+    let processed = 0;
+    let skipped = 0;
+
+    for (const filePath of files) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const { title, description, content: ruleContent, tags } = parseMdcContent(content);
+        
+        // Generate rule ID and slug from file path
+        const relativePath = path.relative(RULES_DIR, filePath);
+        const ruleId = relativePath.replace(/\.mdc$/, '').replace(/\//g, '_');
+        const slug = slugify(title);
+        
+        // Determine category from directory structure
+        const pathParts = relativePath.split('/');
+        const categoryName = pathParts.length > 1 ? pathParts[0] : 'core';
+        const categoryId = await findOrCreateCategory(categoryName);
+        
+        // Check if rule already exists
+        const { data: existingRule } = await supabaseAdmin
+          .from('rules')
+          .select('id')
+          .eq('id', ruleId)
+          .maybeSingle();
+        
+        if (existingRule) {
+          console.log(`Skipping existing rule: ${title}`);
+          skipped++;
+          continue;
+        }
+        
+        // Insert new rule
+        const { error } = await supabaseAdmin
+          .from('rules')
+          .insert({
+            id: ruleId,
+            title,
+            slug,
+            description,
+            content: ruleContent,
+            path: relativePath,
+            category_id: categoryId,
+            tags,
+            version: '1.0.0',
+            downloads: 0,
+            votes: 0,
+            always_apply: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            last_updated: new Date().toISOString()
+          });
+        
+        if (error) {
+          console.error(`Error inserting rule ${title}:`, error);
+          continue;
+        }
+        
+        console.log(`✅ Processed: ${title}`);
+        processed++;
+        
+      } catch (error) {
+        console.error(`Error processing file ${filePath}:`, error);
+      }
+    }
+    
+    console.log(`\n📊 Quick sync results:`);
+    console.log(`  Processed: ${processed}`);
+    console.log(`  Skipped: ${skipped}`);
+    console.log(`  Total files: ${files.length}`);
+    
+  } catch (error) {
+    console.error('Error in processRuleFiles:', error);
+    throw error;
+  }
+}
+
+// Run the sync
+processRuleFiles()
+  .then(() => {
+    console.log('✅ Quick sync completed successfully!');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('❌ Quick sync failed:', error);
+    process.exit(1);
+  });

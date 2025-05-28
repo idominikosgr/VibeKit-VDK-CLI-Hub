@@ -71,7 +71,7 @@ export function EnvironmentStep({
           <CardHeader>
             <CardTitle>Output Format</CardTitle>
             <CardDescription>
-              Choose how you'd like to receive your customized rules package
+              Choose how you&apos;d like to receive your customized rules package
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -310,7 +310,7 @@ export function EnvironmentStep({
           <CardHeader>
             <CardTitle>Additional Options</CardTitle>
             <CardDescription>
-              Customize what's included in your rules package
+              Customize what&apos;s included in your rules package
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

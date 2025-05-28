@@ -1,368 +1,503 @@
-import { Suspense } from 'react';
-import { Metadata } from 'next/types';
-import { CreateDocumentationDialog } from '@/components/docs/create-documentation-dialog';
-import { documentationServiceServer } from '@/lib/services/documentation-service-server';
-import { getCurrentUser } from '@/lib/services/auth-service';
-import { LoadingSpinner } from '@/components/ui/loading';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { 
-  BookOpen, 
-  Search,
-  FileText,
-  Users,
-  Globe,
-  Lock,
-  Calendar,
-  Eye,
-  Plus,
-  Edit,
-  Trash2,
-  MoreVertical
-} from 'lucide-react';
-import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
-import type { DocumentationListResponse, CreateDocumentationPageRequest } from '@/types/documentation';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { getCurrentUserAdminStatus } from '@/lib/middleware/admin-auth';
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Documentation - CodePilotRules Hub',
-  description: 'Comprehensive documentation for CodePilotRules Hub, covering app architecture, agentic AI concepts, and development workflows.',
-};
+import { useState, useEffect } from 'react'
+import { Plus, Search, Star, MoreHorizontal, FileText, Folder, Loader2, LogIn, UserPlus, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { NotionEditor } from '@/components/editor/notion-editor'
+import { DocumentPage, DocumentPageWithChildren, CreatePageRequest } from '@/types/documentation'
+import { SerializedEditorState } from 'lexical'
+import { documentationService } from '@/lib/services/documentation'
+import { toast } from 'sonner'
+import { useAuth } from '@/components/auth/auth-provider'
+import Link from 'next/link'
 
-async function getDocumentationPages(): Promise<DocumentationListResponse> {
-  try {
-    return await documentationServiceServer.searchPages({
-      status: 'published',
-      visibility: 'public',
-      limit: 50,
-      sort_by: 'updated_at',
-      sort_order: 'desc'
-    });
-  } catch (error) {
-    console.error('Error fetching documentation pages:', error);
-    return {
-      pages: [],
-      total_count: 0,
-      limit: 50,
-      offset: 0,
-      has_more: false
-    };
-  }
+interface SidebarItemProps {
+  page: DocumentPageWithChildren
+  level: number
+  isSelected: boolean
+  onSelect: (page: DocumentPageWithChildren) => void
+  onCreateChild: (parentId: string) => void
+  onDelete: (pageId: string) => void
+  user: any
+  selectedPageId: string | null
 }
 
-async function isUserAdmin(): Promise<boolean> {
-  try {
-    const { isAdmin } = await getCurrentUserAdminStatus();
-    return isAdmin;
-  } catch (error) {
-    console.error('Error checking admin status:', error);
-    return false;
-  }
-}
+function SidebarItem({ page, level, isSelected, onSelect, onCreateChild, onDelete, user, selectedPageId }: SidebarItemProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [showOptions, setShowOptions] = useState(false)
 
-function getVisibilityIcon(visibility: string) {
-  switch (visibility) {
-    case 'public':
-      return <Globe className="h-4 w-4" />;
-    case 'team':
-      return <Users className="h-4 w-4" />;
-    case 'private':
-      return <Lock className="h-4 w-4" />;
-    default:
-      return <Globe className="h-4 w-4" />;
-  }
-}
-
-export default async function DocumentationHomePage() {
-  const [documentationData, isAdmin] = await Promise.all([
-    getDocumentationPages(),
-    isUserAdmin()
-  ]);
-
-  const [tags, templates] = await Promise.all([
-    documentationServiceServer.getTags().catch(() => []),
-    Promise.resolve([]), // Add template service later
-  ]);
-
-  const handleCreatePage = async (data: CreateDocumentationPageRequest) => {
-    'use server';
-    try {
-      return await documentationServiceServer.createPage(data);
-    } catch (error) {
-      console.error('Error creating page:', error);
-      throw error;
-    }
-  };
-
-  const handleDeletePage = async (pageId: string) => {
-    'use server';
-    try {
-      const response = await fetch(`/api/docs/${pageId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete page');
-      // Redirect to refresh the page
-      window.location.reload();
-    } catch (error) {
-      console.error('Error deleting page:', error);
-      throw error;
-    }
-  };
+  const hasChildren = page.children.length > 0
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Documentation</h1>
-              <p className="text-lg text-gray-600">
-                Comprehensive guides, API references, and development resources
-              </p>
-            </div>
-            
-            {isAdmin && (
-              <CreateDocumentationDialog
-                onCreatePage={handleCreatePage}
-                tags={tags}
-                templates={templates}
-                isAdmin={isAdmin}
-              />
+    <div className="relative">
+      <div 
+        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-150 group ${
+          isSelected 
+            ? 'bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 text-primary shadow-sm' 
+            : 'hover:bg-muted/50 text-foreground/80 hover:text-foreground'
+        }`}
+        style={{ paddingLeft: `${level * 16 + 12}px` }}
+      >
+        {/* Expand/Collapse Button */}
+        {hasChildren && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsExpanded(!isExpanded)
+            }}
+            className={`w-4 h-4 flex items-center justify-center rounded transition-colors ${
+              isExpanded ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Folder className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-3' : ''}`} />
+          </button>
+        )}
+        
+        {!hasChildren && (
+          <div className="w-4 h-4 flex items-center justify-center">
+            <FileText className="w-3 h-3 text-muted-foreground" />
+          </div>
+        )}
+
+        {/* Page Content */}
+        <button
+          onClick={() => onSelect(page)}
+          className="flex-1 flex items-center gap-2 text-left min-w-0"
+        >
+          <span className="text-sm">{page.icon || '📄'}</span>
+          <span className="text-sm font-medium truncate">{page.title}</span>
+        </button>
+
+        {/* Options Menu */}
+        <div className={`opacity-0 group-hover:opacity-100 transition-opacity ${isSelected ? 'opacity-100' : ''}`}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowOptions(!showOptions)
+            }}
+            className="w-6 h-6 flex items-center justify-center rounded-md hover:bg-background/60 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <MoreHorizontal className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+
+      {/* Options Dropdown */}
+      {showOptions && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setShowOptions(false)}
+          />
+          
+          {/* Menu */}
+          <div className="absolute right-0 top-full mt-1 w-44 bg-card/95 backdrop-blur-sm border border-border/50 rounded-lg shadow-lg z-20">
+            {user ? (
+              <>
+                <button
+                  onClick={() => {
+                    onCreateChild(page.id)
+                    setShowOptions(false)
+                  }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-2 first:rounded-t-lg"
+                >
+                  <Plus className="w-3 h-3" />
+                  Add child page
+                </button>
+                <div className="h-px bg-border/50 mx-2" />
+                <button
+                  onClick={() => {
+                    onDelete(page.id)
+                    setShowOptions(false)
+                  }}
+                  className="w-full px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/5 transition-colors flex items-center gap-2 last:rounded-b-lg"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  Delete page
+                </button>
+              </>
+            ) : (
+              <div className="px-3 py-2 text-sm text-muted-foreground flex items-center gap-2">
+                <LogIn className="w-3 h-3" />
+                Sign in to edit
+              </div>
             )}
           </div>
+        </>
+      )}
 
-          {/* Search and Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+      {/* Child Pages */}
+      {isExpanded && hasChildren && (
+        <div className="mt-1 space-y-1">
+          {page.children.map((child) => (
+            <SidebarItem
+              key={child.id}
+              page={child}
+              level={level + 1}
+              isSelected={selectedPageId === child.id}
+              onSelect={onSelect}
+              onCreateChild={onCreateChild}
+              onDelete={onDelete}
+              user={user}
+              selectedPageId={selectedPageId}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function DocsPage() {
+  const [pages, setPages] = useState<DocumentPageWithChildren[]>([])
+  const [selectedPage, setSelectedPage] = useState<DocumentPageWithChildren | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const { user } = useAuth()
+
+  // Load pages on mount
+  useEffect(() => {
+    const loadPages = async () => {
+      try {
+        setIsLoading(true)
+        const pagesData = await documentationService.getAllPages(true)
+        setPages(pagesData)
+        
+        // Select first page by default
+        if (pagesData.length > 0 && !selectedPage) {
+          setSelectedPage(pagesData[0])
+        }
+      } catch (error) {
+        console.error('Failed to load pages:', error)
+        toast.error('Failed to load documentation pages')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadPages()
+  }, [selectedPage])
+
+  const handleCreatePage = async (parentId?: string) => {
+    // Check if user is authenticated
+    if (!user) {
+      toast.error('Please sign in to create a documentation page')
+      return
+    }
+
+    try {
+      const newPageRequest: CreatePageRequest = {
+        title: 'Untitled',
+        parent_id: parentId,
+        icon: '📄',
+      }
+
+      const newPage = await documentationService.createPage(newPageRequest)
+      
+      // Reload pages to get updated tree structure
+      await loadPages()
+      
+      // Find and select the new page
+      const findPageInTree = (pages: DocumentPageWithChildren[], id: string): DocumentPageWithChildren | null => {
+        for (const page of pages) {
+          if (page.id === id) return page
+          const found = findPageInTree(page.children, id)
+          if (found) return found
+        }
+        return null
+      }
+      
+      const createdPage = findPageInTree(pages, newPage.id)
+      if (createdPage) {
+        setSelectedPage(createdPage)
+      }
+
+      toast.success('Page created successfully')
+    } catch (error) {
+      console.error('Failed to create page:', error)
+      if (error instanceof Error && error.message.includes('Unauthorized')) {
+        toast.error('Please sign in to create a page')
+      } else {
+        toast.error('Failed to create page')
+      }
+    }
+  }
+
+  const handleDeletePage = async (pageId: string) => {
+    if (!confirm('Are you sure you want to delete this page? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      await documentationService.deletePage(pageId)
+      
+      // If deleted page was selected, clear selection
+      if (selectedPage?.id === pageId) {
+        setSelectedPage(null)
+      }
+      
+      // Reload pages
+      await loadPages()
+
+      toast.success('Page deleted successfully')
+    } catch (error) {
+      console.error('Failed to delete page:', error)
+      toast.error('Failed to delete page')
+    }
+  }
+
+  const handleContentChange = async (content: SerializedEditorState) => {
+    if (!selectedPage) return
+
+    try {
+      await documentationService.updatePageContent(selectedPage.id, content)
+      
+      // Update local state
+      setSelectedPage(prev => prev ? { ...prev, content } : null)
+    } catch (error) {
+      console.error('Failed to save content:', error)
+      toast.error('Failed to save content')
+    }
+  }
+
+  const handleTitleChange = async (title: string) => {
+    if (!selectedPage || title === selectedPage.title) return
+
+    try {
+      setIsSaving(true)
+      await documentationService.updatePageTitle(selectedPage.id, title)
+      
+      // Update local state
+      setSelectedPage(prev => prev ? { ...prev, title } : null)
+      
+      // Reload pages to update sidebar
+      await loadPages()
+    } catch (error) {
+      console.error('Failed to save title:', error)
+      toast.error('Failed to save title')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleToggleFavorite = async () => {
+    if (!selectedPage) return
+
+    try {
+      const newFavoriteState = !selectedPage.is_favorite
+      await documentationService.toggleFavorite(selectedPage.id, newFavoriteState)
+      
+      // Update local state
+      setSelectedPage(prev => prev ? { ...prev, is_favorite: newFavoriteState } : null)
+      
+      toast.success(newFavoriteState ? 'Added to favorites' : 'Removed from favorites')
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
+      toast.error('Failed to update favorite status')
+    }
+  }
+
+  const filteredPages = pages.filter(page =>
+    page.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading documentation...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/50">
+      <div className="flex h-screen">
+        {/* Sidebar */}
+        <div className="w-80 bg-card/80 backdrop-blur-sm border-r border-border/50 flex flex-col shadow-sm">
+          {/* Header */}
+          <div className="p-6 border-b border-border/30">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <h1 className="text-lg font-semibold text-foreground">Documentation</h1>
+              </div>
+              {user && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleCreatePage()}
+                  className="w-8 h-8 p-0 hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search documentation..."
-                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-9 bg-background/50 border-border/50 focus:border-primary/30 focus:ring-1 focus:ring-primary/20"
               />
             </div>
-            <Button variant="outline" className="gap-2">
-              <FileText className="h-4 w-4" />
-              All Pages ({documentationData.total_count})
-            </Button>
           </div>
 
-          <Separator />
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Pages</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{documentationData.total_count}</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Views</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {documentationData.pages.reduce((sum, page) => sum + (page.view_count || 0), 0)}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Contributors</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {new Set(documentationData.pages.map(page => page.author_id).filter(Boolean)).size}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Last Updated</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm">
-                {documentationData.pages[0] 
-                  ? formatDistanceToNow(new Date(documentationData.pages[0].updated_at)) + ' ago'
-                  : 'Never'
-                }
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Documentation Pages */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-semibold">Recent Pages</h2>
-          
-          {documentationData.pages.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No documentation pages yet</h3>
-                <p className="text-gray-600 mb-4">
-                  Get started by creating your first documentation page.
-                </p>
-                {isAdmin && (
-                  <CreateDocumentationDialog
-                    onCreatePage={handleCreatePage}
-                    tags={tags}
-                    templates={templates}
-                    isAdmin={isAdmin}
+          {/* Pages List */}
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-1">
+              {filteredPages.length > 0 ? (
+                filteredPages.map((page) => (
+                  <SidebarItem
+                    key={page.id}
+                    page={page}
+                    level={0}
+                    isSelected={selectedPage?.id === page.id}
+                    onSelect={setSelectedPage}
+                    onCreateChild={handleCreatePage}
+                    onDelete={handleDeletePage}
+                    user={user}
+                    selectedPageId={selectedPage?.id || null}
                   />
-                )}
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-6">
-              {documentationData.pages.map((page) => (
-                <Card key={page.id} className="hover:shadow-md transition-shadow group">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          {page.icon && (
-                            <span className="text-2xl">{page.icon}</span>
-                          )}
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <CardTitle className="text-xl">
-                                <Link 
-                                  href={`/docs/${page.slug}`}
-                                  className="hover:text-blue-600 transition-colors"
-                                >
-                                  {page.title}
-                                </Link>
-                              </CardTitle>
-                              
-                              {/* CRUD Action Buttons */}
-                              {isAdmin && (
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                        <MoreVertical className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                      <DropdownMenuItem asChild>
-                                        <Link href={`/docs/${page.slug}?edit=true`} className="flex items-center gap-2">
-                                          <Edit className="h-4 w-4" />
-                                          Edit Page
-                                        </Link>
-                                      </DropdownMenuItem>
-                                      <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                          <DropdownMenuItem 
-                                            className="flex items-center gap-2 text-red-600 focus:text-red-600"
-                                            onSelect={(e) => e.preventDefault()}
-                                          >
-                                            <Trash2 className="h-4 w-4" />
-                                            Delete Page
-                                          </DropdownMenuItem>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                          <AlertDialogHeader>
-                                            <AlertDialogTitle>Delete Page</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                              Are you sure you want to delete "{page.title}"? This action cannot be undone.
-                                            </AlertDialogDescription>
-                                          </AlertDialogHeader>
-                                          <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction 
-                                              onClick={() => handleDeletePage(page.id)}
-                                              className="bg-red-600 hover:bg-red-700"
-                                            >
-                                              Delete
-                                            </AlertDialogAction>
-                                          </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                      </AlertDialog>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </div>
-                              )}
-                            </div>
-                            {page.excerpt && (
-                              <CardDescription className="mt-2">
-                                {page.excerpt}
-                              </CardDescription>
-                            )}
-                          </div>
-                        </div>
+                ))
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
+                  <p className="text-sm font-medium mb-1">No pages found</p>
+                  <p className="text-xs">Try adjusting your search</p>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
 
-                        {/* Metadata */}
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            {getVisibilityIcon(page.visibility)}
-                            <span className="capitalize">{page.visibility}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-4 w-4" />
-                            <span>{page.view_count || 0} views</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            <span>Updated {formatDistanceToNow(new Date(page.updated_at))} ago</span>
-                          </div>
-
-                          {page.author && (
-                            <div className="flex items-center gap-1">
-                              <span>by {page.author.name || page.author.email}</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Tags */}
-                        {page.tags && page.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-3">
-                            {page.tags.map((tag) => (
-                              <Badge key={tag.id} variant="secondary" className="text-xs">
-                                {tag.name}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="ml-4">
-                        <Badge variant={page.status === 'published' ? 'default' : 'secondary'}>
-                          {page.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
+          {/* Footer */}
+          {!user && (
+            <div className="p-4 border-t border-border/30">
+              <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-lg p-4 border border-primary/10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+                    <UserPlus className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Ready to contribute?</p>
+                    <p className="text-xs text-muted-foreground">Sign in to create and edit pages</p>
+                  </div>
+                </div>
+                <Link href="/auth/login" className="block">
+                  <Button size="sm" className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                    <LogIn className="w-3 h-3 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Load More */}
-        {documentationData.has_more && (
-          <div className="text-center mt-8">
-            <Button variant="outline">
-              Load More Pages
-            </Button>
-          </div>
-        )}
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col bg-background/30">
+          {selectedPage ? (
+            <>
+              {/* Page Header */}
+              <div className="bg-card/60 backdrop-blur-sm border-b border-border/30 px-8 py-6 shadow-sm">
+                <div className="max-w-4xl mx-auto">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-3xl">{selectedPage.icon || '📄'}</span>
+                    <input
+                      type="text"
+                      value={selectedPage.title}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      className="text-3xl font-bold bg-transparent border-none outline-none flex-1 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 rounded-md px-2 py-1"
+                      placeholder="Untitled"
+                      disabled={isSaving || !user}
+                    />
+                    {isSaving && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
+                  </div>
+                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary/60"></div>
+                      Last edited {new Date(selectedPage.updated_at).toLocaleDateString()}
+                    </span>
+                    {user && (
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="h-7 px-3 hover:bg-primary/5 hover:text-primary transition-colors" 
+                        onClick={handleToggleFavorite}
+                      >
+                        <Star className={`w-3 h-3 mr-2 ${selectedPage.is_favorite ? 'fill-yellow-400 text-yellow-400' : ''}`} />
+                        {selectedPage.is_favorite ? 'Favorited' : 'Add to favorites'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Editor */}
+              <div className="flex-1 overflow-auto">
+                <div className="max-w-4xl mx-auto px-8 py-8">
+                  <div className="bg-card/40 backdrop-blur-sm rounded-xl border border-border/30 shadow-sm overflow-hidden">
+                    <NotionEditor
+                      content={selectedPage.content as SerializedEditorState}
+                      onChange={handleContentChange}
+                      autoSave={true}
+                      autoSaveInterval={2000}
+                      placeholder="Start writing your documentation..."
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center max-w-md mx-auto px-6">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <FileText className="w-10 h-10 text-primary/70" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to Documentation</h2>
+                <p className="text-muted-foreground mb-8 leading-relaxed">
+                  Create and organize your team's knowledge base. Select a page from the sidebar to get started, or create your first documentation page.
+                </p>
+                {user ? (
+                  <Button 
+                    onClick={() => handleCreatePage()}
+                    className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
+                    size="lg"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create your first page
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <Link href="/auth/login">
+                      <Button 
+                        className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg transition-all duration-200 transform hover:scale-105"
+                        size="lg"
+                      >
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Sign in to create pages
+                      </Button>
+                    </Link>
+                    <p className="text-xs text-muted-foreground">
+                      Join our community to contribute to the documentation
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  );
+  )
 } 

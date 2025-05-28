@@ -159,6 +159,552 @@ export type Database = {
         }
         Relationships: []
       }
+      document_pages: {
+        Row: {
+          content: Json | null
+          cover: string | null
+          created_at: string | null
+          created_by: string | null
+          icon: string | null
+          id: string
+          is_favorite: boolean
+          is_published: boolean
+          last_edited_by: string | null
+          parent_id: string | null
+          position: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: Json | null
+          cover?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          is_favorite?: boolean
+          is_published?: boolean
+          last_edited_by?: string | null
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json | null
+          cover?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          icon?: string | null
+          id?: string
+          is_favorite?: boolean
+          is_published?: boolean
+          last_edited_by?: string | null
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_pages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "document_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          page_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          page_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          page_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_bookmarks_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_comments: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_resolved: boolean | null
+          page_id: string | null
+          parent_comment_id: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          selection_end: number | null
+          selection_start: number | null
+          selection_text: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          page_id?: string | null
+          parent_comment_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          selection_end?: number | null
+          selection_start?: number | null
+          selection_text?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          page_id?: string | null
+          parent_comment_id?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          selection_end?: number | null
+          selection_start?: number | null
+          selection_text?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_comments_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_comments_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_links: {
+        Row: {
+          context: string | null
+          created_at: string | null
+          id: string
+          link_text: string
+          source_page_id: string | null
+          target_id: string | null
+          target_type: string
+          target_url: string | null
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string | null
+          id?: string
+          link_text: string
+          source_page_id?: string | null
+          target_id?: string | null
+          target_type: string
+          target_url?: string | null
+        }
+        Update: {
+          context?: string | null
+          created_at?: string | null
+          id?: string
+          link_text?: string
+          source_page_id?: string | null
+          target_id?: string | null
+          target_type?: string
+          target_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_links_source_page_id_fkey"
+            columns: ["source_page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_page_tags: {
+        Row: {
+          page_id: string
+          tag_id: string
+        }
+        Insert: {
+          page_id: string
+          tag_id: string
+        }
+        Update: {
+          page_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_page_tags_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_page_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_pages: {
+        Row: {
+          author_id: string | null
+          content: string
+          content_type: string | null
+          cover_image: string | null
+          created_at: string | null
+          excerpt: string | null
+          icon: string | null
+          id: string
+          last_edited_by: string | null
+          metadata: Json | null
+          order_index: number | null
+          parent_id: string | null
+          path: string
+          published_at: string | null
+          reading_time_minutes: number | null
+          slug: string
+          status: string | null
+          template_data: Json | null
+          title: string
+          updated_at: string | null
+          view_count: number | null
+          visibility: string | null
+          word_count: number | null
+        }
+        Insert: {
+          author_id?: string | null
+          content?: string
+          content_type?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          icon?: string | null
+          id?: string
+          last_edited_by?: string | null
+          metadata?: Json | null
+          order_index?: number | null
+          parent_id?: string | null
+          path: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug: string
+          status?: string | null
+          template_data?: Json | null
+          title: string
+          updated_at?: string | null
+          view_count?: number | null
+          visibility?: string | null
+          word_count?: number | null
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          content_type?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          icon?: string | null
+          id?: string
+          last_edited_by?: string | null
+          metadata?: Json | null
+          order_index?: number | null
+          parent_id?: string | null
+          path?: string
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug?: string
+          status?: string | null
+          template_data?: Json | null
+          title?: string
+          updated_at?: string | null
+          view_count?: number | null
+          visibility?: string | null
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_pages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_pages_last_edited_by_fkey"
+            columns: ["last_edited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_pages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_permissions: {
+        Row: {
+          created_at: string | null
+          granted_by: string | null
+          id: string
+          page_id: string | null
+          permission_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          page_id?: string | null
+          permission_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          granted_by?: string | null
+          id?: string
+          page_id?: string | null
+          permission_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_permissions_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_permissions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_permissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_search_cache: {
+        Row: {
+          content_hash: string | null
+          id: string
+          page_id: string | null
+          search_vector: unknown | null
+          updated_at: string | null
+        }
+        Insert: {
+          content_hash?: string | null
+          id?: string
+          page_id?: string | null
+          search_vector?: unknown | null
+          updated_at?: string | null
+        }
+        Update: {
+          content_hash?: string | null
+          id?: string
+          page_id?: string | null
+          search_vector?: unknown | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_search_cache_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_tags: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      documentation_templates: {
+        Row: {
+          content_template: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          template_type: string
+          updated_at: string | null
+          variables: Json | null
+        }
+        Insert: {
+          content_template: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          template_type: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Update: {
+          content_template?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          template_type?: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentation_versions: {
+        Row: {
+          author_id: string | null
+          changes_summary: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_major_version: boolean | null
+          page_id: string | null
+          title: string
+          version_number: number
+        }
+        Insert: {
+          author_id?: string | null
+          changes_summary?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_major_version?: boolean | null
+          page_id?: string | null
+          title: string
+          version_number: number
+        }
+        Update: {
+          author_id?: string | null
+          changes_summary?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_major_version?: boolean | null
+          page_id?: string | null
+          title?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentation_versions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentation_versions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "documentation_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       generated_packages: {
         Row: {
           configuration_id: string | null
@@ -570,6 +1116,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_reading_time: {
+        Args: { content: string }
+        Returns: number
+      }
+      generate_documentation_path: {
+        Args: { page_id: string }
+        Returns: string
+      }
+      get_documentation_breadcrumbs: {
+        Args: { page_id: string }
+        Returns: {
+          id: string
+          title: string
+          slug: string
+          path: string
+          level: number
+        }[]
+      }
       get_popular_rules: {
         Args: { limit_count?: number }
         Returns: {
@@ -655,6 +1219,21 @@ export type Database = {
       remove_rule_vote: {
         Args: { target_rule_id: string }
         Returns: undefined
+      }
+      search_documentation: {
+        Args: {
+          search_query: string
+          limit_count?: number
+          offset_count?: number
+        }
+        Returns: {
+          id: string
+          title: string
+          slug: string
+          excerpt: string
+          path: string
+          rank: number
+        }[]
       }
       search_rules: {
         Args: { search_query: string; category_slug?: string; tags?: string[] }

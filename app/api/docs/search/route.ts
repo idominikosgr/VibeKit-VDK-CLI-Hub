@@ -1,32 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { documentationServiceServer } from '@/lib/services/documentation-service-server';
-import type { DocumentationSearchParams } from '@/types/documentation';
+import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server-client'
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    
-    const params: DocumentationSearchParams = {
-      query: searchParams.get('q') || searchParams.get('query') || undefined,
-      tag: searchParams.get('tag') || undefined,
-      author: searchParams.get('author') || undefined,
-      status: (searchParams.get('status') as any) || 'published',
-      visibility: (searchParams.get('visibility') as any) || 'public',
-      content_type: (searchParams.get('content_type') as any) || undefined,
-      limit: parseInt(searchParams.get('limit') || '20'),
-      offset: parseInt(searchParams.get('offset') || '0'),
-      sort_by: (searchParams.get('sort_by') as any) || 'updated_at',
-      sort_order: (searchParams.get('sort_order') as any) || 'desc'
-    };
+    const supabase = await createServerSupabaseClient()
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('q')
 
-    const result = await documentationServiceServer.searchPages(params);
-    return NextResponse.json(result);
+    if (!query || query.trim().length === 0) {
+      return NextResponse.json({ pages: [] })
+    }
 
+    // Search in title and content
+    const { data: pages, error } = await supabase
+      .from('document_pages')
+      .select('*')
+      .or(`title.ilike.%${query}%,content::text.ilike.%${query}%`)
+      .order('updated_at', { ascending: false })
+      .limit(20)
+
+    if (error) {
+      console.error('Error searching pages:', error)
+      return NextResponse.json({ error: 'Failed to search pages' }, { status: 500 })
+    }
+
+    return NextResponse.json({ pages: pages || [] })
   } catch (error) {
-    console.error('Error searching documentation pages:', error);
-    return NextResponse.json(
-      { error: 'Failed to search documentation pages' },
-      { status: 500 }
-    );
+    console.error('Error in GET /api/docs/search:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 

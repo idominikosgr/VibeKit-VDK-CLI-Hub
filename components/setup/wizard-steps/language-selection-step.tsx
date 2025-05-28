@@ -154,7 +154,7 @@ export function LanguageSelectionStep({
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Programming Languages</h2>
         <p className="text-muted-foreground">
-          Select the programming languages you'll be using in your project
+          Select the programming languages you&apos;ll be using in your project
         </p>
         <div className="text-sm text-muted-foreground">
           Step {currentStep} of {totalSteps}

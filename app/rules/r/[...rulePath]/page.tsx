@@ -71,7 +71,7 @@ export default function RuleRedirectPage({ params }: RuleRedirectPageProps) {
         <div className="text-center">
           <Icons.spinner className="mx-auto h-12 w-12 animate-spin text-primary/70" />
           <h2 className="mt-4 text-xl font-medium">Finding Rule...</h2>
-          <p className="mt-2 text-muted-foreground">We're locating the requested rule.</p>
+          <p className="mt-2 text-muted-foreground">We&apos;re locating the requested rule.</p>
         </div>
       </div>
     );

@@ -309,7 +309,7 @@ export default function ProfilePage() {
                         <FolderOpen className="w-8 h-8 text-white" />
                       </motion.div>
                       <p className="text-muted-foreground mb-6 text-lg">
-                        You haven't created any collections yet.
+                        You haven&apos;t created any collections yet.
                       </p>
                       <motion.div
                         whileHover={{ scale: 1.05 }}

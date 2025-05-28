@@ -2,6 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
+import { randomUUID } from 'crypto';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -20,9 +21,13 @@ async function createAdminProfile() {
   try {
     console.log('🔧 Creating admin profile...');
     
+    // Generate a UUID for the profile
+    const profileId = randomUUID();
+    
     const { data, error } = await supabase
       .from('profiles')
       .insert({
+        id: profileId,
         email: 'dominikos@myroomieapp.com',
         name: 'Dominikos Pritis'
       })

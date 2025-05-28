@@ -100,7 +100,7 @@ export function BrowserCompatibilityCheck() {
         {criticalFeaturesIncompatible ? (
           <>
             <p>
-              Your browser doesn't support some critical features needed for this application to work properly. 
+              Your browser doesn&apos;t support some critical features needed for this application to work properly. 
               Please consider updating your browser or switching to a modern browser like Chrome, Edge, Firefox, or Safari.
             </p>
             <p className="font-semibold mt-2">Missing features:</p>
