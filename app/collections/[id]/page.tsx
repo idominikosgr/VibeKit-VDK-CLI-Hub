@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import Link from 'next/link';
+import { ArrowLeft, Edit3, Trash2, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,10 +10,13 @@ import { Icons } from '@/components/icons';
 import { getCollection } from '@/lib/services/collection-service';
 import { createServerSupabaseClient } from '@/lib/supabase/server-client';
 
+// Force dynamic rendering to prevent static generation errors with cookies
+export const dynamic = 'force-dynamic';
+
 interface CollectionPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function CollectionPage({ params }: CollectionPageProps) {

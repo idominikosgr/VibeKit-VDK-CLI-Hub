@@ -55,12 +55,13 @@ export async function POST(request: NextRequest) {
         }, { status: 400 });
       }
       
-      const { error } = await supabase.rpc('vote_for_rule', { rule_id: ruleId });
+      const { error } = await supabase.rpc('vote_for_rule', { target_rule_id: ruleId });
       if (error) {
         console.error('RPC vote_for_rule error:', error);
         return NextResponse.json({ 
-          error: 'Failed to add vote', 
-          details: error.message 
+          success: false, 
+          error: 'Failed to vote for rule',
+          details: error
         }, { status: 500 });
       }
       
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
         }, { status: 400 });
       }
       
-      const { error } = await supabase.rpc('remove_rule_vote', { rule_id: ruleId });
+      const { error } = await supabase.rpc('remove_rule_vote', { target_rule_id: ruleId });
       if (error) {
         console.error('RPC remove_rule_vote error:', error);
         return NextResponse.json({ 

@@ -40,11 +40,11 @@ function ensureSerializable<T>(obj: T): T {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { category: string; ruleId: string } }
+  { params }: { params: Promise<{ category: string; ruleId: string }> }
 ) {
   try {
     // Ensure params are properly awaited (for Next.js 15+)
-    const awaitedParams = await Promise.resolve(params);
+    const awaitedParams = await params;
     const { ruleId } = awaitedParams;
     
     if (!ruleId) {

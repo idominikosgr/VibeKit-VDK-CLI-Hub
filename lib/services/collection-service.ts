@@ -75,7 +75,7 @@ export async function getCollection(collectionId: string, userId?: string): Prom
   try {
     const supabase = await createServerSupabaseClient();
 
-    // Build the query - FIXED: Use correct table name 'collection_items'
+    // Build the base query
     let query = supabase
       .from('collections')
       .select(`
@@ -85,16 +85,15 @@ export async function getCollection(collectionId: string, userId?: string): Prom
           rules (*)
         )
       `)
-      .eq('id', collectionId)
-      .single();
+      .eq('id', collectionId);
 
     // If userId is provided, ensure we're only retrieving collections owned by this user
-    // or public collections
+    // or public collections - apply this filter before the join
     if (userId) {
       query = query.or(`user_id.eq.${userId},is_public.eq.true`);
     }
 
-    const { data, error } = await query;
+    const { data, error } = await query.single();
 
     if (error) {
       throw error;

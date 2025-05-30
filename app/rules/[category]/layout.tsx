@@ -2,9 +2,9 @@ import { Metadata } from "next"
 import { getCategory } from "@/lib/services/supabase-rule-service"
 
 type CategoryLayoutProps = {
-  params: {
+  params: Promise<{
     category: string
-  }
+  }>
   children: React.ReactNode
 }
 
@@ -42,6 +42,9 @@ export default async function CategoryLayout({
   children,
   params
 }: CategoryLayoutProps) {
+  // Await the params for Next.js 15 compatibility
+  const awaitedParams = await params;
+  
   // Don't validate category existence here - let individual pages handle their own validation
   // This prevents individual rule pages from being affected by category validation issues
   

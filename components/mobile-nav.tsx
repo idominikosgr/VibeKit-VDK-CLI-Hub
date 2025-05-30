@@ -16,7 +16,7 @@ export function MobileNav() {
       <Link 
         href="/" 
         className="flex items-center">
-        <Icons.logo className="h-6 w-6 mr-2" />
+        <Icons.logo className="mr-2 h-4 w-4" />
         <span className="font-bold">{siteConfig.name}</span>
       </Link>
       <nav className="flex flex-col gap-2">
@@ -27,18 +27,22 @@ export function MobileNav() {
             pathname === "/" && "bg-accent"
           )}
         >
-          <Icons.home className="mr-2 h-4 w-4" />
+          <Icons.logo className="mr-2 h-4 w-4" />
           Home
         </Link>
         <Link
-          href="/rules"
-          className={cn(
-            "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            pathname?.startsWith("/rules") && "bg-accent"
-          )}
+          href="/docs"
+          className="flex items-center text-sm font-medium"
         >
-          <Icons.file className="mr-2 h-4 w-4" />
-          Rules
+          <Icons.documentation className="mr-2 h-4 w-4" />
+          Documentation
+        </Link>
+        <Link
+          href="/rules"
+          className="flex items-center text-sm font-medium"
+        >
+          <Icons.languages className="mr-2 h-4 w-4" />
+          Browse Rules
         </Link>
         <Link
           href="/categories"
@@ -47,7 +51,7 @@ export function MobileNav() {
             pathname?.startsWith("/categories") && "bg-accent"
           )}
         >
-          <Icons.categories className="mr-2 h-4 w-4" />
+          <Icons.stacks className="mr-2 h-4 w-4" />
           Categories
         </Link>
         

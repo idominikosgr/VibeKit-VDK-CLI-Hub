@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     // Test vote_for_rule function
     try {
       const { error: voteError } = await supabase.rpc('vote_for_rule', { 
-        rule_id: 'non-existent-rule-test' 
+        target_rule_id: 'non-existent-rule-test' 
       });
       
       results.testResults.vote_for_rule = {
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     // Test remove_rule_vote function
     try {
       const { error: removeError } = await supabase.rpc('remove_rule_vote', { 
-        rule_id: 'non-existent-rule-test' 
+        target_rule_id: 'non-existent-rule-test' 
       });
       
       results.testResults.remove_rule_vote = {

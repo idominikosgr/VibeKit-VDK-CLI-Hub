@@ -1,4 +1,6 @@
-import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -9,6 +11,9 @@ import { createServerSupabaseClient } from "@/lib/supabase/server-client";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { CollectionsPageClient } from "@/components/collections/collections-page-client";
+
+// Force dynamic rendering to prevent static generation errors with cookies
+export const dynamic = 'force-dynamic';
 
 export default async function CollectionsPage() {
   const supabase = await createServerSupabaseClient();

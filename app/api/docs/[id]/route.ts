@@ -4,11 +4,11 @@ import { UpdatePageRequest } from '@/types/documentation'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient()
-    const { id } = params
+    const { id } = await params
 
     const { data: page, error } = await supabase
       .from('document_pages')
@@ -33,11 +33,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient()
-    const { id } = params
+    const { id } = await params
     const body: UpdatePageRequest = await request.json()
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -80,11 +80,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient()
-    const { id } = params
+    const { id } = await params
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {

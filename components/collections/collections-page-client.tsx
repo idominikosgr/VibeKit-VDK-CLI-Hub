@@ -48,8 +48,8 @@ interface Collection {
   id: string;
   name: string;
   description?: string;
-  is_public: boolean;
-  updated_at?: string;
+  is_public: boolean | null;
+  updated_at: string | null;
   rules?: any[];
 }
 
@@ -133,7 +133,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           whileHover={{ scale: 1.1, rotate: 5 }}
                           transition={{ type: "spring", stiffness: 300 }}
                         >
-                          {collection.is_public ? (
+                          {collection.is_public === true ? (
                             <Badge 
                               variant="outline" 
                               className="bg-linear-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success dark:text-success/90"

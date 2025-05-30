@@ -66,7 +66,7 @@ interface ErrorFallbackProps {
   reset: () => void;
 }
 
-export function ErrorFallback({ error, reset }: ErrorFallbackProps): JSX.Element {
+export function ErrorFallback({ error, reset }: ErrorFallbackProps): React.ReactElement {
   const handleReset = useCallback(() => {
     reset();
   }, [reset]);

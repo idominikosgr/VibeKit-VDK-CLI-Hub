@@ -8,11 +8,11 @@ import { Rule } from '@/lib/types';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { ruleId: string } }
+  { params }: { params: Promise<{ ruleId: string }> }
 ) {
   try {
     // Get the rule ID from URL params - properly await params in Next.js 15
-    const unwrappedParams = await Promise.resolve(params);
+    const unwrappedParams = await params;
     const ruleId = unwrappedParams.ruleId;
     
     if (!ruleId) {
@@ -56,12 +56,12 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { ruleId: string } }
+  { params }: { params: Promise<{ ruleId: string }> }
 ) {
   // Reuse the same logic as GET but log it as a POST request
   try {
     // Get the rule ID from the path parameter - properly await params in Next.js 15
-    const unwrappedParams = await Promise.resolve(params);
+    const unwrappedParams = await params;
     const ruleId = unwrappedParams.ruleId;
     
     if (!ruleId) {

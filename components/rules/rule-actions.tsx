@@ -17,18 +17,16 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
   const router = useRouter()
   const supabase = createBrowserSupabaseClient()
   const [isDownloading, setIsDownloading] = useState(false)
-  const [hasVoted, setHasVoted] = useState(false)
   const [isVoting, setIsVoting] = useState(false)
+  const [hasVoted, setHasVoted] = useState(false)
   const [voteCount, setVoteCount] = useState(rule?.votes || 0)
-
-  // Safety check to prevent errors
-  if (!rule || !rule.id) {
-    console.error('Rule is invalid:', rule);
-    return null;
-  }
 
   // Check if the current user has voted for this rule
   useEffect(() => {
+    if (!rule || !rule.id) {
+      return;
+    }
+
     async function checkVoteStatus() {
       const { data: { session } } = await supabase.auth.getSession()
 
@@ -47,7 +45,12 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
     }
 
     checkVoteStatus()
-  }, [rule.id, supabase])
+  }, [rule?.id, supabase])
+
+  if (!rule || !rule.id) {
+    console.error('Rule is invalid:', rule);
+    return null;
+  }
 
   const handleDownload = async () => {
     try {

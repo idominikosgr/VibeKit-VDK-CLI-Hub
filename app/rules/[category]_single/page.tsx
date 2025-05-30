@@ -7,7 +7,7 @@ import { Icons } from '@/components/icons';
 
 // Redirector for direct category/rule ID access
 // Uses the 'category' parameter name to avoid Next.js routing conflicts
-export default function CategoryOrRuleRedirector({ params }: { params: { category: string } }) {
+export default function CategoryOrRuleRedirector({ params }: { params: Promise<{ category: string }> }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export default function CategoryOrRuleRedirector({ params }: { params: { categor
   useEffect(() => {
     async function handleRedirect() {
       try {
-        const unwrappedParams = params instanceof Promise ? await params : params;
+        const unwrappedParams = await params;
         const id = unwrappedParams.category;
         
         if (!id) {

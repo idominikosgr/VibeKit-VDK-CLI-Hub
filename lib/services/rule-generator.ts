@@ -57,6 +57,21 @@ export interface GeneratedPackageOutput {
   createdAt: string | null;
 }
 
+// Add a type for the partial rule data returned by our specific query
+interface PartialRuleForMatching {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[] | null;
+  compatibility: any; // JSONB type from Supabase
+  always_apply: boolean | null;
+  rule_compatibility?: Array<{
+    technology: string;
+    version_pattern: string | null;
+    compatibility_type: string | null;
+  }>;
+}
+
 export interface MatchedRule {
   id: string;
   title: string;
@@ -202,10 +217,10 @@ export class RuleGenerationEngine {
 
   /**
    * Calculate how well a rule matches the user's configuration
-   * FIXED: Use correct field name and handle nullable types
+   * FIXED: Use correct type for partial rule data
    */
   private calculateRuleMatch(
-    rule: DbRule,
+    rule: PartialRuleForMatching,
     userChoices: {
       stacks: string[];
       languages: string[];
@@ -275,9 +290,9 @@ export class RuleGenerationEngine {
 
   /**
    * Determine the rule level based on its content and match reasons
-   * FIXED: Handle nullable tags properly
+   * FIXED: Use correct type for partial rule data
    */
-  private determineRuleLevel(rule: DbRule, matchReasons: string[]): 'general' | 'stack' | 'language' | 'environment' {
+  private determineRuleLevel(rule: PartialRuleForMatching, matchReasons: string[]): 'general' | 'stack' | 'language' | 'environment' {
     const content = (rule.title + ' ' + rule.content + ' ' + (rule.tags || []).join(' ')).toLowerCase();
     
     // Check for environment-specific keywords

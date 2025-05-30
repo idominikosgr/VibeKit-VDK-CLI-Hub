@@ -29,8 +29,9 @@ export async function GET(request: Request) {
     }
 
     // If successful, redirect to the previously requested page or the dashboard
-    const redirectTo = cookies().get('auth-redirect')?.value || '/';
-    cookies().delete('auth-redirect');
+    const cookieStore = await cookies();
+    const redirectTo = cookieStore.get('auth-redirect')?.value || '/';
+    cookieStore.delete('auth-redirect');
 
     return NextResponse.redirect(`${requestUrl.origin}${redirectTo}`);
   } catch (error) {

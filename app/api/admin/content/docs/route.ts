@@ -109,6 +109,21 @@ export async function POST(request: NextRequest) {
     // Get current user
     const { data: { user } } = await supabase.auth.getUser();
     
+    // Generate path based on parent hierarchy and slug
+    let path = `/docs/${slug}`;
+    if (parent_id) {
+      // Get parent path to build hierarchical path
+      const { data: parent } = await supabase
+        .from('documentation_pages')
+        .select('path')
+        .eq('id', parent_id)
+        .single();
+      
+      if (parent) {
+        path = `${parent.path}/${slug}`;
+      }
+    }
+    
     // Create the page
     const { data: page, error: pageError } = await supabase
       .from('documentation_pages')
@@ -120,6 +135,7 @@ export async function POST(request: NextRequest) {
         icon,
         cover_image,
         parent_id,
+        path,
         order_index,
         status,
         visibility,

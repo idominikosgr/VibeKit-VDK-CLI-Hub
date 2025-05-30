@@ -1,29 +1,34 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server-client";
-import { CollectionForm } from "@/components/collections/collection-form";
+// import { CollectionForm } from "@/components/collections/collection-form";
+
+// Force dynamic rendering to prevent static generation errors with cookies
+export const dynamic = 'force-dynamic';
 
 export default async function NewCollectionPage() {
   const supabase = await createServerSupabaseClient();
-
-  // Check if user is authenticated
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session?.user) {
-    // Redirect unauthenticated users to login
-    redirect("/auth/login?returnTo=/collections/new");
+  
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect("/auth/login");
   }
 
   return (
-    <div className="container py-10">
-      <div className="flex flex-col gap-6 max-w-2xl mx-auto">
+    <div className="container max-w-2xl py-8">
+      <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Create Collection</h1>
-          <p className="mt-2 text-muted-foreground">
-            Create a personal collection to organize your favorite rules.
+          <h1 className="text-3xl font-bold">Create New Collection</h1>
+          <p className="text-muted-foreground">
+            Organize your favorite rules into a custom collection.
           </p>
         </div>
-
-        <CollectionForm userId={session.user.id} />
+        
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Collection form temporarily unavailable</p>
+        </div>
+        
+        {/* <CollectionForm userId={user.id} /> */}
       </div>
     </div>
   );

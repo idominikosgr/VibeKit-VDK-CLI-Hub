@@ -203,13 +203,29 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
       {/* Pagination */}
       {!isLoading && !error && rules.pagination.totalPages > 1 && (
         <div className="mt-8">
-          <Pagination
-            currentPage={rules.pagination.page}
-            totalPages={rules.pagination.totalPages}
-            totalItems={rules.pagination.totalCount}
-            pageSize={rules.pagination.pageSize}
-            onPageChange={handlePageChange}
-          />
+          <div className="flex items-center justify-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(rules.pagination.page - 1)}
+              disabled={rules.pagination.page <= 1}
+            >
+              Previous
+            </Button>
+            
+            <span className="text-sm text-muted-foreground">
+              Page {rules.pagination.page} of {rules.pagination.totalPages}
+            </span>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(rules.pagination.page + 1)}
+              disabled={rules.pagination.page >= rules.pagination.totalPages}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       )}
     </div>

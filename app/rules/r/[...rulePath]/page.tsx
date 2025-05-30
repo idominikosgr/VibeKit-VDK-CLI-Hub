@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Icons } from '@/components/icons';
 
 interface RuleRedirectPageProps {
-  params: {
+  params: Promise<{
     rulePath: string[];
-  }
+  }>
 }
 
 export default function RuleRedirectPage({ params }: RuleRedirectPageProps) {
@@ -18,8 +18,8 @@ export default function RuleRedirectPage({ params }: RuleRedirectPageProps) {
   useEffect(() => {
     async function lookupAndRedirect() {
       try {
-        // Unwrap params if they're a promise (Next.js 15+)
-        const unwrappedParams = params instanceof Promise ? await params : params;
+        // Unwrap params for Next.js 15+
+        const unwrappedParams = await params;
         const rulePath = unwrappedParams.rulePath;
 
         if (!rulePath || rulePath.length === 0) {

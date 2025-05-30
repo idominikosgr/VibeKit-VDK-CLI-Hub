@@ -535,7 +535,7 @@ export async function voteForRule(ruleId: string, userId: string): Promise<void>
   try {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.rpc('vote_for_rule', {
-      rule_id: ruleId
+      target_rule_id: ruleId
     });
 
     if (error) {
@@ -555,7 +555,7 @@ export async function removeRuleVote(ruleId: string, userId: string): Promise<vo
   try {
     const supabase = await createServerSupabaseClient();
     const { error } = await supabase.rpc('remove_rule_vote', {
-      rule_id: ruleId
+      target_rule_id: ruleId
     });
 
     if (error) {

@@ -116,20 +116,20 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
       // Try a direct category search first if we have a category
       if (category_id) {
         try {
-          const categoryRules = await getRulesByCategory(category_id);
-          if (categoryRules && categoryRules.length > 0) {
+          const categoryResults = await getRulesByCategory(category_id);
+          if (categoryResults && categoryResults.data.length > 0) {
             // Filter for most relevant rules
-            foundRules = categoryRules.filter(r => 
+            foundRules = categoryResults.data.filter((r: any) => 
               r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
               r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              (r.tags && r.tags.some(tag => 
+              (r.tags && r.tags.some((tag: any) => 
                 tag.toLowerCase().includes(searchQuery.toLowerCase()))
               )
             );
             
             if (foundRules.length === 0) {
               // If no specific match, just use the first rule from this category
-              foundRules = categoryRules;
+              foundRules = categoryResults.data;
             }
           }
         } catch (err) {
@@ -141,8 +141,8 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
       if (foundRules.length === 0) {
         try {
           const searchResults = await searchRules(searchQuery);
-          if (searchResults && searchResults.length > 0) {
-            foundRules = searchResults;
+          if (searchResults && searchResults.data.length > 0) {
+            foundRules = searchResults.data;
           }
         } catch (err) {
           console.error("Error searching rules:", err);
@@ -153,8 +153,8 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
       if (foundRules.length === 0) {
         try {
           const genericResults = await searchRules("best practices");
-          if (genericResults && genericResults.length > 0) {
-            foundRules = genericResults;
+          if (genericResults && genericResults.data.length > 0) {
+            foundRules = genericResults.data;
           }
         } catch (err) {
           console.error("Error with generic search:", err);
@@ -165,9 +165,9 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
       if (foundRules.length === 0) {
         try {
           // Try to get any first rule from any category
-          const anyRules = await getRulesByCategory('languages');
-          if (anyRules && anyRules.length > 0) {
-            foundRules = anyRules;
+          const anyResults = await getRulesByCategory('languages');
+          if (anyResults && anyResults.data.length > 0) {
+            foundRules = anyResults.data;
           }
         } catch (err) {
           console.error("Error fetching any rules:", err);
@@ -185,7 +185,6 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
 title: ${rule.title}
 description: ${rule.description}
 version: ${rule.version}
-author: ${rule.author || 'CodePilot Team'}
 compatibility:
   ides: [${rule.compatibility?.ides?.map((ide: string) => `"${ide}"`).join(', ') || ''}]
   aiAssistants: [${rule.compatibility?.aiAssistants?.map((ai: string) => `"${ai}"`).join(', ') || ''}]

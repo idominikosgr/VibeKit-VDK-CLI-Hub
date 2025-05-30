@@ -160,26 +160,27 @@ export default function DocsPage() {
   const [isSaving, setIsSaving] = useState(false)
   const { user } = useAuth()
 
+  // Load pages function
+  const loadPages = async () => {
+    try {
+      setIsLoading(true)
+      const pagesData = await documentationService.getAllPages(true)
+      setPages(pagesData)
+      
+      // Select first page by default
+      if (pagesData.length > 0 && !selectedPage) {
+        setSelectedPage(pagesData[0])
+      }
+    } catch (error) {
+      console.error('Failed to load pages:', error)
+      toast.error('Failed to load documentation pages')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Load pages on mount
   useEffect(() => {
-    const loadPages = async () => {
-      try {
-        setIsLoading(true)
-        const pagesData = await documentationService.getAllPages(true)
-        setPages(pagesData)
-        
-        // Select first page by default
-        if (pagesData.length > 0 && !selectedPage) {
-          setSelectedPage(pagesData[0])
-        }
-      } catch (error) {
-        console.error('Failed to load pages:', error)
-        toast.error('Failed to load documentation pages')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     loadPages()
   }, [selectedPage])
 

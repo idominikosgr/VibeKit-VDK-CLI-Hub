@@ -154,8 +154,11 @@ async function ensureCategories(supabase: any): Promise<Map<string, string>> {
     throw new Error(`Failed to fetch existing categories: ${error.message}`);
   }
 
-  // Process each standard category
-  for (const [index, category] of STANDARD_CATEGORIES.entries()) {
+  // Create standard categories
+  for (let index = 0; index < STANDARD_CATEGORIES.length; index++) {
+    const category = STANDARD_CATEGORIES[index];
+    console.log(`Creating category: ${category.name}`);
+    
     const existing = existingCategories?.find((c: any) => c.slug === category.slug);
     
     if (existing) {

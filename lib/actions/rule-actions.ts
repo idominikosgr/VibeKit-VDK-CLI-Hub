@@ -207,10 +207,10 @@ export async function voteForRule(formData: FormData) {
     // Toggle vote: if exists, remove; if not, add
     if (existingVote) {
       // Remove existing vote using RPC function
-      await supabase.rpc('remove_rule_vote', { rule_id: ruleId });
+      await supabase.rpc('remove_rule_vote', { target_rule_id: ruleId });
     } else {
       // Add new vote using RPC function
-      await supabase.rpc('vote_for_rule', { rule_id: ruleId });
+      await supabase.rpc('vote_for_rule', { target_rule_id: ruleId });
     }
 
     // Get updated vote count (using correct field name)
@@ -251,10 +251,14 @@ export async function addComment(formData: FormData) {
   }
 
   try {
-    // Note: Commenting on comments table that may not exist
+    // Note: Comments feature not yet implemented in database schema
     // This is a secondary feature - focus on core rule functionality first
+    console.warn('Comments feature not implemented yet');
+    return { error: 'Comments feature coming soon' };
+    
+    /*
     const { error } = await supabase
-      .from('rule_comments')
+      .from('comments')
       .insert({
         rule_id: ruleId, // Use snake_case for DB
         user_id: session.user.id, // Use snake_case for DB
@@ -280,6 +284,7 @@ export async function addComment(formData: FormData) {
     }
     
     return { success: true };
+    */
   } catch (error) {
     console.error('Error adding comment:', error);
     return { error: 'Failed to add comment. Please try again.' };
@@ -406,13 +411,16 @@ export async function generateRulePackage(formData: FormData) {
       
       // Check framework compatibility
       const compatibility = rule.compatibility || {};
-      if (compatibility.frameworks) {
-        for (const framework of compatibility.frameworks) {
-          if (selectedStacks.some(stack => 
-            stack.toLowerCase().includes(framework.toLowerCase()) ||
-            framework.toLowerCase().includes(stack.toLowerCase())
-          )) {
-            score += 1.2;
+      if (compatibility && typeof compatibility === 'object' && !Array.isArray(compatibility)) {
+        const compatObj = compatibility as { frameworks?: string[]; [key: string]: any };
+        if (compatObj.frameworks && Array.isArray(compatObj.frameworks)) {
+          for (const framework of compatObj.frameworks) {
+            if (typeof framework === 'string' && selectedStacks.some(stack => 
+              stack.toLowerCase().includes(framework.toLowerCase()) ||
+              framework.toLowerCase().includes(stack.toLowerCase())
+            )) {
+              score += 1.2;
+            }
           }
         }
       }
@@ -573,17 +581,7 @@ function generateConfigFiles(rules: any[], config: any): string {
         try {
           configFiles.packageJson = JSON.parse(match[1]);
         } catch (e) {
-          // Ignore parsing errors
-        }
-      }
-    }
-    if (rule.content.includes('tsconfig.json')) {
-      const match = rule.content.match(/```json\s*([\s\S]*?)\s*```/);
-      if (match && match[1].includes('compilerOptions')) {
-        try {
-          configFiles.tsConfig = JSON.parse(match[1]);
-        } catch (e) {
-          // Ignore parsing errors
+          // Ignore malformed JSON
         }
       }
     }
@@ -593,6 +591,9 @@ function generateConfigFiles(rules: any[], config: any): string {
     configuration: config,
     configFiles,
     generatedAt: new Date().toISOString(),
-    appliedRules: rules.map(r => ({ id: r.id, title: r.title }))
+    appliedRules: rules.map(r => ({ 
+      id: r.id, 
+      title: r.title
+    }))
   }, null, 2);
 }

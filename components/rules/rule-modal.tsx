@@ -113,6 +113,40 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
   const [isVoting, setIsVoting] = useState(false);
   const [voteCount, setVoteCount] = useState(0);
 
+  // Initialize vote count and check user vote status
+  useEffect(() => {
+    if (!rule) return;
+    
+    setVoteCount(rule.votes || 0);
+    
+    async function checkVoteStatus() {
+      if (!rule) {
+        return;
+      }
+      
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session?.user) {
+          return;
+        }
+
+        const { data } = await supabase
+          .from('user_votes')
+          .select('id')
+          .eq('rule_id', rule.id)
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        setHasVoted(!!data);
+      } catch (error) {
+        console.error('Error checking vote status:', error);
+      }
+    }
+
+    checkVoteStatus();
+  }, [rule, supabase]);
+
   // Early return if no rule
   if (!rule) {
     return null;
@@ -146,36 +180,6 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
 
   // Safely check compatibility
   const hasCompatibility = hasCompatibilityData(rule.compatibility);
-
-  // Initialize vote count and check user vote status
-  useEffect(() => {
-    setVoteCount(safeRule.votes);
-    
-    async function checkVoteStatus() {
-      if (!rule) return;
-      
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-
-        if (!session?.user) {
-          return;
-        }
-
-        const { data } = await supabase
-          .from('user_votes')
-          .select('id')
-          .eq('rule_id', rule.id)
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-
-        setHasVoted(!!data);
-      } catch (error) {
-        console.error('Error checking vote status:', error);
-      }
-    }
-
-    checkVoteStatus();
-  }, [rule, supabase, safeRule.votes]);
 
   // Handle copying rule content to clipboard
   const copyToClipboard = async () => {

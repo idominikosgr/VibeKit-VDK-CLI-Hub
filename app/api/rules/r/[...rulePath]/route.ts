@@ -7,11 +7,11 @@ import { findRuleByIdentifier } from '@/lib/services/supabase-rule-service';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { rulePath: string[] } }
+  { params }: { params: Promise<{ rulePath: string[] }> }
 ) {
   try {
     // Ensure params are properly awaited (for Next.js 15+)
-    const unwrappedParams = await Promise.resolve(params);
+    const unwrappedParams = await params;
     
     if (!unwrappedParams.rulePath || unwrappedParams.rulePath.length === 0) {
       return NextResponse.json(

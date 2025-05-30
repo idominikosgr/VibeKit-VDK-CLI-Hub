@@ -11,13 +11,13 @@ import { AlertCircle } from "lucide-react"
 import { getCategory, getRulesByCategory } from "@/lib/services/supabase-rule-service"
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string
-  };
-  searchParams?: {
+  }>;
+  searchParams?: Promise<{
     q?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {

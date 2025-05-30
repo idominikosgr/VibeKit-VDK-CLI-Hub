@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { documentationServiceServer } from '@/lib/services/documentation-service-server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
-import type { CreateDocumentationPageRequest } from '@/types/documentation';
+// import { documentationServiceServer } from '@/lib/services/documentation-service-server';
+import { requireAdmin } from '@/lib/middleware/admin-auth';
 
 // Admin emails - replace with your actual admin logic
 const adminEmails = ['admin@example.com', 'dominik@example.com', 'dominikos@myroomieapp.com'];
@@ -11,7 +10,20 @@ async function isAdmin(email: string): Promise<boolean> {
   return adminEmails.includes(email);
 }
 
-const basicDocs: CreateDocumentationPageRequest[] = [
+interface BasicDocumentationPage {
+  title: string;
+  slug: string;
+  excerpt: string;
+  icon: string;
+  content: string;
+  content_type: string;
+  visibility: string;
+  status: string;
+  tag_ids: string[];
+  metadata: Record<string, any>;
+}
+
+const basicDocs: BasicDocumentationPage[] = [
   {
     title: 'Getting Started with CodePilotRules Hub',
     slug: 'getting-started',
@@ -185,88 +197,26 @@ Ready to create your first rule? Visit the [Rules section](/rules) to get starte
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-    
-    // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+    // Check admin permissions
+    const adminCheck = await requireAdmin(request);
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json({ 
+        success: false, 
+        error: adminCheck.error || 'Admin access required' 
+      }, { status: adminCheck.error === 'Authentication required' ? 401 : 403 });
     }
 
-    if (!user.email) {
-      return NextResponse.json(
-        { error: 'User email not found' },
-        { status: 401 }
-      );
-    }
-
-    const userIsAdmin = await isAdmin(user.email);
-    if (!userIsAdmin) {
-      return NextResponse.json(
-        { error: 'Admin access required' },
-        { status: 403 }
-      );
-    }
-
-    console.log('Starting to populate basic documentation...');
-    const results = [];
-    
-    for (const docData of basicDocs) {
-      try {
-        console.log(`Creating: ${docData.title}`);
-        
-        // Check if page already exists
-        const slug = docData.slug;
-        if (slug) {
-          const existingPage = await documentationServiceServer.getPage(slug);
-          if (existingPage) {
-            results.push({ 
-              success: false, 
-              title: docData.title, 
-              error: 'Page already exists' 
-            });
-            continue;
-          }
-        }
-
-        const pageDataWithAuthor = {
-          ...docData,
-          author_id: user.id,
-          last_edited_by: user.id
-        };
-        
-        const page = await documentationServiceServer.createPage(pageDataWithAuthor as any);
-        results.push({ success: true, page });
-        console.log(`✅ Created: ${page.title}`);
-      } catch (error) {
-        console.error(`❌ Failed to create ${docData.title}:`, error);
-        results.push({ 
-          success: false, 
-          title: docData.title, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
-        });
-      }
-    }
-    
-    console.log('\nPopulation complete!');
-    const successCount = results.filter(r => r.success).length;
-    const failureCount = results.filter(r => !r.success).length;
-    
-    return NextResponse.json({
-      success: true,
-      message: `Population complete! Successfully created: ${successCount} pages, Failed: ${failureCount} pages`,
-      results
-    });
+    // TODO: Implement documentation population when service is available
+    return NextResponse.json({ 
+      success: false, 
+      message: 'Documentation service temporarily unavailable' 
+    }, { status: 503 });
 
   } catch (error) {
     console.error('Error populating documentation:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to populate documentation' },
-      { status: 500 }
-    );
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Failed to populate documentation' 
+    }, { status: 500 });
   }
 } 
