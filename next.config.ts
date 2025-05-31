@@ -5,9 +5,6 @@ import type { NextConfig } from 'next'
  * Following CodePilotRulesHub's modern implementation approach without backward compatibility
  */
 const nextConfig: NextConfig = {
-  // Build output directory
-  distDir: 'build',
-
   // Enable React strict mode for better development experience and safety
   reactStrictMode: true,
 
