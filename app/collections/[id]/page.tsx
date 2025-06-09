@@ -121,11 +121,12 @@ export default function CollectionDetailPage() {
           const transformedRules = (rulesData || [])
             .map(item => item.rules)
             .filter(Boolean)
-            .map(rule => ({
+            .map(rule => rule ? ({
               ...rule,
               categoryName: rule.categories?.name,
               categorySlug: rule.categories?.slug
-            })) as Rule[]
+            }) : null)
+            .filter(Boolean) as Rule[]
 
           setRules(transformedRules)
         }

@@ -64,6 +64,38 @@ const nextConfig: NextConfig = {
     return config;
   },
 
+  // PWA and Web App Manifest support
+  headers: async () => {
+    return [
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
+
   // Enable turbopack for faster builds (Next.js 15.3+ syntax)
   turbopack: {},
 
@@ -76,7 +108,7 @@ const nextConfig: NextConfig = {
   // ESLint configuration
   eslint: {
     // Temporarily ignore ESLint during builds for deployment
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
 
   // Bundle analyzer - enables automatic bundling for Pages Router

@@ -4,9 +4,9 @@
 /* Modern theme configuration with comprehensive chart colors */
 :root {
   /* Font families */
-  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-code: "Fira Code", "Source Code Pro", Consolas, monospace;
+  --font-display: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-code: "JetBrains Mono", "Fira Code", "Source Code Pro", Consolas, monospace;
   
   /* Warm Sunset Design System - Light Mode */
   --background: oklch(0.97 0.01 45);
@@ -212,27 +212,27 @@
   /* Modern spacing system */
   --spacing: 0.25rem;
   
-  /* Typography scale */
+  /* Typography scale - Enhanced for Manrope */
   --text-xs: 0.75rem;
   --text-xs--line-height: 1rem;
   --text-sm: 0.875rem;
   --text-sm--line-height: 1.25rem;
   --text-base: 1rem;
-  --text-base--line-height: 1.5rem;
+  --text-base--line-height: 1.6rem; /* Improved for Manrope readability */
   --text-lg: 1.125rem;
-  --text-lg--line-height: 1.75rem;
+  --text-lg--line-height: 1.8rem; /* Better spacing for Manrope */
   --text-xl: 1.25rem;
-  --text-xl--line-height: 1.75rem;
+  --text-xl--line-height: 1.9rem;
   --text-2xl: 1.5rem;
-  --text-2xl--line-height: 2rem;
+  --text-2xl--line-height: 2.1rem;
   --text-3xl: 1.875rem;
-  --text-3xl--line-height: 2.25rem;
+  --text-3xl--line-height: 2.4rem;
   --text-4xl: 2.25rem;
-  --text-4xl--line-height: 2.5rem;
+  --text-4xl--line-height: 2.7rem;
   --text-5xl: 3rem;
-  --text-5xl--line-height: 1;
+  --text-5xl--line-height: 1.1;
   --text-6xl: 3.75rem;
-  --text-6xl--line-height: 1;
+  --text-6xl--line-height: 1.1;
   
   /* Font weights */
   --font-weight-thin: 100;
