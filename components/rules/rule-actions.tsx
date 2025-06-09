@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { Rule } from "@/lib/types"
+import { AddToCollectionDialog } from "@/components/collections/add-to-collection-dialog"
 
 interface RuleActionsProps {
   rule: Rule;
@@ -220,6 +221,18 @@ export function RuleActions({ rule, onDownload }: RuleActionsProps) {
           <Icons.thumbsUp className={`h-4 w-4 ${hasVoted ? 'text-primary-foreground' : ''}`} />
         )}
       </Button>
+      <AddToCollectionDialog
+        rule={rule}
+        trigger={
+          <Button
+            variant="outline"
+            size="icon"
+            title="Add to collection"
+          >
+            <Icons.userPlus className="h-4 w-4" />
+          </Button>
+        }
+      />
       <Button
         variant="outline"
         size="icon"

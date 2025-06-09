@@ -220,52 +220,7 @@ export default function RulePage({ params }: RulePageProps) {
     setModalOpen(true);
   }, []);
 
-  const handleDownload = useCallback(async () => {
-    if (!rule) return;
-    
-    try {
-      // Create downloadable content with metadata
-      const content = `---
-title: ${rule.title}
-description: ${rule.description}
-version: ${rule.version}
-lastUpdated: ${rule.last_updated || new Date().toISOString()}
-category: ${rule.categoryName || category}
----
-
-${rule.content}`;
-      
-      // Create blob and download link
-      const blob = new Blob([content], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${rule.slug || rule.id}.mdc`;
-      document.body.appendChild(a);
-      a.click();
-      
-      // Clean up
-      URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      // Increment download count in database
-      try {
-        await supabase.rpc('increment_rule_downloads', { target_rule_id: rule.id });
-        console.log('Download count incremented for rule:', rule.id);
-        
-        // Update local rule state to reflect new download count
-        setRule(prev => prev ? { ...prev, downloads: (prev.downloads || 0) + 1 } : null);
-        toast.success(`Downloaded ${rule.slug || rule.id}.mdc`);
-      } catch (dbError) {
-        console.error('Failed to increment download count:', dbError);
-        toast.success(`Downloaded ${rule.slug || rule.id}.mdc`);
-        // Don't fail the download if DB update fails
-      }
-    } catch (error) {
-      console.error('Failed to download rule:', error);
-      toast.error('Failed to download rule');
-    }
-  }, [rule, category, supabase]);
+  // Note: Download functionality is now handled entirely by RuleActions component
 
   const handleCopy = useCallback(async () => {
     if (!rule?.content) return;
@@ -638,8 +593,8 @@ ${rule.content}`;
                   </dl>
                 </CardContent>
                 <CardFooter className="border-t bg-linear-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10 pt-4">
-                  {/* Use the RuleActions component for proper functionality */}
-                  <RuleActions rule={rule} onDownload={handleDownload} />
+                  {/* Use the RuleActions component for proper functionality - no onDownload to prevent double downloads */}
+                  <RuleActions rule={rule} />
                 </CardFooter>
               </Card>
             </motion.div>

@@ -1,143 +1,328 @@
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Edit3, Trash2, Plus } from 'lucide-react';
+"use client"
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Icons } from '@/components/icons';
-import { getCollection } from '@/lib/services/collection-service';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Icons } from "@/components/icons"
+import { Collection, Rule } from "@/lib/types"
+import { createBrowserSupabaseClient } from "@/lib/supabase/client"
+import { toast } from "sonner"
+import { ChevronRight } from "lucide-react"
 
-// Force dynamic rendering to prevent static generation errors with cookies
-export const dynamic = 'force-dynamic';
-
-interface CollectionPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
 }
 
-export default async function CollectionPage({ params }: CollectionPageProps) {
-  const awaitedParams = await params;
-  const supabase = await createServerSupabaseClient();
-
-  // Check if user is authenticated
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session?.user) {
-    notFound();
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24
+    }
   }
+}
 
-  try {
-    // Get collection details
-    const collection = await getCollection(awaitedParams.id, session.user.id);
+export default function CollectionDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const supabase = createBrowserSupabaseClient()
+  const [collection, setCollection] = useState<Collection | null>(null)
+  const [rules, setRules] = useState<Rule[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isOwner, setIsOwner] = useState(false)
 
-    if (!collection) {
-      notFound();
+  useEffect(() => {
+    async function loadCollection() {
+      const collectionId = Array.isArray(params.id) ? params.id[0] : params.id
+      if (!collectionId) return
+
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Get current user
+        const { data: { session } } = await supabase.auth.getSession()
+
+        // Get collection details
+        const { data: collectionData, error: collectionError } = await supabase
+          .from('collections')
+          .select('*')
+          .eq('id', collectionId)
+          .single()
+
+        if (collectionError || !collectionData) {
+          console.error('Collection error:', collectionError)
+          setError('Collection not found')
+          return
+        }
+
+        // Check if user is owner or if collection is public
+        const userIsOwner = session?.user && collectionData.user_id === session.user.id
+        const isPublic = collectionData.is_public
+
+        if (!userIsOwner && !isPublic) {
+          setError('Access denied')
+          return
+        }
+
+        setIsOwner(!!userIsOwner)
+        setCollection(collectionData as Collection)
+
+        // Get collection rules
+        const { data: rulesData, error: rulesError } = await supabase
+          .from('collection_items')
+          .select(`
+            rules (
+              id,
+              title,
+              slug,
+              description,
+              path,
+              content,
+              version,
+              category_id,
+              downloads,
+              votes,
+              tags,
+              globs,
+              compatibility,
+              examples,
+              always_apply,
+              last_updated,
+              created_at,
+              updated_at,
+              categories (
+                name,
+                slug
+              )
+            )
+          `)
+          .eq('collection_id', collectionId)
+
+        if (rulesError) {
+          console.error('Rules error:', rulesError)
+          toast.error('Failed to load collection rules')
+        } else {
+          const transformedRules = (rulesData || [])
+            .map(item => item.rules)
+            .filter(Boolean)
+            .map(rule => ({
+              ...rule,
+              categoryName: rule.categories?.name,
+              categorySlug: rule.categories?.slug
+            })) as Rule[]
+
+          setRules(transformedRules)
+        }
+      } catch (error) {
+        console.error('Error loading collection:', error)
+        setError('Failed to load collection')
+      } finally {
+        setLoading(false)
+      }
     }
 
+    loadCollection()
+  }, [params.id])
+
+  // Loading state
+  if (loading) {
     return (
-      <div className="container py-10">
-        <div className="flex flex-col gap-8">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Link href="/collections" className="hover:text-foreground">
-              Collections
-            </Link>
-            <span>/</span>
-            <span className="text-foreground">{collection.name}</span>
+      <div className="container mx-auto py-10">
+        <motion.div 
+          className="space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 w-3/4 bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
+            <div className="h-4 w-1/2 bg-gradient-to-r from-muted via-muted/60 to-muted rounded"></div>
           </div>
-
-          {/* Collection header */}
-          <div className="flex items-start justify-between">
-            <div>
-                             <div className="flex items-center gap-2">
-                 <Icons.folder className="h-5 w-5" />
-                 <h1 className="text-3xl font-bold">{collection.name}</h1>
-                {collection.is_public ? (
-                  <Badge variant="outline">Public</Badge>
-                ) : (
-                  <Badge variant="outline">Private</Badge>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse space-y-4">
+                <div className="h-32 w-full bg-gradient-to-r from-muted via-muted/60 to-muted rounded-lg"></div>
               </div>
-              <p className="mt-2 text-lg text-muted-foreground">{collection.description}</p>
-            </div>
-                         <Button variant="outline" asChild>
-               <Link href={`/collections/${collection.id}/edit`}>
-                 <Icons.settings className="mr-2 h-4 w-4" />
-                 Edit Collection
-               </Link>
-             </Button>
+            ))}
           </div>
+        </motion.div>
+      </div>
+    )
+  }
 
-          {/* Rules list */}
-          {collection.rules && collection.rules.length > 0 ? (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">
-                Rules ({collection.rules.length})
-              </h2>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {collection.rules.map((rule) => (
-                  <Card key={rule.id} className="overflow-hidden transition-colors hover:bg-muted/50">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <CardTitle className="text-xl">
-                            <Link 
-                              href={`/rules/${rule.categorySlug || 'core'}/${rule.id}`}
-                              className="hover:text-primary"
-                            >
-                              {rule.title}
-                            </Link>
-                          </CardTitle>
-                          <CardDescription className="mt-2">
-                            {rule.description}
-                          </CardDescription>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {rule.tags?.map((tag) => (
+  // Error state
+  if (error || !collection) {
+    return (
+      <div className="container mx-auto py-10">
+        <motion.div 
+          className="flex flex-col items-center justify-center py-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg mb-6">
+            <Icons.alertTriangle className="h-10 w-10 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4">{error}</h2>
+          <p className="text-muted-foreground mb-8 text-lg max-w-md leading-relaxed">
+            {error === 'Collection not found' 
+              ? 'The collection you are looking for does not exist or has been deleted.'
+              : 'You do not have permission to view this collection.'
+            }
+          </p>
+          <Button onClick={() => router.push('/collections')}>
+            <Icons.chevronRight className="mr-2 h-4 w-4 rotate-180" />
+            Back to Collections
+          </Button>
+        </motion.div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container mx-auto py-10">
+      {/* Breadcrumb */}
+      <motion.div 
+        className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <Link href="/collections" className="hover:text-foreground transition-colors">
+          Collections
+        </Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-foreground">{collection.name}</span>
+      </motion.div>
+
+      {/* Collection header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
+      >
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">{collection.name}</h1>
+            <p className="text-muted-foreground text-lg">
+              {collection.description}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {collection.is_public && (
+              <Badge variant="secondary">Public</Badge>
+            )}
+            {isOwner && (
+              <Badge variant="outline">Owner</Badge>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Icons.code className="h-4 w-4" />
+            {rules.length} {rules.length === 1 ? 'rule' : 'rules'}
+          </span>
+          {collection.created_at && (
+            <span className="flex items-center gap-1">
+              <Icons.settings className="h-4 w-4" />
+              Created {new Date(collection.created_at).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Rules grid */}
+      {rules.length === 0 ? (
+        <motion.div 
+          className="flex flex-col items-center justify-center py-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center shadow-lg mb-6">
+            <Icons.folder className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold mb-4">No rules yet</h2>
+          <p className="text-muted-foreground mb-8 text-lg max-w-md leading-relaxed">
+            This collection is empty. {isOwner ? 'Add some rules to get started.' : 'Check back later for updates.'}
+          </p>
+          {isOwner && (
+            <Button onClick={() => router.push('/rules')}>
+              <Icons.search className="mr-2 h-4 w-4" />
+              Browse Rules
+            </Button>
+          )}
+        </motion.div>
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {rules.map((rule) => (
+            <motion.div key={rule.id} variants={itemVariants}>
+              <Card className="h-full bg-gradient-to-br from-card/80 to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1">
+                      <CardTitle className="line-clamp-1">{rule.title}</CardTitle>
+                      <CardDescription className="line-clamp-2">
+                        {rule.description}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {rule.categoryName && (
+                      <Badge variant="outline" className="text-xs">
+                        {rule.categoryName}
+                      </Badge>
+                    )}
+                    {rule.tags && rule.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {rule.tags.slice(0, 3).map((tag) => (
                           <Badge key={tag} variant="secondary" className="text-xs">
                             {tag}
                           </Badge>
                         ))}
+                        {rule.tags.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{rule.tags.length - 3}
+                          </Badge>
+                        )}
                       </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between items-center">
-                      <div className="text-sm text-muted-foreground">
-                        Version {rule.version}
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/rules/${rule.categorySlug || 'core'}/${rule.id}`}>
-                          View Rule
-                        </Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          ) : (
-                         <div className="flex flex-col items-center justify-center py-16 text-center">
-               <Icons.folder className="h-16 w-16 text-muted-foreground mb-4" />
-               <h3 className="text-2xl font-bold mb-2">No rules in this collection</h3>
-              <p className="text-muted-foreground mb-6">
-                Start adding rules to organize your favorites.
-              </p>
-              <Button asChild>
-                <Link href="/rules">Browse Rules</Link>
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  } catch (error) {
-    console.error('Error loading collection:', error);
-    notFound();
-  }
+                    )}
+                  </div>
+                </CardContent>
+                <div className="p-6 pt-0">
+                  <Button asChild className="w-full">
+                    <Link href={`/rules/${rule.categorySlug || 'uncategorized'}/${rule.id}`}>
+                      View Rule
+                    </Link>
+                  </Button>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+    </div>
+  )
 } 
