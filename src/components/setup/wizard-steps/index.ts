@@ -1,5 +1,5 @@
 // Wizard Steps - Modern multi-step setup flow
-// Following CodePilotRulesHub's "always" principles: complete implementations, no backward compatibility
+// Following Vibe Coding Rules Hub's "always" principles: complete implementations, no backward compatibility
 
 export { ProjectInfoStep } from './project-info-step'
 export { StackSelectionStep } from './stack-selection-step'

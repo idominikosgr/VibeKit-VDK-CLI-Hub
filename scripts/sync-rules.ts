@@ -448,7 +448,7 @@ async function syncRules(): Promise<SyncResult> {
   };
 
   try {
-    console.log('🚀 CodePilotRules Sync Script');
+    console.log('🚀 Vibe Coding Rules Sync Script');
     console.log('==============================');
     console.log(`Mode: ${DRY_RUN ? 'DRY RUN' : 'LIVE'}`);
     console.log(`Rules directory: ${RULES_DIR}`);

@@ -74,7 +74,7 @@ The app generates rules in a hierarchical structure:
 
 ### Project Structure
 ```
-CodePilotRulesHub/
+Vibe Coding Rules Hub/
 ├── codepilotrules-hub/           # Main application package
 │   ├── app/                      # Next.js App Router
 │   │   ├── api/                  # API route handlers

@@ -246,7 +246,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.3 }}
           >
             <CardTitle className="text-2xl font-bold text-center text-primary">
-              Join CodePilot Rules Hub
+              Join Vibe Coding Rules Hub
             </CardTitle>
             <CardDescription className="text-center text-base mt-2">
               Create your account to share and discover development rules

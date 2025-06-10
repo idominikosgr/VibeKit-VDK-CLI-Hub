@@ -1,4 +1,4 @@
-// GitHub API client for syncing rules from the CodePilotRules repository - FIXED SCHEMA ALIGNMENT
+// GitHub API client for syncing rules from the Vibe Coding Rules repository - FIXED SCHEMA ALIGNMENT
 import { Octokit } from 'octokit';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../../supabase/database.types';

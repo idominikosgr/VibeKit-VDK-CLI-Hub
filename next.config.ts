@@ -2,7 +2,7 @@ import type { NextConfig } from 'next'
 
 /**
  * Next.js configuration with enhanced development settings
- * Following CodePilotRulesHub's modern implementation approach without backward compatibility
+ * Following Vibe Coding Rules Hub's modern implementation approach without backward compatibility
  */
 const nextConfig: NextConfig = {
   // Enable React strict mode for better development experience and safety

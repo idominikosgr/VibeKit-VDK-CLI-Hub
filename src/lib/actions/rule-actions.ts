@@ -541,7 +541,7 @@ function generateBashScript(rules: any[], config: any): string {
 
 set -e
 
-echo "🚀 CodePilotRules Setup Script"
+echo "🚀 Vibe Coding Rules Setup Script"
 echo "=============================="
 
 `;

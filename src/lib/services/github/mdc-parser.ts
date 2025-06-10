@@ -1,4 +1,4 @@
-// MDC Parser for CodePilotRules
+// MDC Parser for Vibe Coding Rules
 // Parses .mdc files to extract content, metadata, and compatibility info
 
 import matter from 'gray-matter';

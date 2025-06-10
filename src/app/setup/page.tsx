@@ -103,7 +103,7 @@ export default function SetupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                Configure and download CodePilotRules tailored to your project needs.
+                Configure and download Vibe Coding Rules tailored to your project needs.
                 Follow our step-by-step wizard to generate a personalized rules package.
               </motion.p>
 
