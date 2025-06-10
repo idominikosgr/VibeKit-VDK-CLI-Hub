@@ -167,11 +167,11 @@ async function improveCodeQuality(codeFilePath: string) {
 - **Human Oversight**: Maintaining appropriate human control
 - **Rollback Capabilities**: Ability to undo actions when needed
 
-## CodePilotRules Hub Integration
+## Vibe Coding Rules Hub Integration
 
 ### Using Rules in Agentic Systems
 
-The CodePilotRules Hub provides structured guidance for building agentic AI systems:
+The Vibe Coding Rules Hub provides structured guidance for building agentic AI systems:
 
 #### Rule Categories for Agents
 - **Agent Behavior Rules**: How agents should interact and make decisions
@@ -183,7 +183,7 @@ The CodePilotRules Hub provides structured guidance for building agentic AI syst
 
 Agentic AI represents the future of intelligent systems that can understand, reason, and act autonomously while remaining aligned with human goals and values. By combining structured rules, powerful tools through MCP, and thoughtful design, we can build AI systems that truly augment human capabilities and drive innovation forward.
 
-The CodePilotRules Hub serves as both a repository of knowledge and a practical platform for developing and deploying agentic AI systems in real-world development environments.`;
+The Vibe Coding Rules Hub serves as both a repository of knowledge and a practical platform for developing and deploying agentic AI systems in real-world development environments.`;
 
     // Create new page
     const { data: page, error: pageError } = await supabase

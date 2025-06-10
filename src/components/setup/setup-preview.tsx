@@ -230,7 +230,7 @@ ${rule.content}`;
 
     // Add main config file
     structure.push({
-      name: "codepilotrules.json",
+              name: "vibe-coding-rules.json",
       type: "file"
     });
 
@@ -267,7 +267,7 @@ ${rule.content}`;
       // Create download link
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `codepilotrules-config.json`;
+              link.download = `vibe-coding-rules-config.json`;
 
       // Trigger download
       document.body.appendChild(link);

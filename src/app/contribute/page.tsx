@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-  title: "Contribute | CodePilot Rules Hub",
-  description: "Learn how to contribute to CodePilot Rules Hub - submit rules, report issues, and help build the community.",
+  title: "Contribute | Vibe Coding Rules Hub",
+  description: "Learn how to contribute to Vibe Coding Rules Hub - submit rules, report issues, and help build the community.",
 }
 
 export default function ContributePage() {
   return (
     <div className="container max-w-6xl mx-auto py-8 px-4">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Contribute to CodePilot Rules Hub</h1>
+        <h1 className="text-4xl font-bold mb-4">Contribute to Vibe Coding Rules Hub</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Help us build the most comprehensive collection of AI-assisted development rules and guidelines.
         </p>
@@ -56,7 +56,7 @@ export default function ContributePage() {
             </p>
             <Button asChild variant="outline" className="w-full">
               <a 
-                href="https://github.com/idominikosgr/CodePilotRules/issues" 
+                href="https://github.com/idominikosgr/Vibe-Coding-Rules/issues" 
                 target="_blank" 
                 rel="noopener noreferrer"
               >

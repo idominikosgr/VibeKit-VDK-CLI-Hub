@@ -12,7 +12,7 @@ const documentationContent = [
     icon: '🚀',
     content: `# Installation & Setup
 
-Welcome to CodePilotRules Hub! This guide will help you get the application running locally in just a few minutes.
+Welcome to Vibe Coding Rules Hub! This guide will help you get the application running locally in just a few minutes.
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 \`\`\`bash
-git clone https://github.com/codepilotrules/codepilotrules-hub.git
+git clone https://github.com/idominikosgr/Vibe-Coding-Rules.git
 cd codepilotrules-hub/codepilotrules-hub
 \`\`\`
 
@@ -101,7 +101,7 @@ For production deployment, see our [Deployment Guide](/docs/getting-started/depl
     icon: '🏗️',
     content: `# System Overview
 
-CodePilotRules Hub is a modern full-stack application built for AI-assisted development rule management and distribution.
+Vibe Coding Rules Hub is a modern full-stack application built for AI-assisted development rule management and distribution.
 
 ## Architecture Principles
 

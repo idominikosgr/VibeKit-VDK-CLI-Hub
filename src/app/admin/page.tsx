@@ -167,7 +167,7 @@ export default function AdminDashboard() {
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage your CodePilotRules Hub instance
+                Manage your Vibe Coding Rules Hub instance
               </p>
             </div>
           </div>

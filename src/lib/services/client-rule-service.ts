@@ -17,7 +17,7 @@ export async function fetchRuleCategories(): Promise<RuleCategory[]> {
       throw new Error(`Failed to fetch categories: ${response.statusText}`);
     }
     const data = await response.json();
-    return data.categories || [];
+    return Array.isArray(data) ? data : data.categories || [];
   } catch (error) {
     console.error('Error fetching categories:', error);
     throw error;

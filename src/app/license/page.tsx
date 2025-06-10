@@ -1,17 +1,23 @@
 import { Metadata } from "next"
+import { LegalPageLayout } from "@/components/legal/legal-page-layout"
+import { LegalSection } from "@/components/legal/legal-section"
 
 export const metadata: Metadata = {
-  title: "License | CodePilot Rules Hub",
-  description: "MIT License for CodePilot Rules Hub - open source licensing information.",
+  title: "License | Vibe Coding Rules Hub",
+  description: "MIT License for Vibe Coding Rules Hub - open source licensing information.",
 }
 
 export default function LicensePage() {
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
-      <div className="prose prose-lg dark:prose-invert max-w-none">
-        <h1>MIT License</h1>
-        <p className="text-lg text-muted-foreground">
-          CodePilot Rules Hub is released under the MIT License
+    <LegalPageLayout
+      title="MIT License"
+      description="Vibe Coding Rules Hub is open source software released under the MIT License, promoting collaboration and innovation."
+      icon="check"
+      lastUpdated={new Date().toLocaleDateString()}
+    >
+      <LegalSection title="License Grant" icon="check" highlight>
+        <p>
+          Vibe Coding Rules Hub is released under the MIT License
         </p>
 
         <div className="bg-muted/50 p-6 rounded-lg font-mono text-sm leading-relaxed">
@@ -43,10 +49,11 @@ export default function LicensePage() {
             SOFTWARE.
           </p>
         </div>
+      </LegalSection>
 
-        <h2>About Open Source</h2>
+      <LegalSection title="About Open Source" icon="github">
         <p>
-          CodePilot Rules Hub is built on the foundation of open source software and contributes back to the community. The MIT License is a permissive free software license that allows you to:
+          Vibe Coding Rules Hub is built on the foundation of open source software and contributes back to the community. The MIT License is a permissive free software license that allows you to:
         </p>
         <ul>
           <li>Use the software for any purpose</li>
@@ -55,8 +62,9 @@ export default function LicensePage() {
           <li>Distribute modified versions of the software</li>
           <li>Use the software in proprietary applications</li>
         </ul>
+      </LegalSection>
 
-        <h2>Third-Party Licenses</h2>
+      <LegalSection title="Third-Party Licenses" icon="folder">
         <p>
           This project makes use of various open source libraries and frameworks, each with their own licenses:
         </p>
@@ -69,17 +77,19 @@ export default function LicensePage() {
           <li><strong>Framer Motion</strong> - MIT License</li>
           <li><strong>Lucide Icons</strong> - ISC License</li>
         </ul>
+      </LegalSection>
 
-        <h2>Contributing</h2>
+      <LegalSection title="Contributing" icon="userPlus" highlight>
         <p>
-          By contributing to CodePilot Rules Hub, you agree that your contributions will be licensed under the same MIT License that covers the project.
+          By contributing to Vibe Coding Rules Hub, you agree that your contributions will be licensed under the same MIT License that covers the project.
         </p>
+      </LegalSection>
 
-        <h2>Acknowledgments</h2>
+      <LegalSection title="Acknowledgments" icon="heart">
         <p>
-          Special thanks to Seth Rose for the original DevRules project that inspired CodePilot Rules Hub, and to the entire open source community for the tools and libraries that make this project possible.
+          Special thanks to Seth Rose for the original DevRules project that inspired Vibe Coding Rules Hub, and to the entire open source community for the tools and libraries that make this project possible.
         </p>
-      </div>
-    </div>
+      </LegalSection>
+    </LegalPageLayout>
   )
 } 

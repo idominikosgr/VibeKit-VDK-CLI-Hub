@@ -33,7 +33,7 @@ export function SiteFooter() {
             >
               <Icons.logo className="h-6 w-6 text-primary" />
               <span className="font-bold text-lg bg-linear-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                CodePilotRules Hub
+                Vibe Coding Rules Hub
               </span>
             </motion.div>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -95,7 +95,7 @@ export function SiteFooter() {
               <li>
                 <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                   <a 
-                    href="https://github.com/idominikosgr/CodePilotRules" 
+                    href="https://github.com/idominikosgr/Vibe-Coding-Rules-hub" 
                     className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2"
                     target="_blank"
                     rel="noreferrer"
@@ -163,7 +163,7 @@ export function SiteFooter() {
           transition={{ delay: 0.4, duration: 0.6 }}
         >
           <p className="mb-2">
-            &copy; {new Date().getFullYear()} CodePilotRules. All rights reserved.
+            &copy; {new Date().getFullYear()} Vibe Coding Rules. All rights reserved.
           </p>
           <p className="leading-relaxed">
             Original DevRules by{" "}
@@ -177,7 +177,7 @@ export function SiteFooter() {
                 Seth Rose
               </a>
             </motion.span>
-            . CodePilotRules Enhancements by{" "}
+            . Vibe Coding Rules Enhancements by{" "}
             <motion.span whileHover={{ scale: 1.05 }} className="inline-block">
               <a 
                 href="https://github.com/idominikosgr" 

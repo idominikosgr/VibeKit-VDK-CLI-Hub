@@ -10,6 +10,7 @@ import {
   FolderClosed,
   Github,
   GitBranch,
+  Heart,
   Loader2,
   LogIn,
   LogOut,
@@ -47,25 +48,24 @@ import {
   Server,
   Terminal
 } from "lucide-react"
+import Image from "next/image"
 
 export type Icon = typeof LucideIcon
 
 export const Icons = {
-  logo: (props: LucideProps) => (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-      <path d="M2 17l10 5 10-5" />
-      <path d="M2 12l10 5 10-5" />
-    </svg>
-  ),
+  logo: (props: LucideProps) => {
+    const { className } = props;
+    
+    return (
+      <Image
+        src="/images/logo.png"
+        alt="Vibe Coding Rules Hub"
+        width={24}
+        height={24}
+        className={className}
+      />
+    );
+  },
   sun: SunMedium,
   moon: Moon,
   menu: Menu,
@@ -115,5 +115,6 @@ export const Icons = {
   frontend: Monitor,
   terminal: Terminal,
   aitools: Brain,
-  stacks: Layers
+  stacks: Layers,
+  heart: Heart
 }

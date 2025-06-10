@@ -1,7 +1,7 @@
 
 # README.md
 
-# CodePilotRules Hub
+# Vibe Coding Rules Hub
 
 A comprehensive platform for browsing, searching, and managing AI-assisted development rules and guidelines. Built with modern web technologies to provide developers with curated rules for various programming languages, frameworks, and development tasks.
 
@@ -93,8 +93,8 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/codepilotrules-hub.git
-cd codepilotrules-hub
+git clone https://github.com/idominikosgr/Vibe-Coding-Rules.git
+cd Vibe Coding Rules Hub-hub
 ```
 
 ### 2. Install Dependencies
@@ -405,6 +405,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by the CodePilotRules team**
+**Built with ❤️ by the Vibe Coding Rules Hub team**
 
 ---

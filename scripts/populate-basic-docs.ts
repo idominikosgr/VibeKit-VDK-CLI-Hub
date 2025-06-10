@@ -33,18 +33,18 @@ const basicDocumentationContent: DocumentationContent[] = [
     title: 'Getting Started',
     slug: 'getting-started',
     order_index: 1,
-    excerpt: 'Learn the basics of CodePilotRules Hub and how to get started with AI-powered development rules.',
+    excerpt: 'Learn the basics of Vibe Coding Rules Hub and how to get started with AI-powered development rules.',
     status: 'published',
     visibility: 'public',
     tags: ['getting-started', 'introduction'],
     icon: '🚀',
-    content: `# Getting Started with CodePilotRules Hub
+    content: `# Getting Started with Vibe Coding Rules Hub
 
-Welcome to CodePilotRules Hub! This comprehensive platform helps you manage AI development rules, guidelines, and best practices for your development team.
+Welcome to Vibe Coding Rules Hub! This comprehensive platform helps you manage AI development rules, guidelines, and best practices for your development team.
 
-## What is CodePilotRules Hub?
+## What is Vibe Coding Rules Hub?
 
-CodePilotRules Hub is an intelligent platform that:
+Vibe Coding Rules Hub is an intelligent platform that:
 
 - **📚 Centralizes Development Knowledge**: Store all your team's coding standards, best practices, and guidelines in one place
 - **🤖 Powers AI Agents**: Provide context-aware rules that AI assistants can use to help with coding tasks
@@ -85,7 +85,7 @@ CodePilotRules Hub is an intelligent platform that:
 
 ## Architecture Overview
 
-CodePilotRules Hub is built with modern technologies:
+Vibe Coding Rules Hub is built with modern technologies:
 
 - **Frontend**: Next.js 14 with TypeScript and Tailwind CSS
 - **Backend**: Supabase (PostgreSQL) for data storage and authentication
@@ -108,14 +108,14 @@ Let's build better software together with AI-powered development rules! 🎉`
     title: 'System Architecture',
     slug: 'system-architecture',
     order_index: 2,
-    excerpt: 'Understand the technical architecture and design principles behind CodePilotRules Hub.',
+    excerpt: 'Understand the technical architecture and design principles behind Vibe Coding Rules Hub.',
     status: 'published',
     visibility: 'public',
     tags: ['architecture', 'system-design', 'overview'],
     icon: '🏗️',
     content: `# System Architecture
 
-CodePilotRules Hub is built on a modern, scalable architecture designed for performance, reliability, and developer experience.
+Vibe Coding Rules Hub is built on a modern, scalable architecture designed for performance, reliability, and developer experience.
 
 ## Technology Stack
 
@@ -284,7 +284,7 @@ This architecture provides a solid foundation for current needs while maintainin
     icon: '🤖',
     content: `# AI Agent Concepts
 
-Understanding agentic AI is crucial for leveraging CodePilotRules Hub's intelligent features. This guide covers the core concepts and principles behind AI agents.
+Understanding agentic AI is crucial for leveraging Vibe Coding Rules Hub's intelligent features. This guide covers the core concepts and principles behind AI agents.
 
 ## What are AI Agents?
 
@@ -462,21 +462,21 @@ Combination of reactive and deliberative approaches:
 - Better human-agent interaction models
 - Scalable multi-agent coordination
 
-Understanding these concepts will help you effectively use and extend CodePilotRules Hub's AI capabilities for your development needs.`
+Understanding these concepts will help you effectively use and extend Vibe Coding Rules Hub's AI capabilities for your development needs.`
   },
 
   {
     title: 'User Guide',
     slug: 'user-guide',
     order_index: 4,
-    excerpt: 'Complete guide for using CodePilotRules Hub features and workflows.',
+    excerpt: 'Complete guide for using Vibe Coding Rules Hub features and workflows.',
     status: 'published',
     visibility: 'public',
     tags: ['tutorial', 'user-guide', 'workflow'],
     icon: '📖',
     content: `# User Guide
 
-This comprehensive guide covers all the features and workflows in CodePilotRules Hub, from basic usage to advanced configurations.
+This comprehensive guide covers all the features and workflows in Vibe Coding Rules Hub, from basic usage to advanced configurations.
 
 ## Getting Started
 
@@ -658,7 +658,7 @@ The main dashboard provides:
 - **Support Tickets**: Direct support for complex issues
 - **Training Resources**: Videos, tutorials, and best practices
 
-This guide provides a foundation for effective use of CodePilotRules Hub. As you become more familiar with the platform, explore advanced features to maximize your team's productivity and code quality.`
+This guide provides a foundation for effective use of Vibe Coding Rules Hub. As you become more familiar with the platform, explore advanced features to maximize your team's productivity and code quality.`
   }
 ];
 

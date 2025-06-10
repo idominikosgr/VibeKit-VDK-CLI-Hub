@@ -2,7 +2,7 @@
 
 ## Overview
 
-CodePilotRules Hub has been redesigned to support multiple IDEs and AI assistants, moving away from the Cursor-specific `.mdc` format to a universal approach that generates optimized outputs for different development environments.
+Vibe Coding Rules Hub has been redesigned to support multiple IDEs and AI assistants, moving away from the Cursor-specific `.mdc` format to a universal approach that generates optimized outputs for different development environments.
 
 ## Universal Rule Format
 
@@ -17,7 +17,7 @@ description: "Modern React patterns and conventions"
 tags: ["react", "javascript", "typescript", "frontend"]
 compatibility:
   ides: ["cursor", "vscode", "webstorm", "sublime"]
-  aiAssistants: ["codepilot", "copilot", "codewhisperer", "tabnine"]
+  aiAssistants: ["vibecoding", "copilot", "codewhisperer", "tabnine"]
   frameworks: ["react", "nextjs", "remix"]
 version: "1.0.0"
 alwaysApply: false
@@ -244,4 +244,4 @@ The database remains unchanged as it already stores rules in a universal format.
 - **Custom Templates**: User-defined rule templates
 - **Integration Testing**: Automated testing across IDEs
 
-This multi-IDE approach ensures CodePilotRules Hub can serve the entire development community, not just Cursor users, while maintaining the quality and specificity that makes the rules effective. 
+This multi-IDE approach ensures Vibe Coding Rules Hub can serve the entire development community, not just Cursor users, while maintaining the quality and specificity that makes the rules effective. 

@@ -82,8 +82,8 @@ const IDEs: IDE[] = [
 
 const AIAssistants: AIAssistant[] = [
   {
-    id: 'codepilot',
-    name: 'CodePilot',
+    id: 'vibecoding',
+    name: 'Vibe Coding',
     description: 'Cursor\'s built-in AI assistant',
     icon: '🤖'
   },

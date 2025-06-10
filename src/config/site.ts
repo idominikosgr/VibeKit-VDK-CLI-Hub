@@ -15,13 +15,13 @@ export type SiteConfig = {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "CodePilotRules Hub",
+  name: "Vibe Coding Rules Hub",
   description: "A comprehensive hub for AI-assisted development rules and guidelines.",
-  url: "https://codepilotrules.dev",
+  url: "https://hub.vibecodingrules.rocks",
   ogImage: "/og.jpg",
   links: {
-    github: "https://github.com/codepilotrules/codepilotrules-hub",
-    twitter: "https://twitter.com/codepilotrules"
+    github: "https://github.com/idominikosgr/Vibe-Coding-Rules-hub",
+    twitter: "https://twitter.com/vibecodingrules"
   },
   nav: [
     {

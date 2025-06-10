@@ -32,18 +32,18 @@ const basicDocumentationContent = [
     slug: 'getting-started',
     section: 'introduction',
     order_index: 1,
-    excerpt: 'Learn how to get started with CodePilotRules Hub and create your first rule.',
+    excerpt: 'Learn how to get started with Vibe Coding Rules Hub and create your first rule.',
     status: 'published' as const,
     visibility: 'public' as const,
     tags: ['getting-started', 'tutorial', 'introduction'],
     icon: '🚀',
-    content: `# Getting Started with CodePilotRules Hub
+    content: `# Getting Started with Vibe Coding Rules Hub
 
-Welcome to CodePilotRules Hub! This guide will help you understand the platform and create your first rule.
+Welcome to Vibe Coding Rules Hub! This guide will help you understand the platform and create your first rule.
 
-## What is CodePilotRules Hub?
+## What is Vibe Coding Rules Hub?
 
-CodePilotRules Hub is an AI-powered platform for managing development rules, guidelines, and best practices. It helps teams:
+Vibe Coding Rules Hub is an AI-powered platform for managing development rules, guidelines, and best practices. It helps teams:
 
 - Centralize development knowledge
 - Enable AI agents with contextual rules
@@ -105,14 +105,14 @@ Happy documenting! 🎉`
     slug: 'architecture-overview',
     section: 'architecture',
     order_index: 1,
-    excerpt: 'High-level overview of CodePilotRules Hub architecture and core components.',
+    excerpt: 'High-level overview of Vibe Coding Rules Hub architecture and core components.',
     status: 'published' as const,
     visibility: 'public' as const,
     tags: ['architecture', 'overview', 'system-design'],
     icon: '🏗️',
     content: `# System Architecture Overview
 
-CodePilotRules Hub is built with a modern, scalable architecture designed to support AI-powered development workflows and team collaboration.
+Vibe Coding Rules Hub is built with a modern, scalable architecture designed to support AI-powered development workflows and team collaboration.
 
 ## Architecture Principles
 
@@ -238,14 +238,14 @@ This architecture provides a solid foundation for current needs while maintainin
     slug: 'ai-agent-integration',
     section: 'ai-concepts',
     order_index: 1,
-    excerpt: 'Understand how AI agents integrate with CodePilotRules Hub for intelligent development workflows.',
+    excerpt: 'Understand how AI agents integrate with Vibe Coding Rules Hub for intelligent development workflows.',
     status: 'published' as const,
     visibility: 'public' as const,
     tags: ['ai-agents', 'integration', 'agentic-ai', 'concepts'],
     icon: '🤖',
     content: `# AI Agent Integration
 
-CodePilotRules Hub is designed from the ground up to enable powerful AI agent interactions that enhance development workflows through intelligent rule application and reasoning.
+Vibe Coding Rules Hub is designed from the ground up to enable powerful AI agent interactions that enhance development workflows through intelligent rule application and reasoning.
 
 ## What are AI Agents?
 
@@ -261,7 +261,7 @@ AI Agents are autonomous systems that can:
 
 ### Context-Aware Rule Application
 
-AI agents in CodePilotRules Hub use the rule system to:
+AI agents in Vibe Coding Rules Hub use the rule system to:
 
 1. **Understand Context**: Analyze the current development situation
 2. **Retrieve Relevant Rules**: Find applicable rules based on technology, category, and context
@@ -326,7 +326,7 @@ Agents can dynamically load rules based on:
 
 ### 1. API-Based Integration
 
-Agents can interact with CodePilotRules Hub through RESTful APIs:
+Agents can interact with Vibe Coding Rules Hub through RESTful APIs:
 
 - **Rule Retrieval**: GET /api/rules with filtering and search
 - **Rule Application**: POST /api/rules/apply with context

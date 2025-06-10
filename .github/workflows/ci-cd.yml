@@ -1,4 +1,4 @@
-name: CodePilotRules Hub CI/CD
+name: Vibe Coding Rules Hub CI/CD
 
 on:
   push:

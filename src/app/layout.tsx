@@ -23,8 +23,8 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hub.vibecoderules.rocks';
-const siteName = 'CodePilotRules Hub';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hub.vibecodingrules.rocks';
+const siteName = 'Vibe Coding Rules Hub';
 const siteDescription = 'A comprehensive hub for AI-assisted development rules, guidelines, and coding best practices. Discover, share, and implement coding standards that enhance your development workflow.';
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   keywords: [
-    'codepilot', 'rules', 'ai', 'development', 'coding', 'guidelines', 
+    'Vibe Coding', 'rules', 'ai', 'development', 'coding', 'guidelines', 
     'best practices', 'coding standards', 'development workflow', 
     'ai-assisted development', 'code quality', 'programming guidelines'
   ],
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     },
   ],
   creator: 'Dominikos Pritis',
-  publisher: 'CodePilotRules Hub',
+  publisher: 'Vibe Coding Rules Hub',
   robots: {
     index: true,
     follow: true,
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@vibecoderules',
+    site: '@vibecodingrules',
     creator: '@idominikosgr',
     title: siteName,
     description: siteDescription,
@@ -93,11 +93,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
-      { url: '/images/icon-16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/images/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/images/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/images/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
-      { url: '/images/apple-icon-180.png', sizes: '180x180', type: 'image/png' },
+      { url: '/images/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
       {

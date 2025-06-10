@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# CodePilotRules Hub - Beautification Setup Script
-echo "🎨 Setting up CodePilotRules Hub beautification features..."
+# Vibe Coding Rules Hub - Beautification Setup Script
+echo "🎨 Setting up Vibe Coding Rules Hub beautification features..."
 
 # Check if we're in the right directory
 if [ ! -f "package.json" ]; then
@@ -31,7 +31,7 @@ if [ ! -f ".env.local" ]; then
     cat > .env.local << EOL
 # Site Configuration
 NEXT_PUBLIC_SITE_URL=https://hub.vibecoderules.rocks
-NEXT_PUBLIC_SITE_NAME="CodePilotRules Hub"
+NEXT_PUBLIC_SITE_NAME="Vibe Coding Rules Hub"
 
 # Analytics & SEO
 GOOGLE_SITE_VERIFICATION=

@@ -1,6 +1,6 @@
 # Storage Service Documentation
 
-This directory contains the storage abstraction layer for handling file uploads and downloads in the CodePilotRules Hub application.
+This directory contains the storage abstraction layer for handling file uploads and downloads in the Vibe Coding Rules Hub application.
 
 ## Architecture
 

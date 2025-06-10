@@ -1,9 +1,9 @@
-# CodePilotRules Hub - AI Assistant Technical Reference & Critical Issues
+# Vibe Coding Rules Hub - AI Assistant Technical Reference & Critical Issues
 
 ## 📋 Project Overview
 
 ### Business Logic & Purpose
-CodePilotRules Hub is a **frontend application** for the main `codepilotrules` project, serving as an intelligent rule distribution platform. The app functions as:
+Vibe Coding Rules Hub is a **frontend application** for the main `codepilotrules` project, serving as an intelligent rule distribution platform. The app functions as:
 
 1. **Rule Catalog Hub**: Centralized browsing of handpicked AI development rules organized by categories
 2. **Configuration Wizard**: Interactive questionnaire about user's development stack, technologies, and frameworks

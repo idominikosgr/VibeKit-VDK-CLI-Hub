@@ -25,17 +25,17 @@ interface BasicDocumentationPage {
 
 const basicDocs: BasicDocumentationPage[] = [
   {
-    title: 'Getting Started with CodePilotRules Hub',
+    title: 'Getting Started with Vibe Coding Rules Hub',
     slug: 'getting-started',
-    excerpt: 'Learn how to set up and start using CodePilotRules Hub for your AI-powered development workflow.',
+    excerpt: 'Learn how to set up and start using Vibe Coding Rules Hub for your AI-powered development workflow.',
     icon: '🚀',
-    content: `# Getting Started with CodePilotRules Hub
+    content: `# Getting Started with Vibe Coding Rules Hub
 
-Welcome to CodePilotRules Hub - your comprehensive platform for managing AI coding rules, documentation, and agentic development workflows.
+Welcome to Vibe Coding Rules Hub - your comprehensive platform for managing AI coding rules, documentation, and agentic development workflows.
 
-## What is CodePilotRules Hub?
+## What is Vibe Coding Rules Hub?
 
-CodePilotRules Hub is a centralized platform that helps developers:
+Vibe Coding Rules Hub is a centralized platform that helps developers:
 
 - **Manage AI Coding Rules**: Create, organize, and share coding rules for AI assistants
 - **Document Knowledge**: Build comprehensive documentation for your projects and teams
@@ -93,11 +93,11 @@ Ready to get started? Jump into creating your first rule or documentation page!`
   {
     title: 'Rules System Overview',
     slug: 'rules-system',
-    excerpt: 'Understanding how to create, organize, and manage AI coding rules in CodePilotRules Hub.',
+    excerpt: 'Understanding how to create, organize, and manage AI coding rules in Vibe Coding Rules Hub.',
     icon: '📋',
     content: `# Rules System Overview
 
-The Rules System is the core feature of CodePilotRules Hub, designed to help you create, manage, and share coding standards for AI assistants.
+The Rules System is the core feature of Vibe Coding Rules Hub, designed to help you create, manage, and share coding standards for AI assistants.
 
 ## Understanding Rules
 

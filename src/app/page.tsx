@@ -41,7 +41,7 @@ export default function Home() {
             Enhance Your AI-Assisted Development
           </h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl dark:text-muted-foreground">
-            CodePilotRules Hub provides comprehensive guidelines for AI coding assistants across
+            Vibe Coding Rules Hub provides comprehensive guidelines for AI coding assistants across
             multiple platforms, languages, and technologies.
           </p>
         </div>
@@ -292,7 +292,7 @@ export default function Home() {
             Ready to enhance your AI-assisted development?
           </h2>
           <p className="max-w-[85%] text-muted-foreground dark:text-muted-foreground">
-            Get started with CodePilotRules today and experience more efficient,
+            Get started with Vibe Coding Rules today and experience more efficient,
             consistent, and high-quality AI assistance.
           </p>
           <motion.div
