@@ -55,15 +55,34 @@ function SheetContent({
   // This ensures React.Children.toArray doesn't throw for fragments
   const childrenArray = React.Children.toArray(children)
   
-  // Check if there's a SheetTitle component among the children
-  const hasTitle = childrenArray.some(child => {
-    if (React.isValidElement(child) && typeof child.type === 'function') {
-      return child.type.name === 'SheetTitle'
+  // Check if there's a SheetTitle component among the children (including nested)
+  const hasTitle = React.useMemo(() => {
+    const checkForTitle = (node: React.ReactNode): boolean => {
+      if (React.isValidElement(node)) {
+        // Check if this is a SheetTitle component
+        if (typeof node.type === 'function' && node.type.name === 'SheetTitle') {
+          return true
+        }
+        
+        // Check if this is a SheetPrimitive.Title
+        if (node.type === SheetPrimitive.Title) {
+          return true
+        }
+        
+        // Recursively check children
+        if (node.props && typeof node.props === 'object' && node.props !== null && 'children' in node.props) {
+          const children = React.Children.toArray((node.props as any).children)
+          return children.some(checkForTitle)
+        }
+      }
+      return false
     }
-    return false
-  })
+    
+    return childrenArray.some(checkForTitle)
+  }, [childrenArray])
   
-  if (!hasTitle) {
+  // Only warn in development and if there's actually no title
+  if (process.env.NODE_ENV === 'development' && !hasTitle) {
     console.warn(
       'SheetContent must contain a SheetTitle component for accessibility. ' +
       'See https://www.radix-ui.com/docs/primitives/components/dialog#accessibility for more information.'

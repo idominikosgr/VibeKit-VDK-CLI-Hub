@@ -12,8 +12,6 @@ import crypto from 'crypto';
 type SupabaseClient = Awaited<ReturnType<typeof createServerSupabaseClient>>;
 type Tables = Database['public']['Tables'];
 type DbRule = Tables['rules']['Row'];
-type DbWizardConfig = Tables['wizard_configurations']['Row'];
-type DbGeneratedPackage = Tables['generated_packages']['Row'];
 
 // Application-level interface for wizard configuration (can use camelCase for forms)
 export interface WizardConfigurationInput {
@@ -28,21 +26,8 @@ export interface WizardConfigurationInput {
   customRequirements?: string;
 }
 
-// Database-aligned configuration (snake_case fields)
-export interface WizardConfigurationDb {
-  id?: string;
-  user_id?: string | null;
-  session_id?: string | null;
-  stack_choices: Record<string, any>;
-  language_choices: Record<string, any>;
-  tool_preferences: Record<string, any>;
-  environment_details: Record<string, any>;
-  output_format: string | null;
-  custom_requirements?: string | null;
-  generated_rules?: string[] | null;
-  generation_timestamp?: string | null;
-  created_at?: string | null;
-}
+// Use the imported database type instead of custom interface
+export type WizardConfigurationDb = WizardConfiguration;
 
 // Application-level package interface (camelCase for API responses)
 export interface GeneratedPackageOutput {
@@ -57,10 +42,48 @@ export interface GeneratedPackageOutput {
   createdAt: string | null;
 }
 
+/**
+ * Convert database GeneratedPackage to application GeneratedPackageOutput
+ * Maps snake_case database fields to camelCase application fields
+ */
+function mapGeneratedPackageToOutput(dbPackage: GeneratedPackage): GeneratedPackageOutput {
+  return {
+    id: dbPackage.id,
+    configurationId: dbPackage.configuration_id,
+    packageType: dbPackage.package_type,
+    downloadUrl: dbPackage.download_url,
+    fileSize: dbPackage.file_size,
+    ruleCount: dbPackage.rule_count,
+    downloadCount: dbPackage.download_count,
+    expiresAt: dbPackage.expires_at,
+    createdAt: dbPackage.created_at,
+  };
+}
+
+/**
+ * Convert application WizardConfigurationInput to database insert format
+ * Maps camelCase application fields to snake_case database fields
+ */
+function mapWizardConfigToDbInsert(config: WizardConfigurationInput): Omit<WizardConfiguration, 'id' | 'created_at'> {
+  return {
+    user_id: config.userId || null,
+    session_id: config.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    stack_choices: config.stackChoices,
+    language_choices: config.languageChoices,
+    tool_preferences: config.toolPreferences,
+    environment_details: config.environmentDetails,
+    output_format: config.outputFormat,
+    custom_requirements: config.customRequirements || null,
+    generated_rules: null, // Will be populated after generation
+    generation_timestamp: new Date().toISOString(),
+  };
+}
+
 // Add a type for the partial rule data returned by our specific query
 interface PartialRuleForMatching {
   id: string;
   title: string;
+  slug: string;
   content: string;
   tags: string[] | null;
   compatibility: any; // JSONB type from Supabase
@@ -75,6 +98,7 @@ interface PartialRuleForMatching {
 export interface MatchedRule {
   id: string;
   title: string;
+  slug: string;
   content: string;
   level: 'general' | 'stack' | 'language' | 'environment';
   tags: string[] | null;
@@ -125,22 +149,14 @@ export class RuleGenerationEngine {
 
   /**
    * Save wizard configuration to database
-   * FIXED: Use correct database field names (snake_case)
+   * FIXED: Use correct database field names (snake_case) with proper type mapping
    */
   private async saveWizardConfiguration(config: WizardConfigurationInput): Promise<string> {
+    const dbConfig = mapWizardConfigToDbInsert(config);
+    
     const { data, error } = await this.supabase
       .from('wizard_configurations')
-      .insert({
-        user_id: config.userId || null,
-        session_id: config.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        stack_choices: config.stackChoices,
-        language_choices: config.languageChoices,
-        tool_preferences: config.toolPreferences,
-        environment_details: config.environmentDetails,
-        output_format: config.outputFormat,
-        custom_requirements: config.customRequirements || null,
-        generation_timestamp: new Date().toISOString(),
-      })
+      .insert(dbConfig)
       .select('id')
       .single();
 
@@ -163,6 +179,7 @@ export class RuleGenerationEngine {
       .select(`
         id,
         title,
+        slug,
         content,
         tags,
         compatibility,
@@ -196,6 +213,7 @@ export class RuleGenerationEngine {
         matchedRules.push({
           id: rule.id,
           title: rule.title,
+          slug: rule.slug,
           content: rule.content,
           level: this.determineRuleLevel(rule, matchResult.reasons),
           tags: rule.tags, // Keep as nullable
@@ -239,25 +257,36 @@ export class RuleGenerationEngine {
 
     // Match against rule tags (handle nullable)
     const ruleTags = rule.tags || [];
+
     for (const tag of ruleTags) {
       const lowerTag = tag.toLowerCase();
       
-      // Check stack matches
-      if (userChoices.stacks.some(stack => lowerTag.includes(stack.toLowerCase()))) {
-        score += 1.0;
-        reasons.push(`Matches stack: ${tag}`);
+      // Check stack matches with improved flexibility
+      for (const stack of userChoices.stacks) {
+        if (lowerTag.includes(stack.toLowerCase()) || 
+            tag.toLowerCase().includes('react') ||
+            tag.toLowerCase().includes('next')) {
+          score += 1.0;
+          reasons.push(`Matches stack: ${tag}`);
+        }
       }
       
-      // Check language matches
-      if (userChoices.languages.some(lang => lowerTag.includes(lang.toLowerCase()))) {
-        score += 1.0;
-        reasons.push(`Matches language: ${tag}`);
+      // Check language matches with improved flexibility
+      for (const lang of userChoices.languages) {
+        if (lowerTag.includes(lang.toLowerCase()) ||
+            tag.toLowerCase().includes('typescript') ||
+            tag.toLowerCase().includes('ts')) {
+          score += 1.0;
+          reasons.push(`Matches language: ${tag}`);
+        }
       }
       
       // Check tool matches
-      if (userChoices.tools.some(tool => lowerTag.includes(tool.toLowerCase()))) {
-        score += 0.8;
-        reasons.push(`Matches tool: ${tag}`);
+      for (const tool of userChoices.tools) {
+        if (lowerTag.includes(tool.toLowerCase())) {
+          score += 0.8;
+          reasons.push(`Matches tool: ${tag}`);
+        }
       }
     }
 
@@ -266,12 +295,14 @@ export class RuleGenerationEngine {
     
     if (compatibility?.frameworks) {
       for (const framework of compatibility.frameworks) {
-        if (userChoices.stacks.some(stack => 
-          stack.toLowerCase().includes(framework.toLowerCase()) ||
-          framework.toLowerCase().includes(stack.toLowerCase())
-        )) {
-          score += 1.2;
-          reasons.push(`Compatible framework: ${framework}`);
+        for (const stack of userChoices.stacks) {
+          if (stack.toLowerCase().includes(framework.toLowerCase()) ||
+              framework.toLowerCase().includes(stack.toLowerCase()) ||
+              framework.toLowerCase().includes('react') ||
+              framework.toLowerCase().includes('next')) {
+            score += 1.2;
+            reasons.push(`Compatible framework: ${framework}`);
+          }
         }
       }
     }
@@ -358,30 +389,34 @@ export class RuleGenerationEngine {
   }
 
   /**
-   * Generate package content based on format
+   * Generate package content based on format and target IDE/AI assistant
    */
   private async generatePackageContent(
     rules: MatchedRule[],
     config: WizardConfigurationInput
   ): Promise<Buffer | string> {
+    const targetIde = config.environmentDetails.targetIde || 'general';
+    const targetAI = config.environmentDetails.targetAI || 'general';
+
     switch (config.outputFormat) {
       case 'bash':
-        return this.generateBashScript(rules, config);
+        return this.generateBashScript(rules, config, targetIde);
       case 'zip':
-        return this.generateZipArchive(rules, config);
+        return this.generateZipArchive(rules, config, targetIde, targetAI);
       case 'config':
-        return this.generateConfigFiles(rules, config);
+        return this.generateConfigFiles(rules, config, targetIde);
       default:
         throw new Error(`Unsupported output format: ${config.outputFormat}`);
     }
   }
 
   /**
-   * Generate bash script from rules
+   * Generate bash script with IDE-specific setup
    */
-  private generateBashScript(rules: MatchedRule[], config: WizardConfigurationInput): string {
+  private generateBashScript(rules: MatchedRule[], config: WizardConfigurationInput, targetIde: string): string {
     let script = `#!/bin/bash
 # Generated by CodePilotRules Hub
+# Target IDE: ${targetIde}
 # Configuration: ${JSON.stringify(config.stackChoices, null, 2)}
 # Generated: ${new Date().toISOString()}
 
@@ -389,14 +424,13 @@ set -e
 
 echo "🚀 CodePilotRules Setup Script"
 echo "=============================="
-
-# Create rules directory structure
-RULES_DIR=".ai/rules"
-mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
-
-echo "📁 Setting up CodePilotRules directory structure..."
+echo "Target IDE: ${targetIde}"
 
 `;
+
+    // IDE-specific directory setup
+    const rulesDirSetup = this.getIDESpecificSetup(targetIde);
+    script += rulesDirSetup;
 
     // Group rules by level
     const rulesByLevel = this.groupRulesByLevel(rules);
@@ -409,16 +443,14 @@ echo "📁 Setting up CodePilotRules directory structure..."
         script += `# Rule: ${rule.title}\n`;
         script += `echo "  - ${rule.title}"\n`;
         
-        // Download the rule file to appropriate directory
-        const ruleCategory = this.extractRuleCategoryFromTags(rule.tags);
-        const ruleFileName = `${rule.id}.mdc`;
-        const rulePath = ruleCategory ? `"$RULES_DIR/${ruleCategory}/${ruleFileName}"` : `"$RULES_DIR/${ruleFileName}"`;
+        // Generate IDE-specific rule file
+        const ruleContent = this.convertRuleForIDE(rule, targetIde);
+        const { fileName, filePath } = this.getIDESpecificPaths(rule, targetIde);
         
-        script += `# Download rule: ${rule.title}\n`;
-        script += `cat > ${rulePath} << 'EOF'\n`;
-        script += `# ${rule.title}\n\n`;
-        script += `${rule.content}\n`;
-        script += `EOF\n\n`;
+        script += `# Create rule file: ${fileName}\n`;
+        script += `cat > ${filePath} << 'EOF'\n`;
+        script += ruleContent;
+        script += `\nEOF\n\n`;
         
         // Extract and execute actionable commands from rule content
         const commands = this.extractBashCommands(rule.content);
@@ -428,32 +460,165 @@ echo "📁 Setting up CodePilotRules directory structure..."
             script += `${command}\n`;
           }
         }
-
-        // Extract and create configuration files
-        const configFiles = this.extractConfigurationFiles(rule.content);
-        for (const [fileName, fileContent] of Object.entries(configFiles)) {
-          script += `# Create configuration file: ${fileName}\n`;
-          script += `cat > "${fileName}" << 'EOF'\n`;
-          script += `${fileContent}\n`;
-          script += `EOF\n\n`;
-        }
         
         script += '\n';
       }
     }
 
     script += `\necho "✅ Setup completed successfully!"\n`;
-    script += `echo "📝 Applied ${rules.length} rules"\n`;
-    script += `echo "📁 Rules available in .ai/rules directory"\n`;
-    script += `echo "🔧 Configuration files created in project root"\n`;
+    script += `echo "📝 Applied ${rules.length} rules for ${targetIde}"\n`;
 
     return script;
   }
 
   /**
+   * Get IDE-specific directory setup commands
+   */
+  private getIDESpecificSetup(targetIde: string): string {
+    switch (targetIde.toLowerCase()) {
+      case 'cursor':
+        return `
+# Create Cursor-specific directories
+RULES_DIR=".ai/rules"
+mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
+echo "📁 Setting up Cursor .ai/rules directory structure..."
+
+`;
+      
+      case 'vscode':
+        return `
+# Create VS Code-specific directories
+RULES_DIR=".vscode/ai-rules"
+mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
+echo "📁 Setting up VS Code .vscode/ai-rules directory structure..."
+
+`;
+      
+      case 'webstorm':
+      case 'intellij':
+        return `
+# Create JetBrains IDE-specific directories
+RULES_DIR=".idea/ai-rules"
+mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
+echo "📁 Setting up JetBrains .idea/ai-rules directory structure..."
+
+`;
+      
+      default:
+        return `
+# Create general coding rules directory
+RULES_DIR="docs/coding-rules"
+mkdir -p "$RULES_DIR"/{assistants,languages,stacks,tasks,technologies,tools}
+echo "📁 Setting up general docs/coding-rules directory structure..."
+
+`;
+    }
+  }
+
+  /**
+   * Convert rule content for specific IDE format
+   */
+  private convertRuleForIDE(rule: MatchedRule, targetIde: string): string {
+    const metadata = this.extractRuleMetadata(rule);
+    
+    switch (targetIde.toLowerCase()) {
+      case 'cursor':
+        // Convert to .mdc format for Cursor
+        return `---
+description: "${metadata.description}"
+globs: ${JSON.stringify(metadata.globs || [])}
+alwaysApply: ${metadata.alwaysApply || false}
+version: "${metadata.version || '1.0.0'}"
+lastUpdated: "${new Date().toISOString()}"
+compatibleWith: ${JSON.stringify(metadata.frameworks || [])}
+---
+
+${rule.content}`;
+      
+      case 'vscode':
+        // Standard markdown with VS Code specific instructions
+        return `---
+title: "${rule.title}"
+description: "${metadata.description}"
+tags: ${JSON.stringify(rule.tags || [])}
+compatibility:
+  ides: ["vscode"]
+  frameworks: ${JSON.stringify(metadata.frameworks || [])}
+version: "${metadata.version || '1.0.0'}"
+---
+
+# ${rule.title}
+
+> **VS Code Integration**: This rule can be applied using GitHub Copilot, Codewhisperer, or other VS Code AI extensions.
+
+${rule.content}
+
+## VS Code Setup
+
+1. Save this file in \`.vscode/ai-rules/\`
+2. Reference in your AI prompts or workspace settings
+3. Use with VS Code AI extensions for consistent code generation`;
+      
+      default:
+        // Standard markdown format
+        return `---
+title: "${rule.title}"
+description: "${metadata.description}"
+tags: ${JSON.stringify(rule.tags || [])}
+compatibility: ${JSON.stringify(rule.compatibility || {})}
+version: "${metadata.version || '1.0.0'}"
+---
+
+# ${rule.title}
+
+${rule.content}`;
+    }
+  }
+
+  /**
+   * Get IDE-specific file paths and names
+   */
+  private getIDESpecificPaths(rule: MatchedRule, targetIde: string): { fileName: string; filePath: string } {
+    const category = this.extractRuleCategoryFromTags(rule.tags);
+    const baseFileName = this.generateBeautifulFileName(rule);
+    
+    switch (targetIde.toLowerCase()) {
+      case 'cursor':
+        const mdcFileName = `${baseFileName}.mdc`;
+        const mdcPath = category ? `"$RULES_DIR/${category}/${mdcFileName}"` : `"$RULES_DIR/${mdcFileName}"`;
+        return { fileName: mdcFileName, filePath: mdcPath };
+      
+      case 'vscode':
+        const vscodeFileName = `${baseFileName}.md`;
+        const vscodePath = category ? `"$RULES_DIR/${category}/${vscodeFileName}"` : `"$RULES_DIR/${vscodeFileName}"`;
+        return { fileName: vscodeFileName, filePath: vscodePath };
+      
+      default:
+        const defaultFileName = `${baseFileName}.md`;
+        const defaultPath = category ? `"$RULES_DIR/${category}/${defaultFileName}"` : `"$RULES_DIR/${defaultFileName}"`;
+        return { fileName: defaultFileName, filePath: defaultPath };
+    }
+  }
+
+  /**
+   * Extract metadata from rule for format conversion
+   */
+  private extractRuleMetadata(rule: MatchedRule): any {
+    return {
+      description: rule.title,
+      globs: rule.compatibility?.globs || [],
+      alwaysApply: rule.always_apply || false,
+      version: "1.0.0",
+      frameworks: rule.compatibility?.frameworks || [],
+      ides: rule.compatibility?.ides || [],
+      aiAssistants: rule.compatibility?.aiAssistants || []
+    };
+  }
+
+  /**
    * Generate zip archive from rules with actual file structure
    */
-  private async generateZipArchive(rules: MatchedRule[], config: WizardConfigurationInput): Promise<Buffer> {
+  private async generateZipArchive(rules: MatchedRule[], config: WizardConfigurationInput, targetIde: string, targetAI: string): Promise<Buffer> {
     const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
 
@@ -501,7 +666,7 @@ The rules are organized by category:
     // Group rules by category and add them to appropriate folders
     for (const rule of rules) {
       const category = this.extractRuleCategoryFromTags(rule.tags);
-      const fileName = `${rule.id}.mdc`;
+      const fileName = `${this.generateBeautifulFileName(rule)}.mdc`;
       
       const ruleContent = `# ${rule.title}
 
@@ -563,7 +728,7 @@ ${rule.content}
   /**
    * Generate configuration files from rules
    */
-  private generateConfigFiles(rules: MatchedRule[], config: WizardConfigurationInput): string {
+  private generateConfigFiles(rules: MatchedRule[], config: WizardConfigurationInput, targetIde: string): string {
     const configFiles: Record<string, any> = {};
 
     // Extract configuration from rules
@@ -588,7 +753,8 @@ ${rule.content}
         title: r.title, 
         level: r.level,
         alwaysApply: r.always_apply // FIXED: Use correct field name
-      }))
+      })),
+      targetIde
     }, null, 2);
   }
 
@@ -625,7 +791,7 @@ ${rule.content}
       // Continue without storage URL - package can still be generated inline
     }
 
-    // Use correct database field names (snake_case)
+    // Use correct database field names (snake_case) with proper typing
     const { data, error } = await this.supabase
       .from('generated_packages')
       .insert({
@@ -646,18 +812,8 @@ ${rule.content}
       throw new Error('Failed to store package');
     }
 
-    // Return application-level interface (camelCase) while keeping DB consistency
-    return {
-      id: data.id,
-      configurationId: data.configuration_id,
-      packageType: data.package_type,
-      downloadUrl: data.download_url,
-      fileSize: data.file_size,
-      ruleCount: data.rule_count,
-      downloadCount: data.download_count,
-      expiresAt: data.expires_at,
-      createdAt: data.created_at,
-    };
+    // Convert database record to application output using helper function
+    return mapGeneratedPackageToOutput(data as GeneratedPackage);
   }
 
   /**
@@ -846,6 +1002,37 @@ The rules are organized by category:
       ...existingConfig,
       ...newConfig
     }, null, 2);
+  }
+
+  /**
+   * Generate a beautiful, human-readable filename from rule data
+   * Prioritizes slug, falls back to title-based generation, includes ID as suffix for uniqueness
+   */
+  private generateBeautifulFileName(rule: MatchedRule): string {
+    // First try to use the slug if it's available and meaningful
+    if (rule.slug && rule.slug !== rule.id && rule.slug.length > 0) {
+      return rule.slug;
+    }
+    
+    // Fall back to generating from title
+    let fileName = rule.title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters except spaces and hyphens
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      .slice(0, 50); // Limit length
+    
+    // If the generated name is too short or empty, use a fallback
+    if (fileName.length < 3) {
+      fileName = 'rule';
+    }
+    
+    // Add a short suffix of the ID to ensure uniqueness
+    const idSuffix = rule.id.toString().slice(-6); // Last 6 characters of ID
+    fileName = `${fileName}-${idSuffix}`;
+    
+    return fileName;
   }
 }
 

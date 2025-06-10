@@ -103,9 +103,8 @@ export default function RulePage({ params }: RulePageProps) {
 
   // Debug effect to track component lifecycle
   useEffect(() => {
-    console.log('RulePage component mounted');
     return () => {
-      console.log('RulePage component unmounting');
+      // Component cleanup
     };
   }, []);
 
@@ -118,15 +117,12 @@ export default function RulePage({ params }: RulePageProps) {
     
     async function loadParams() {
       try {
-        console.log('Loading params...');
         const resolvedParams = await stableParams;
-        console.log('Params resolved:', resolvedParams);
         
         if (isMounted) {
           setCategory(resolvedParams.category);
           setRuleId(resolvedParams.ruleId);
           setParamsLoaded(true);
-          console.log('Params loaded successfully');
         }
       } catch (err) {
         console.error('Error loading params:', err);
@@ -147,7 +143,6 @@ export default function RulePage({ params }: RulePageProps) {
   // Load rule data once params are available
   useEffect(() => {
     if (!paramsLoaded || !category || !ruleId) {
-      console.log('Waiting for params...', { paramsLoaded, category, ruleId });
       return;
     }
 
@@ -155,17 +150,14 @@ export default function RulePage({ params }: RulePageProps) {
     
     async function loadRule() {
       try {
-        console.log(`Starting to load rule: ${category}/${ruleId}`);
         setLoading(true);
         setError(null);
         
         // Fetch rule from API
         const response = await fetch(`/api/rules/${category}/${ruleId}`);
-        console.log('API response status:', response.status);
         
         if (!response.ok) {
           if (response.status === 404) {
-            console.log('Rule not found (404)');
             if (isMounted) setError('Rule not found');
           } else {
             const errorData = await response.json();
@@ -176,15 +168,12 @@ export default function RulePage({ params }: RulePageProps) {
         }
         
         const data = await response.json();
-        console.log('Raw rule data received:', data);
         
         // Sanitize the rule data before setting it in state
         const sanitizedRule = sanitizeRuleData(data.rule);
-        console.log('Rule sanitized and about to set in state:', sanitizedRule.title);
         
         if (isMounted) {
           setRule(sanitizedRule);
-          console.log('Rule set in state successfully');
         }
       } catch (err) {
         console.error('Error loading rule:', err);
@@ -192,7 +181,6 @@ export default function RulePage({ params }: RulePageProps) {
       } finally {
         if (isMounted) {
           setLoading(false);
-          console.log('Loading finished');
         }
       }
     }

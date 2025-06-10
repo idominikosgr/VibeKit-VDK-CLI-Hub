@@ -195,21 +195,21 @@ export function StackSelectionStep({
                       key={stack.id}
                       className={cn(
                         "cursor-pointer transition-all duration-200 hover:shadow-md",
-                        isSelected && "ring-2 ring-primary bg-primary/5"
+                        isSelected && "ring-2 ring-success bg-success/10"
                       )}
                       onClick={() => handleStackToggle(stack.id)}
                     >
                       <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{stack.name}</CardTitle>
-                          <div className="flex gap-1">
+                        <div className="flex items-center justify-between min-h-[48px]">
+                          <CardTitle className="text-base flex-1 pr-2">{stack.name}</CardTitle>
+                          <div className="flex flex-wrap gap-1 items-start justify-end min-w-0 flex-shrink-0">
                             {stack.popular && (
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                 Popular
                               </Badge>
                             )}
                             {isSelected && (
-                              <Badge variant="default" className="text-xs">
+                              <Badge variant="default" className="text-xs bg-success text-success-foreground whitespace-nowrap">
                                 Selected
                               </Badge>
                             )}
@@ -220,9 +220,9 @@ export function StackSelectionStep({
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1 items-center">
                           {stack.languages.map(lang => (
-                            <Badge key={lang} variant="outline" className="text-xs">
+                            <Badge key={lang} variant="outline" className="text-xs whitespace-nowrap">
                               {lang}
                             </Badge>
                           ))}

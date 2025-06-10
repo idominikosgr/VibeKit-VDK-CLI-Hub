@@ -11,13 +11,12 @@ const config: Config = {
   
   // Only include this config if you need:
   // 1. Third-party plugins that require JS configuration
-  // 2. Legacy compatibility
-  // 3. Advanced customization not possible in CSS
+  // 2. Advanced customization not possible in CSS
 
   plugins: [
     // Only add plugins that actually require JS configuration
     // Most built-in features are now in core Tailwind
-    // require('@tailwindcss/typography'), // Example if needed
+    require('@tailwindcss/typography'), // Required for prose classes
     // require('@tailwindcss/forms'),      // Example if needed
   ],
 };

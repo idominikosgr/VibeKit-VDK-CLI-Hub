@@ -24,19 +24,6 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Debug logs
-  console.log('🔍 GlobalSearch state:', { query, resultsCount: results.length, isLoading, open })
-
-  // Debug results changes
-  useEffect(() => {
-    console.log('📊 Results state changed:', results.length, 'items:', results.map(r => r.title))
-  }, [results])
-
-  // Debug loading state changes
-  useEffect(() => {
-    console.log('⏳ Loading state changed:', isLoading)
-  }, [isLoading])
-
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === shortcutKey && (e.metaKey || e.ctrlKey)) {
@@ -62,11 +49,9 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
         const controller = new AbortController()
         try {
           setIsLoading(true)
-          console.log('🚀 Starting search for:', query)
           
           // Add timeout to see if request is hanging
           const timeoutId = setTimeout(() => {
-            console.log('⏰ Request timeout - aborting')
             controller.abort()
           }, 10000) // 10 second timeout
           
@@ -75,37 +60,28 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
           })
           
           clearTimeout(timeoutId)
-          console.log('📡 Response status:', response.status, response.ok)
           
           if (!response.ok) {
             throw new Error(`Search failed with status: ${response.status}`)
           }
           
           const searchResults: PaginatedResult<Rule> = await response.json()
-          console.log('📄 Search results:', searchResults)
-          console.log('📊 Results data:', searchResults.data?.length, 'items')
           
           if (searchResults.data) {
             setResults(searchResults.data)
-            console.log('✅ Results set in state')
           } else {
-            console.log('⚠️ No data property in results')
             setResults([])
           }
         } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') {
-            console.log('🛑 Request was aborted')
-          } else {
-            console.error("❌ Error searching rules:", error)
+          if (error instanceof Error && error.name !== 'AbortError') {
+            console.error("Error searching rules:", error)
           }
           setResults([])
         } finally {
           setIsLoading(false)
-          console.log('🏁 Search finished, loading set to false')
         }
       } else {
         setResults([])
-        console.log('🧹 Query too short, cleared results')
       }
     }, 300)
 
@@ -157,7 +133,6 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
               <>
                 <CommandGroup heading="Rules">
                   {results.map((item) => {
-                    console.log('📝 Rendering item:', item.id, item.title)
                     return (
                       <CommandItem
                         key={item.id}

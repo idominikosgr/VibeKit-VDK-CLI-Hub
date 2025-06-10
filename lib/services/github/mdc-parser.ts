@@ -61,8 +61,22 @@ export interface MdcParseOptions {
 export function parseMdcContent(content: string, path: string, options: MdcParseOptions = {}): MdcContent {
   const { includeContent = true, normalizeHeadings = true } = options;
 
+  // Fix malformed frontmatter by adding missing opening delimiter
+  let fixedContent = content;
+  
+  // Check if content starts with YAML without opening ---
+  if (!content.startsWith('---') && content.includes('---\n')) {
+    const lines = content.split('\n');
+    const delimiterIndex = lines.findIndex(line => line.trim() === '---');
+    
+    if (delimiterIndex > 0) {
+      // Add opening delimiter at the beginning
+      fixedContent = '---\n' + content;
+    }
+  }
+
   // Use gray-matter to parse frontmatter and content
-  const { data, content: mdContent } = matter(content);
+  const { data, content: mdContent } = matter(fixedContent);
 
   // Extract title from frontmatter or first heading
   let title = data.title;
@@ -81,10 +95,22 @@ export function parseMdcContent(content: string, path: string, options: MdcParse
     }
   }
 
-  // Extract tags
-  const tags = Array.isArray(data.tags)
-    ? data.tags
-    : (typeof data.tags === 'string' ? data.tags.split(',').map(t => t.trim()) : []);
+  // Extract tags - handle both tags and compatibleWith fields
+  let tags: string[] = [];
+  
+  if (Array.isArray(data.tags)) {
+    tags = data.tags;
+  } else if (typeof data.tags === 'string') {
+    tags = data.tags.split(',').map(t => t.trim());
+  }
+  
+  // Also extract tags from compatibleWith field (common in these files)
+  if (data.compatibleWith) {
+    const compatibleTags = Array.isArray(data.compatibleWith) 
+      ? data.compatibleWith 
+      : [data.compatibleWith];
+    tags = [...tags, ...compatibleTags];
+  }
 
   // Extract and normalize globs - handle both array and comma-separated string formats
   let globPatterns: string[] = [];
@@ -97,8 +123,30 @@ export function parseMdcContent(content: string, path: string, options: MdcParse
     }
   }
   
-  // Extract compatibility
-  const compatibility = data.compatibility || {};
+  // Extract compatibility - handle both standard format and custom formats
+  let compatibility = data.compatibility || {};
+  
+  // Handle platforms field (common in these files)
+  if (data.platforms && Array.isArray(data.platforms)) {
+    // Separate platforms into ides and aiAssistants
+    const ides = data.platforms.filter((p: string) => 
+      ['cursor', 'vscode', 'jetbrains', 'zed'].includes(p.toLowerCase())
+    );
+    const aiAssistants = data.platforms.filter((p: string) => 
+      ['claude', 'github-copilot', 'openai-codex', 'windsurf'].includes(p.toLowerCase())
+    );
+    
+    if (!compatibility.ides && ides.length > 0) compatibility.ides = ides;
+    if (!compatibility.aiAssistants && aiAssistants.length > 0) compatibility.aiAssistants = aiAssistants;
+  }
+  
+  // Handle compatibleWith field as frameworks
+  if (data.compatibleWith && !compatibility.frameworks) {
+    const frameworks = Array.isArray(data.compatibleWith) 
+      ? data.compatibleWith 
+      : [data.compatibleWith];
+    compatibility.frameworks = frameworks;
+  }
   
   // Extract version constraints
   const versionConstraints = data.versionConstraints || {};
@@ -110,7 +158,7 @@ export function parseMdcContent(content: string, path: string, options: MdcParse
   const mdcData = {
     title: title || 'Untitled Rule',
     description: data.description || '',
-    version: data.version || '1.0.0',
+    version: data.version || data.lastUpdated || '1.0.0',
     author: data.author,
     content: includeContent ? processedContent : '',
     path: cleanPath,

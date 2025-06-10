@@ -270,7 +270,22 @@ async function processRuleFile(
   categoryMap: Map<string, string>
 ): Promise<ProcessedRule> {
   const content = await fs.readFile(filePath, 'utf-8');
-  const { data: frontmatter, content: markdownContent } = matter(content);
+  
+  // Fix malformed frontmatter by adding missing opening delimiter
+  let fixedContent = content;
+  
+  // Check if content starts with YAML without opening ---
+  if (!content.startsWith('---') && content.includes('---\n')) {
+    const lines = content.split('\n');
+    const delimiterIndex = lines.findIndex(line => line.trim() === '---');
+    
+    if (delimiterIndex > 0) {
+      // Add opening delimiter at the beginning
+      fixedContent = '---\n' + content;
+    }
+  }
+  
+  const { data: frontmatter, content: markdownContent } = matter(fixedContent);
   
   // Extract basic information
   const fileName = path.basename(filePath, path.extname(filePath));
@@ -281,9 +296,47 @@ async function processRuleFile(
   const categorySlug = extractCategoryFromPath(relativePath);
   const category_id = categoryMap.get(categorySlug) || categoryMap.get('core')!;
   
-  // Process metadata
-  const tags = normalizeArrayField(frontmatter.tags);
+  // Process metadata - handle both standard and custom field names
+  let tags = normalizeArrayField(frontmatter.tags);
+  
+  // Also extract tags from compatibleWith field (common in these files)
+  if (frontmatter.compatibleWith) {
+    const compatibleTags = normalizeArrayField(frontmatter.compatibleWith);
+    tags = [...tags, ...compatibleTags];
+  }
+  
   const globs = normalizeArrayField(frontmatter.globs);
+  
+  // Process compatibility - handle both standard format and custom formats
+  let compatibility = frontmatter.compatibility || {};
+  
+  // Handle platforms field (common in these files)
+  if (frontmatter.platforms && Array.isArray(frontmatter.platforms)) {
+    // Separate platforms into ides and aiAssistants
+    const ides = frontmatter.platforms.filter((p: string) => 
+      ['cursor', 'vscode', 'jetbrains', 'zed'].includes(p.toLowerCase())
+    );
+    const aiAssistants = frontmatter.platforms.filter((p: string) => 
+      ['claude', 'github-copilot', 'openai-codex', 'windsurf'].includes(p.toLowerCase())
+    );
+    
+    if (!compatibility.ides && ides.length > 0) compatibility.ides = ides;
+    if (!compatibility.aiAssistants && aiAssistants.length > 0) compatibility.aiAssistants = aiAssistants;
+  }
+  
+  // Handle compatibleWith field as frameworks
+  if (frontmatter.compatibleWith && !compatibility.frameworks) {
+    const frameworks = normalizeArrayField(frontmatter.compatibleWith);
+    compatibility.frameworks = frameworks;
+  }
+  
+  // Normalize compatibility object
+  const normalizedCompatibility = Object.keys(compatibility).length > 0 ? {
+    ides: normalizeArrayField(compatibility.ides),
+    aiAssistants: normalizeArrayField(compatibility.aiAssistants),
+    frameworks: normalizeArrayField(compatibility.frameworks),
+    mcpServers: normalizeArrayField(compatibility.mcpServers)
+  } : null;
   
   // Create processed rule
   const rule: ProcessedRule = {
@@ -294,16 +347,11 @@ async function processRuleFile(
     content,
     path: relativePath,
     category_id: category_id,
-    version: frontmatter.version || '1.0.0',
-    tags,
+    version: frontmatter.version || frontmatter.lastUpdated || '1.0.0',
+    tags: tags.length > 0 ? tags : [],
     globs: globs.length > 0 ? globs : null,
     examples: frontmatter.examples || null,
-    compatibility: frontmatter.compatibility ? {
-      ides: normalizeArrayField(frontmatter.compatibility.ides),
-      aiAssistants: normalizeArrayField(frontmatter.compatibility.aiAssistants),
-      frameworks: normalizeArrayField(frontmatter.compatibility.frameworks),
-      mcpServers: normalizeArrayField(frontmatter.compatibility.mcpServers)
-    } : null,
+    compatibility: normalizedCompatibility,
     always_apply: !!frontmatter.alwaysApply,
     last_updated: new Date().toISOString()
   };

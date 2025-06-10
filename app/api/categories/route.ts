@@ -9,15 +9,10 @@ function ensureSerializable(obj: any) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    console.log('[API] Categories request');
-    
     const categories = await getRuleCategories();
-    
-    return NextResponse.json({
-      categories: ensureSerializable(categories)
-    });
+    return NextResponse.json(categories);
   } catch (error) {
     console.error('[API] Error fetching categories:', error);
     return NextResponse.json(

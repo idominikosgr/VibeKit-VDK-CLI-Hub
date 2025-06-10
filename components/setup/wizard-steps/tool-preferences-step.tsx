@@ -202,27 +202,27 @@ export function ToolPreferencesStep({
         key={tool.id}
         className={cn(
           "cursor-pointer transition-all duration-200 hover:shadow-md",
-          isSelected && "ring-2 ring-primary bg-primary/5",
-          isRequired && "border-success/50 bg-success/10 dark:bg-success/10"
+          isSelected && "ring-2 ring-success bg-success/10",
+          isRequired && "border-success/50 bg-success/5"
         )}
         onClick={() => handleToolToggle(tool.id)}
       >
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">{tool.name}</CardTitle>
-            <div className="flex gap-1">
+          <div className="flex items-center justify-between min-h-[48px]">
+            <CardTitle className="text-base flex-1 pr-2">{tool.name}</CardTitle>
+            <div className="flex flex-wrap gap-1 items-start justify-end min-w-0 flex-shrink-0">
               {isRequired && (
-                <Badge variant="secondary" className="text-xs bg-success/20 text-success dark:text-success/90">
+                <Badge variant="secondary" className="text-xs bg-success/20 text-success dark:text-success/90 whitespace-nowrap">
                   Recommended
                 </Badge>
               )}
               {isOptional && (
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs whitespace-nowrap">
                   Optional
                 </Badge>
               )}
               {isSelected && (
-                <Badge variant="default" className="text-xs">
+                <Badge variant="default" className="text-xs bg-success text-success-foreground whitespace-nowrap">
                   Selected
                 </Badge>
               )}
@@ -234,10 +234,10 @@ export function ToolPreferencesStep({
         </CardHeader>
         {tool.requiredFor && tool.requiredFor.length > 0 && (
           <CardContent className="pt-0">
-            <div className="flex flex-wrap gap-1">
-              <span className="text-xs text-muted-foreground">Works with:</span>
+            <div className="flex flex-wrap gap-1 items-center">
+              <span className="text-xs text-muted-foreground whitespace-nowrap">Works with:</span>
               {tool.requiredFor.map(req => (
-                <Badge key={req} variant="outline" className="text-xs">
+                <Badge key={req} variant="outline" className="text-xs whitespace-nowrap">
                   {req}
                 </Badge>
               ))}

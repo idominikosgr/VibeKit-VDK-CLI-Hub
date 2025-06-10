@@ -163,7 +163,7 @@ export function LanguageSelectionStep({
 
       {/* Suggested Languages Section */}
       {suggestedLanguages.length > 0 && (
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-success/5 border-success/20">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Suggested for Your Stack</CardTitle>
             <CardDescription>
@@ -179,19 +179,19 @@ export function LanguageSelectionStep({
                     key={language.id}
                     className={cn(
                       "cursor-pointer transition-all duration-200 hover:shadow-sm",
-                      isSelected && "ring-2 ring-primary bg-primary/10"
+                      isSelected && "ring-2 ring-success bg-success/10"
                     )}
                     onClick={() => handleLanguageToggle(language.id)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">{language.name}</h4>
-                        <div className="flex gap-1">
-                          <Badge variant="secondary" className="text-xs">
+                      <div className="flex items-center justify-between mb-2 min-h-[28px]">
+                        <h4 className="font-medium flex-1 pr-2">{language.name}</h4>
+                        <div className="flex flex-wrap gap-1 items-start justify-end min-w-0 flex-shrink-0">
+                          <Badge variant="secondary" className="text-xs bg-success/20 text-success dark:text-success/90 whitespace-nowrap">
                             Suggested
                           </Badge>
                           {isSelected && (
-                            <Badge variant="default" className="text-xs">
+                            <Badge variant="default" className="text-xs bg-success text-success-foreground whitespace-nowrap">
                               Selected
                             </Badge>
                           )}
@@ -227,26 +227,26 @@ export function LanguageSelectionStep({
                       key={language.id}
                       className={cn(
                         "cursor-pointer transition-all duration-200 hover:shadow-md",
-                        isSelected && "ring-2 ring-primary bg-primary/5"
+                        isSelected && "ring-2 ring-success bg-success/10"
                       )}
                       onClick={() => handleLanguageToggle(language.id)}
                     >
                       <CardHeader className="pb-2">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{language.name}</CardTitle>
-                          <div className="flex gap-1">
+                        <div className="flex items-center justify-between min-h-[48px]">
+                          <CardTitle className="text-base flex-1 pr-2">{language.name}</CardTitle>
+                          <div className="flex flex-wrap gap-1 items-start justify-end min-w-0 flex-shrink-0">
                             {language.popular && (
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                 Popular
                               </Badge>
                             )}
                             {isSuggested && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs bg-success/20 text-success dark:text-success/90 whitespace-nowrap">
                                 Suggested
                               </Badge>
                             )}
                             {isSelected && (
-                              <Badge variant="default" className="text-xs">
+                              <Badge variant="default" className="text-xs bg-success text-success-foreground whitespace-nowrap">
                                 Selected
                               </Badge>
                             )}
@@ -257,9 +257,9 @@ export function LanguageSelectionStep({
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1 items-center">
                           {language.extensions.map(ext => (
-                            <Badge key={ext} variant="outline" className="text-xs">
+                            <Badge key={ext} variant="outline" className="text-xs whitespace-nowrap">
                               {ext}
                             </Badge>
                           ))}

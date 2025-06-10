@@ -206,11 +206,13 @@ export async function POST(request: NextRequest) {
       }, { status: adminCheck.error === 'Authentication required' ? 401 : 403 });
     }
 
-    // TODO: Implement documentation population when service is available
+    // Documentation population endpoint
+    // This endpoint was created for basic documentation setup but the service is not yet implemented
     return NextResponse.json({ 
       success: false, 
-      message: 'Documentation service temporarily unavailable' 
-    }, { status: 503 });
+      message: 'Documentation service not implemented',
+      data: basicDocs.map(doc => ({ title: doc.title, slug: doc.slug }))
+    }, { status: 501 });
 
   } catch (error) {
     console.error('Error populating documentation:', error);

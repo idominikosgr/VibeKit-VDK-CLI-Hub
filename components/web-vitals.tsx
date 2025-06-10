@@ -39,18 +39,9 @@ export function WebVitals() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            name: metric.name,
-            value: metric.value,
-            id: metric.id,
-            delta: metric.delta,
-            rating: metric.rating,
-            timestamp: Date.now(),
-            url: window.location.pathname,
-            userAgent: navigator.userAgent,
-          }),
-        }).catch((error) => {
-          console.error('Failed to send web vitals:', error);
+          body: JSON.stringify(metric),
+        }).catch(() => {
+          // Silently fail - we don't want to break the app for analytics
         });
       }
 
@@ -63,11 +54,11 @@ export function WebVitals() {
     // Use web-vitals v5 API
     const loadWebVitals = async () => {
       try {
-        const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import('web-vitals');
+        const { onCLS, onINP, onFCP, onLCP, onTTFB } = await import('web-vitals');
         
         // Register all Core Web Vitals
         onCLS(sendToAnalytics);
-        onFID(sendToAnalytics);
+        onINP(sendToAnalytics); // INP (Interaction to Next Paint) replaces FID in v5
         onFCP(sendToAnalytics);
         onLCP(sendToAnalytics);
         onTTFB(sendToAnalytics);

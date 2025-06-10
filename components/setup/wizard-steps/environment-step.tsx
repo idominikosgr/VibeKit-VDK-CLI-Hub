@@ -140,7 +140,6 @@ export function EnvironmentStep({
                     <SelectContent>
                       <SelectItem value="20">Node.js 20 (Current LTS)</SelectItem>
                       <SelectItem value="18">Node.js 18 (LTS)</SelectItem>
-                      <SelectItem value="16">Node.js 16 (Legacy)</SelectItem>
                       <SelectItem value="latest">Latest</SelectItem>
                     </SelectContent>
                   </Select>

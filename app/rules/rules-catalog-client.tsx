@@ -61,18 +61,15 @@ export function RulesCatalogClient() {
         // Load categories
         const categoriesData = await fetchRuleCategories()
         setCategories(categoriesData)
-        console.log(`Loaded ${categoriesData.length} categories from API`)
 
         // If we're on the rules tab, fetch rules
         if (tab === "rules") {
           if (searchQuery) {
             const rulesResult = await fetchSearchRules(searchQuery, 1, 50)
             setRules(rulesResult.data)
-            console.log(`Loaded ${rulesResult.data.length} rules from search: "${searchQuery}"`)
           } else {
             const rulesResult = await fetchAllRules(1, 50)
             setRules(rulesResult.data)
-            console.log(`Loaded ${rulesResult.data.length} rules from API (all rules)`)
           }
         }
       } catch (err) {
