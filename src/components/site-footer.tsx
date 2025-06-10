@@ -13,18 +13,27 @@ const fadeInUp = {
 export function SiteFooter() {
   return (
     <motion.footer 
-      className="border-t py-8 md:py-12 bg-muted/30"
+      className="border-t border-primary/20 dark:border-purple-800/30 py-8 md:py-12 bg-gradient-to-t from-white/50 via-primary/5 to-purple-50/30 dark:from-gray-950/70 dark:via-purple-950/10 dark:to-gray-950/70 backdrop-blur-xl relative"
+      style={{
+        boxShadow: `
+          0 -8px 32px rgba(139, 92, 246, 0.1),
+          0 0 0 1px rgba(139, 92, 246, 0.1),
+          inset 0 1px 2px rgba(255, 255, 255, 0.1)
+        `
+      }}
       initial="hidden"
       animate="visible"
       variants={fadeInUp}
       transition={{ duration: 0.6 }}
     >
-      <div className="container max-w-(--breakpoint-2xl) mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-4 gap-8"
-          variants={fadeInUp}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
+      {/* Subtle glass overlay with brand colors */}
+      <div className="absolute inset-0 bg-gradient-to-t from-transparent via-primary/3 to-purple-100/10 dark:via-purple-900/5 dark:to-purple-800/5 pointer-events-none" />
+              <div className="container max-w-(--breakpoint-2xl) mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-4 gap-8"
+            variants={fadeInUp}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
           <div>
             <motion.div 
               className="flex items-center gap-2 mb-4"

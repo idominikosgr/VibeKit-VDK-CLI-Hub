@@ -342,15 +342,28 @@ export function EnvironmentStep({
       </div>
 
       <div className="flex justify-between items-center">
-        <Button variant="outline" onClick={onBack}>
-          Back
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="relative overflow-hidden bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-primary/20 dark:border-purple-700/30 hover:bg-primary/10 dark:hover:bg-purple-800/30 transition-all duration-300 hover:border-primary/40 dark:hover:border-purple-600/50 hover:shadow-md group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="relative">Back</span>
         </Button>
         <Button 
           onClick={handleNext}
           size="lg"
-          className="min-w-[120px]"
+          className="min-w-[120px] relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 backdrop-blur-sm border border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:scale-105 group"
+          style={{
+            boxShadow: `
+              0 8px 16px rgba(139, 92, 246, 0.25),
+              0 0 0 1px rgba(139, 92, 246, 0.1),
+              inset 0 1px 2px rgba(255, 255, 255, 0.2)
+            `
+          }}
         >
-          Preview Package
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="relative drop-shadow-sm">Preview Package</span>
         </Button>
       </div>
     </div>

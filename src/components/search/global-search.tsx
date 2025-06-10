@@ -98,13 +98,20 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-full justify-start rounded-md text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
+        className="relative h-9 w-full justify-start rounded-md text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64 bg-white/20 dark:bg-gray-900/20 backdrop-blur-md border border-primary/20 dark:border-purple-700/30 hover:bg-primary/10 dark:hover:bg-purple-800/30 transition-all duration-300 hover:border-primary/40 dark:hover:border-purple-600/50 hover:shadow-md group"
         onClick={() => setOpen(true)}
+        style={{
+          boxShadow: `
+            0 4px 12px rgba(139, 92, 246, 0.1),
+            0 0 0 1px rgba(139, 92, 246, 0.05),
+            inset 0 1px 2px rgba(255, 255, 255, 0.1)
+          `
+        }}
       >
         <Icons.search className="mr-2 h-4 w-4" />
         <span className="hidden lg:inline-flex">Search rules...</span>
         <span className="inline-flex lg:hidden">Search...</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 sm:flex">
+        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border border-primary/20 bg-primary/10 backdrop-blur-sm px-1.5 font-mono text-xs font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>

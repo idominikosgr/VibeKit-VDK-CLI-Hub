@@ -19,20 +19,30 @@ export function MainNav() {
           {siteConfig.name}
         </span>
       </Link>
-      <nav className="flex items-center space-x-6 text-sm font-medium">
+      <nav className="flex items-center space-x-2 text-sm font-medium">
         {siteConfig.nav.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              "transition-colors hover:text-foreground/80",
+              "relative px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105",
               pathname === item.href
-                ? "text-foreground"
-                : "text-foreground/60",
-              item.disabled && "pointer-events-none opacity-50"
+                ? "text-primary bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-primary/20 shadow-lg"
+                : "text-foreground/70 hover:text-primary hover:bg-white/30 dark:hover:bg-gray-800/30 hover:backdrop-blur-sm hover:border hover:border-primary/20 hover:shadow-md",
+              item.disabled && "pointer-events-none opacity-50",
+              "group overflow-hidden"
             )}
+            style={pathname === item.href ? {
+              boxShadow: `
+                0 4px 12px rgba(139, 92, 246, 0.2),
+                0 0 0 1px rgba(139, 92, 246, 0.1),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1)
+              `
+            } : {}}
           >
-            {item.title}
+            {/* Hover glass highlight */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
+            <span className="relative drop-shadow-sm">{item.title}</span>
           </Link>
         ))}
       </nav>

@@ -34,7 +34,14 @@ export function SiteHeader() {
 
   return (
     <motion.header 
-      className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
+      className="sticky top-0 z-40 w-full border-b border-primary/20 dark:border-purple-800/30 bg-gradient-to-r from-white/70 via-primary/5 to-purple-50/50 dark:from-gray-950/80 dark:via-purple-950/20 dark:to-gray-950/80 backdrop-blur-xl"
+      style={{
+        boxShadow: `
+          0 8px 32px rgba(139, 92, 246, 0.1),
+          0 0 0 1px rgba(139, 92, 246, 0.1),
+          inset 0 1px 2px rgba(255, 255, 255, 0.1)
+        `
+      }}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -47,7 +54,17 @@ export function SiteHeader() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="pr-0">
+          <SheetContent 
+            side="left" 
+            className="pr-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border-r border-white/20 dark:border-gray-800/30"
+            style={{
+              boxShadow: `
+                8px 0 32px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset -1px 0 2px rgba(255, 255, 255, 0.1)
+              `
+            }}
+          >
             <SheetTitle>
               <VisuallyHidden>Navigation Menu</VisuallyHidden>
             </SheetTitle>
@@ -66,11 +83,19 @@ export function SiteHeader() {
                     href="/setup"
                     className={cn(
                       buttonVariants({ variant: "outline", size: "sm" }),
-                      "transition-all duration-200 hover:shadow-md"
+                      "relative overflow-hidden bg-primary/10 dark:bg-purple-900/30 backdrop-blur-md border border-primary/30 dark:border-purple-700/40 hover:bg-primary/20 dark:hover:bg-purple-800/40 transition-all duration-300 hover:border-primary/50 dark:hover:border-purple-600/60 hover:shadow-lg group"
                     )}
+                    style={{
+                      boxShadow: `
+                        0 4px 12px rgba(139, 92, 246, 0.15),
+                        0 0 0 1px rgba(139, 92, 246, 0.1),
+                        inset 0 1px 2px rgba(255, 255, 255, 0.1)
+                      `
+                    }}
                   >
-                    <Icons.settings className="mr-2 h-4 w-4" />
-                    Setup Wizard
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Icons.settings className="mr-2 h-4 w-4 relative drop-shadow-sm" />
+                    <span className="relative drop-shadow-sm">Setup Wizard</span>
                   </Link>
                 </motion.div>
               </div>
@@ -113,8 +138,22 @@ function AuthMenuButton() {
   if (!user && !isLoading) {
     return (
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-        <Link href="/auth/login" className={buttonVariants({ variant: "outline", size: "sm" })}>
-          Sign In
+        <Link 
+          href="/auth/login" 
+          className={cn(
+            buttonVariants({ variant: "outline", size: "sm" }),
+            "relative overflow-hidden bg-primary/10 dark:bg-purple-900/30 backdrop-blur-md border border-primary/30 dark:border-purple-700/40 hover:bg-primary/20 dark:hover:bg-purple-800/40 transition-all duration-300 hover:border-primary/50 dark:hover:border-purple-600/60 hover:shadow-lg group"
+          )}
+          style={{
+            boxShadow: `
+              0 4px 12px rgba(139, 92, 246, 0.15),
+              0 0 0 1px rgba(139, 92, 246, 0.1),
+              inset 0 1px 2px rgba(255, 255, 255, 0.1)
+            `
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="relative drop-shadow-sm">Sign In</span>
         </Link>
       </motion.div>
     );
@@ -314,11 +353,19 @@ function AdminCTA() {
         href="/admin"
         className={cn(
           buttonVariants({ variant: "default", size: "sm" }),
-          "bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground border-0 transition-all duration-200 hover:shadow-md"
+          "group relative overflow-hidden bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-xl"
         )}
+        style={{
+          boxShadow: `
+            0 8px 16px rgba(139, 92, 246, 0.3),
+            0 0 0 1px rgba(139, 92, 246, 0.2),
+            inset 0 1px 2px rgba(255, 255, 255, 0.2)
+          `
+        }}
       >
-        <Icons.security className="mr-2 h-4 w-4" />
-        Admin
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-purple-500/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <Icons.security className="mr-2 h-4 w-4 relative drop-shadow-sm" />
+        <span className="relative drop-shadow-sm">Admin</span>
       </Link>
     </motion.div>
   );

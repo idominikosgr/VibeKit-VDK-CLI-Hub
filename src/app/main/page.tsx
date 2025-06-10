@@ -145,10 +145,11 @@ const FloatingElements = () => {
   )
 }
 
-// Enhanced interactive code demo
+// Enhanced interactive code demo with liquid glass effects
 const VibeCodeDemo = () => {
   const [activeStep, setActiveStep] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
   
   const steps = [
     { 
@@ -176,23 +177,49 @@ const VibeCodeDemo = () => {
     return () => clearInterval(interval)
   }, [isPlaying])
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    setMousePosition({ x, y })
+  }
+
   return (
-    <div className="relative bg-gradient-to-br from-gray-950 via-gray-900 to-purple-950 rounded-3xl p-8 overflow-hidden border border-gray-800/50 shadow-2xl">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10" />
+    <div 
+      className="relative bg-white/10 dark:bg-gray-950/80 backdrop-blur-xl rounded-3xl p-8 overflow-hidden border border-white/20 dark:border-gray-800/30 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]"
+      onMouseMove={handleMouseMove}
+      style={{
+        boxShadow: `
+          0 25px 50px -12px rgba(0, 0, 0, 0.25),
+          0 0 0 1px rgba(255, 255, 255, 0.1),
+          inset 0 2px 8px rgba(255, 255, 255, 0.1)
+        `
+      }}
+    >
+      {/* Liquid glass highlight effect */}
+      <div 
+        className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(255,255,255,0.2) 0%, transparent 50%)`
+        }}
+      />
       
-      {/* Enhanced terminal header */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Ambient glow overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 rounded-3xl" />
+      
+      {/* Enhanced terminal header with glass effect */}
+      <div className="flex items-center justify-between mb-6 relative">
         <div className="flex items-center gap-2">
           <div className="flex gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500 shadow-lg" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg" />
-            <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg" />
+            <div className="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/30" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/30" />
+            <div className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/30" />
           </div>
-          <div className="text-gray-400 text-sm ml-4 font-mono">vibe-coding-ai</div>
+          <div className="text-gray-400 text-sm ml-4 font-mono backdrop-blur-sm">vibe-coding-ai</div>
         </div>
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 hover:drop-shadow-md"
         >
           {isPlaying ? '⏸️' : '▶️'}
         </button>
@@ -243,7 +270,7 @@ const VibeCodeDemo = () => {
   )
 }
 
-// Enhanced interactive feature card
+// Enhanced interactive feature card with liquid glass effects
 const VibeFeatureCard = ({ 
   title, 
   description, 
@@ -260,8 +287,16 @@ const VibeFeatureCard = ({
   gradient?: string
 }) => {
   const [isHovered, setIsHovered] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    setMousePosition({ x, y })
+  }
 
   return (
     <motion.div
@@ -271,34 +306,64 @@ const VibeFeatureCard = ({
       transition={{ duration: 0.6, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
       className="group relative overflow-hidden"
     >
-      <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500", gradient)} />
-      <Card className="relative h-full border-0 bg-gradient-to-b from-white/80 to-white/60 backdrop-blur-lg dark:from-gray-900/80 dark:to-gray-950/60 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 group-hover:border-primary/20">
-        <CardHeader className="pb-4">
+      <Card 
+        className="relative h-full bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/30 dark:border-gray-800/30 transition-all duration-500 hover:scale-[1.02] hover:border-white/50 dark:hover:border-gray-700/50"
+        style={{
+          boxShadow: `
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            inset 0 1px 3px rgba(255, 255, 255, 0.1)
+          `
+        }}
+      >
+        {/* Liquid glass specular highlight */}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
+          style={{
+            background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(255,255,255,0.15) 0%, transparent 60%)`
+          }}
+        />
+        
+        {/* Adaptive gradient overlay */}
+        <div className={cn("absolute inset-0 bg-gradient-to-br opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-xl", gradient)} />
+        
+        <CardHeader className="pb-4 relative">
           <motion.div 
-            className="w-14 h-14 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/30 flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/25"
+            className="w-14 h-14 rounded-3xl bg-white/20 dark:bg-gray-800/30 backdrop-blur-sm border border-white/20 dark:border-gray-700/30 flex items-center justify-center mb-6 group-hover:bg-white/30 dark:group-hover:bg-gray-700/40 transition-all duration-300 shadow-lg"
             animate={{ 
               scale: isHovered ? 1.1 : 1,
               rotate: isHovered ? 5 : 0 
             }}
             transition={{ duration: 0.3 }}
+            style={{
+              boxShadow: `
+                0 8px 16px rgba(0, 0, 0, 0.1),
+                inset 0 1px 2px rgba(255, 255, 255, 0.2)
+              `
+            }}
           >
-            <Icon className="h-7 w-7 text-primary" />
+            <Icon className="h-7 w-7 text-primary drop-shadow-sm" />
           </motion.div>
-          <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">{title}</CardTitle>
-          <CardDescription className="text-base text-muted-foreground leading-relaxed">
+          <CardTitle className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300 drop-shadow-sm">{title}</CardTitle>
+          <CardDescription className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
             {description}
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-0 relative">
           <motion.div
             initial={{ opacity: 0.8 }}
             animate={{ 
               opacity: isHovered ? 1 : 0.8
             }}
             transition={{ duration: 0.3 }}
-            className="overflow-hidden"
+            className="overflow-hidden rounded-xl bg-white/30 dark:bg-gray-900/30 backdrop-blur-md p-4 border border-white/20 dark:border-gray-700/30"
+            style={{
+              boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.1)`
+            }}
           >
             {demo}
           </motion.div>
@@ -308,7 +373,7 @@ const VibeFeatureCard = ({
   )
 }
 
-// Enhanced testimonial with vibe theming
+// Enhanced testimonial with liquid glass effects
 const VibeTestimonialCard = ({ 
   quote, 
   author, 
@@ -321,25 +386,63 @@ const VibeTestimonialCard = ({
   role: string
   avatar: string
   vibe?: string
-}) => (
-  <motion.div
-    whileHover={{ y: -8, scale: 1.02 }}
-    transition={{ duration: 0.3 }}
-    className="p-6 rounded-3xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border border-gray-200/50 dark:border-gray-800/50 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300"
-  >
-    <div className="text-2xl mb-4">{vibe}</div>
-    <p className="text-gray-700 dark:text-gray-300 mb-6 italic text-lg leading-relaxed">"{quote}"</p>
-    <div className="flex items-center gap-4">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-        {avatar}
+}) => {
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    setMousePosition({ x, y })
+  }
+
+  return (
+    <motion.div
+      whileHover={{ y: -8, scale: 1.02 }}
+      transition={{ duration: 0.3 }}
+      onMouseMove={handleMouseMove}
+      className="group relative p-6 rounded-3xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/30 dark:border-gray-800/30 hover:border-white/50 dark:hover:border-gray-700/50 transition-all duration-500"
+      style={{
+        boxShadow: `
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04),
+          0 0 0 1px rgba(255, 255, 255, 0.1),
+          inset 0 1px 3px rgba(255, 255, 255, 0.1)
+        `
+      }}
+    >
+      {/* Liquid glass specular highlight */}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-3xl"
+        style={{
+          background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(255,255,255,0.12) 0%, transparent 60%)`
+        }}
+      />
+      
+      <div className="relative">
+        <div className="text-2xl mb-4 drop-shadow-sm">{vibe}</div>
+        <p className="text-gray-700 dark:text-gray-300 mb-6 italic text-lg leading-relaxed">"{quote}"</p>
+        <div className="flex items-center gap-4">
+          <div 
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-primary via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg backdrop-blur-sm border border-white/20"
+            style={{
+              boxShadow: `
+                0 8px 16px rgba(0, 0, 0, 0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3)
+              `
+            }}
+          >
+            {avatar}
+          </div>
+          <div>
+            <div className="font-bold text-base text-gray-900 dark:text-white">{author}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">{role}</div>
+          </div>
+        </div>
       </div>
-      <div>
-        <div className="font-bold text-base">{author}</div>
-        <div className="text-sm text-muted-foreground">{role}</div>
-      </div>
-    </div>
-  </motion.div>
-)
+    </motion.div>
+  )
+}
 
 // Enhanced stats with vibe theming
 const VibeAnimatedStat = ({ value, label, prefix = "", suffix = "", icon }: {
@@ -437,9 +540,19 @@ export default function MainLandingPage() {
               className="space-y-8"
             >
               <motion.div variants={fadeInUp}>
-                <Badge variant="outline" className="mb-8 px-6 py-3 text-base border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors shadow-lg">
-                  <Icons.brain className="mr-3 h-4 w-4" />
-                  Upgrade Your Agentic AI Game
+                <Badge 
+                  variant="outline" 
+                  className="mb-8 px-6 py-3 text-base border-primary/30 bg-white/20 dark:bg-gray-900/30 backdrop-blur-xl hover:bg-white/30 dark:hover:bg-gray-800/40 transition-all duration-300 shadow-lg hover:shadow-xl border border-white/30 dark:border-gray-700/30"
+                  style={{
+                    boxShadow: `
+                      0 8px 16px rgba(0, 0, 0, 0.1),
+                      0 0 0 1px rgba(255, 255, 255, 0.1),
+                      inset 0 1px 2px rgba(255, 255, 255, 0.1)
+                    `
+                  }}
+                >
+                  <Icons.brain className="mr-3 h-4 w-4 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Upgrade Your Agentic AI Game</span>
                 </Badge>
               </motion.div>
               
@@ -467,16 +580,39 @@ export default function MainLandingPage() {
                 className="flex flex-wrap items-center justify-center gap-6 pt-12"
               >
                 <Link href="/setup">
-                  <Button size="lg" className="text-xl px-12 py-8 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300">
-                    <Icons.settings className="mr-4 h-6 w-6" />
-                    Start Vibing
+                  <Button 
+                    size="lg" 
+                    className="group relative text-xl px-12 py-8 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 backdrop-blur-sm border border-white/20 overflow-hidden"
+                    style={{
+                      boxShadow: `
+                        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.2)
+                      `
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Icons.settings className="mr-4 h-6 w-6 relative drop-shadow-sm" />
+                    <span className="relative drop-shadow-sm">Start Vibing</span>
                   </Button>
                 </Link>
                 
                 <Link href="/rules">
-                  <Button variant="outline" size="lg" className="text-xl px-12 py-8 border-2 hover:bg-gray-50 dark:hover:bg-gray-900 hover:scale-105 transition-all duration-300">
-                    <Icons.code className="mr-4 h-6 w-6" />
-                    See the magic
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="group relative text-xl px-12 py-8 border-2 border-white/30 dark:border-gray-700/50 bg-white/20 dark:bg-gray-900/30 backdrop-blur-xl hover:bg-white/30 dark:hover:bg-gray-800/40 hover:scale-105 transition-all duration-300 hover:border-white/50 dark:hover:border-gray-600/60 overflow-hidden"
+                    style={{
+                      boxShadow: `
+                        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.1)
+                      `
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Icons.code className="mr-4 h-6 w-6 relative drop-shadow-sm" />
+                    <span className="relative drop-shadow-sm">See the magic</span>
                   </Button>
                 </Link>
               </motion.div>
@@ -856,16 +992,39 @@ export default function MainLandingPage() {
                 className="flex flex-wrap items-center justify-center gap-8 pt-12"
               >
                 <Link href="/setup">
-                  <Button size="lg" className="text-2xl px-16 py-10 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300">
-                    <Icons.settings className="mr-4 h-7 w-7" />
-                    Start Vibing Now
+                  <Button 
+                    size="lg" 
+                    className="group relative text-2xl px-16 py-10 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-white/20 overflow-hidden"
+                    style={{
+                      boxShadow: `
+                        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.2)
+                      `
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Icons.settings className="mr-4 h-7 w-7 relative drop-shadow-sm" />
+                    <span className="relative drop-shadow-sm">Start Vibing Now</span>
                   </Button>
                 </Link>
                 
                 <Link href="/rules">
-                  <Button variant="outline" size="lg" className="text-2xl px-16 py-10 border-2 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900 hover:scale-110 transition-all duration-300">
-                    <Icons.code className="mr-4 h-7 w-7" />
-                    Explore the Vibes
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="group relative text-2xl px-16 py-10 border-2 border-white/30 dark:border-gray-700/50 bg-white/20 dark:bg-gray-900/30 backdrop-blur-xl hover:bg-white/30 dark:hover:bg-gray-800/40 hover:scale-110 transition-all duration-300 hover:border-white/50 dark:hover:border-gray-600/60 overflow-hidden"
+                    style={{
+                      boxShadow: `
+                        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.1)
+                      `
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Icons.code className="mr-4 h-7 w-7 relative drop-shadow-sm" />
+                    <span className="relative drop-shadow-sm">Explore the Vibes</span>
                   </Button>
                 </Link>
               </motion.div>

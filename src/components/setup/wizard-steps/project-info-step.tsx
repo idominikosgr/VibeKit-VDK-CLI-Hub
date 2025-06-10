@@ -89,9 +89,17 @@ export function ProjectInfoStep({
           onClick={handleNext} 
           disabled={!isValid}
           size="lg"
-          className="min-w-[120px]"
+          className="min-w-[120px] relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 backdrop-blur-sm border border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:scale-105 group"
+          style={{
+            boxShadow: `
+              0 8px 16px rgba(139, 92, 246, 0.25),
+              0 0 0 1px rgba(139, 92, 246, 0.1),
+              inset 0 1px 2px rgba(255, 255, 255, 0.2)
+            `
+          }}
         >
-          Next: Choose Stack
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-purple-500/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="relative drop-shadow-sm">Next: Choose Stack</span>
         </Button>
       </div>
     </div>

@@ -223,23 +223,31 @@ export function PreviewStep({
               {!generatedPackage ? (
                 <>
                   <div className="text-sm text-muted-foreground">
-                    Ready to generate your personalized CodePilotRules package based on your selections.
+                    Ready to generate your personalized Vibe Coding Rules package based on your selections.
                   </div>
                   <Button 
                     onClick={handleGeneratePackage}
                     disabled={isGenerating}
-                    className="w-full"
+                    className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 backdrop-blur-sm border border-primary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:scale-105 group"
                     size="lg"
+                    style={{
+                      boxShadow: `
+                        0 12px 24px rgba(139, 92, 246, 0.3),
+                        0 0 0 1px rgba(139, 92, 246, 0.1),
+                        inset 0 1px 2px rgba(255, 255, 255, 0.2)
+                      `
+                    }}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-purple-500/20 to-pink-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     {isGenerating ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                        Generating Package...
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 relative z-10" />
+                        <span className="relative z-10 drop-shadow-sm">Generating Package...</span>
                       </>
                     ) : (
                       <>
-                        <Package className="h-4 w-4 mr-2" />
-                        Generate Rules Package
+                        <Package className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
+                        <span className="relative z-10 drop-shadow-sm">Generate Rules Package</span>
                       </>
                     )}
                   </Button>
@@ -269,11 +277,19 @@ export function PreviewStep({
                         window.open(generatedPackage.downloadUrl, '_blank')
                       }
                     }}
-                    className="w-full"
+                    className="w-full relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 backdrop-blur-sm border border-green-500/30 hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:scale-105 group"
                     size="lg"
+                    style={{
+                      boxShadow: `
+                        0 12px 24px rgba(34, 197, 94, 0.3),
+                        0 0 0 1px rgba(34, 197, 94, 0.1),
+                        inset 0 1px 2px rgba(255, 255, 255, 0.2)
+                      `
+                    }}
                   >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Package
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/25 via-emerald-500/20 to-teal-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <Download className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
+                    <span className="relative z-10 drop-shadow-sm">Download Package</span>
                   </Button>
                 </>
               )}
@@ -320,8 +336,13 @@ export function PreviewStep({
       <Separator />
 
       <div className="flex justify-between items-center">
-        <Button variant="outline" onClick={onBack}>
-          Back
+        <Button 
+          variant="outline" 
+          onClick={onBack}
+          className="relative overflow-hidden bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border border-primary/20 dark:border-purple-700/30 hover:bg-primary/10 dark:hover:bg-purple-800/30 transition-all duration-300 hover:border-primary/40 dark:hover:border-purple-600/50 hover:shadow-md group"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <span className="relative">Back</span>
         </Button>
         <div className="text-sm text-muted-foreground">
           {isLastStep ? (
