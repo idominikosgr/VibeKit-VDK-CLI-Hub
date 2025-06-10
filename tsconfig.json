@@ -26,13 +26,17 @@
     ],
     "paths": {
       "@/*": [
-        "*"
+        "./src/*"
       ]
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "middleware.ts",
+    "next.config.ts",
+    "tailwind.config.ts",
+    "postcss.config.mjs",
     ".next/types/**/*.ts",
     "next-env.d.ts",
     "build/types/**/*.ts"
