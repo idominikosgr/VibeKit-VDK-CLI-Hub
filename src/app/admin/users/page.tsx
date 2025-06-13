@@ -10,17 +10,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Icons } from '@/components/icons';
 import { 
-  Users, 
-  Shield, 
-  UserPlus, 
-  UserMinus, 
-  Search,
-  BarChart3,
-  Calendar,
-  Mail,
-  Crown,
-  Activity
-} from 'lucide-react';
+  UsersIcon, 
+  ShieldIcon, 
+  UserPlusIcon, 
+  UserMinusIcon, 
+  MagnifyingGlassIcon,
+  ChartBarIcon,
+  CalendarIcon,
+  EnvelopeIcon,
+  CrownIcon,
+  PulseIcon
+} from "@phosphor-icons/react";
 import { toast } from 'sonner';
 
 interface User {
@@ -56,7 +56,7 @@ export default function UserManagementPage() {
     totalAdmins: 0
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setMagnifyingGlassTerm] = useState('');
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [isAddingAdmin, setIsAddingAdmin] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -197,7 +197,7 @@ export default function UserManagementPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <Shield className="h-4 w-4" />
+          <ShieldIcon className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -212,7 +212,7 @@ export default function UserManagementPage() {
         <div className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-linear-to-br from-secondary to-secondary/80 flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
+              <UsersIcon className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">User Management</h1>
@@ -227,7 +227,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-primary" />
+                  <UsersIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.totalUsers}</p>
                     <p className="text-xs text-muted-foreground">Total Users</p>
@@ -238,7 +238,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-secondary" />
+                  <CalendarIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.newUsersThisWeek}</p>
                     <p className="text-xs text-muted-foreground">New This Week</p>
@@ -249,7 +249,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-muted-foreground" />
+                  <PulseIcon className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-2xl font-bold">{stats.activeUsersToday}</p>
                     <p className="text-xs text-muted-foreground">Active Today</p>
@@ -260,7 +260,7 @@ export default function UserManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-4 h-4 text-accent" />
+                  <CrownIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{stats.totalAdmins}</p>
                     <p className="text-xs text-muted-foreground">Admins</p>
@@ -296,7 +296,7 @@ export default function UserManagementPage() {
                 {isAddingAdmin ? (
                   <Icons.spinner className="h-4 w-4 animate-spin" />
                 ) : (
-                  <UserPlus className="h-4 w-4" />
+                  <UserPlusIcon className="h-4 w-4" />
                 )}
                 Add Admin
               </Button>
@@ -309,7 +309,7 @@ export default function UserManagementPage() {
                 {admins.map((admin) => (
                   <div key={admin.email} className="flex items-center justify-between p-3 bg-muted rounded-md">
                     <div className="flex items-center gap-2">
-                      <Crown className="w-4 h-4 text-primary" />
+                      <CrownIcon className="w-4 h-4 text-primary" />
                       <span className="font-medium">{admin.email}</span>
                       <Badge variant="secondary" className="text-xs">
                         Added {formatDate(admin.added_at)}
@@ -320,7 +320,7 @@ export default function UserManagementPage() {
                       size="sm"
                       onClick={() => handleRemoveAdmin(admin.email)}
                     >
-                      <UserMinus className="w-3 h-3" />
+                      <UserMinusIcon className="w-3 h-3" />
                     </Button>
                   </div>
                 ))}
@@ -341,11 +341,11 @@ export default function UserManagementPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <MagnifyingGlassIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search users..."
+                    placeholder="MagnifyingGlass users..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => setMagnifyingGlassTerm(e.target.value)}
                     className="pl-8 w-64"
                   />
                 </div>
@@ -377,7 +377,7 @@ export default function UserManagementPage() {
                           />
                         ) : (
                           <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                            <Users className="w-4 h-4" />
+                            <UsersIcon className="w-4 h-4" />
                           </div>
                         )}
                         <div>
@@ -392,7 +392,7 @@ export default function UserManagementPage() {
                     <TableCell>
                       {isUserAdmin(user.email) ? (
                         <Badge variant="default">
-                          <Crown className="w-3 h-3 mr-1" />
+                          <CrownIcon className="w-3 h-3 mr-1" />
                           Admin
                         </Badge>
                       ) : (
@@ -426,7 +426,7 @@ export default function UserManagementPage() {
 
             {filteredUsers.length === 0 && (
               <div className="text-center py-8">
-                <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <UsersIcon  className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">No users found</p>
               </div>
             )}

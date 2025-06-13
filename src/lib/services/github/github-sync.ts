@@ -211,7 +211,7 @@ export class GitHubSync {
           ides: parsedContent.compatibility.ides || [],
           aiAssistants: parsedContent.compatibility.aiAssistants || [],
           frameworks: parsedContent.compatibility.frameworks || [],
-          mcpServers: parsedContent.compatibility.mcpServers || []
+          mcpDatabases: parsedContent.compatibility.mcpDatabases || []
         } : null,
         examples: parsedContent.examples || null,
         globs: parsedContent.globs && parsedContent.globs.length > 0 ? parsedContent.globs : null,

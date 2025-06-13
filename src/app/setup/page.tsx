@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ModernSetupWizard } from "@/components/setup/modern-setup-wizard"
-import { Settings, Sparkles, Wand2, Zap } from 'lucide-react';
+import { GearIcon, SparkleIcon, MagicWandIcon, LightningIcon } from "@phosphor-icons/react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -84,7 +84,7 @@ export default function SetupPage() {
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
               >
                 <div className="w-20 h-20 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg">
-                  <Settings className="w-10 h-10 text-white" />
+                  <GearIcon className="w-10 h-10 text-white" />
                 </div>
               </motion.div>
 
@@ -114,9 +114,9 @@ export default function SetupPage() {
                 transition={{ delay: 0.6 }}
               >
                 {[
-                  { icon: Sparkles, color: "from-primary/60 to-primary", label: "Smart" },
-                  { icon: Wand2, color: "from-accent/60 to-accent", label: "Easy" },
-                  { icon: Zap, color: "from-secondary/60 to-secondary", label: "Fast" }
+                  { icon: SparkleIcon, color: "from-primary/60 to-primary", label: "Smart" },
+                  { icon: MagicWandIcon, color: "from-accent/60 to-accent", label: "Easy" },
+                  { icon: LightningIcon, color: "from-secondary/60 to-secondary", label: "Fast" }
                 ].map((item, index) => (
                   <motion.div
                     key={item.label}

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/admin-auth';
+
+// Force dynamic rendering to prevent build-time cookie errors
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +16,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get all admins
     const { data: admins, error } = await supabase
@@ -62,7 +65,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Check if already admin
     const { data: existingAdmin } = await supabase
@@ -133,7 +136,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Remove admin
     const { error } = await supabase

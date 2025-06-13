@@ -12,7 +12,7 @@ import {
   REDO_COMMAND,
   UNDO_COMMAND,
 } from 'lexical'
-import { RedoIcon, UndoIcon } from 'lucide-react'
+import { ArrowCounterClockwiseIcon, ArrowClockwiseIcon } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/button'
 
@@ -23,14 +23,14 @@ const IS_APPLE = true
 export function HistoryToolbarPlugin() {
   const [editor] = useLexicalComposerContext()
   const { activeEditor, $updateToolbar } = useToolbarContext()
-  const [isEditable, setIsEditable] = useState(editor.isEditable())
+  const [isEditable, setIsPencilSimpleable] = useState(editor.isEditable())
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
 
   useEffect(() => {
     return mergeRegister(
       editor.registerEditableListener((editable) => {
-        setIsEditable(editable)
+        setIsPencilSimpleable(editable)
       }),
       activeEditor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -70,7 +70,7 @@ export function HistoryToolbarPlugin() {
         className="h-8 w-8"
         variant={'outline'}
       >
-        <UndoIcon className="size-4" />
+        <ArrowCounterClockwiseIcon className="size-4" />
       </Button>
       <Button
         disabled={!canRedo || !isEditable}
@@ -84,7 +84,7 @@ export function HistoryToolbarPlugin() {
         className="h-8 w-8"
         variant={'outline'}
       >
-        <RedoIcon className="size-4" />
+        <ArrowClockwiseIcon className="size-4" />
       </Button>
     </div>
   )

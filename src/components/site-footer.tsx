@@ -66,6 +66,17 @@ export function SiteFooter() {
               <li>
                 <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                   <Link 
+                    href="/hub" 
+                    className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <Icons.brain className="h-3 w-3" />
+                    Framework
+                  </Link>
+                </motion.div>
+              </li>
+              <li>
+                <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                  <Link 
                     href="/docs" 
                     className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2"
                   >

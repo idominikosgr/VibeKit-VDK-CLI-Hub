@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/admin-auth';
 
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Calculate date ranges
     const now = new Date();

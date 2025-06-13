@@ -6,23 +6,28 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Progress } from '@/components/ui/progress';
+
 import { Icons } from '@/components/icons';
 import { 
-  Database, 
-  Download, 
-  Upload, 
-  RefreshCw, 
-  Trash2, 
-  Archive,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  HardDrive,
-  Activity,
-  Zap
-} from 'lucide-react';
+  DatabaseIcon, 
+  DownloadIcon, 
+  ArrowsClockwiseIcon, 
+  TrashIcon, 
+  ArchiveIcon,
+  WarningIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  HardDriveIcon,
+  PulseIcon,
+  LightningIcon,
+  ChartBarIcon,
+  UsersIcon,
+  FileTextIcon,
+  ShieldIcon,
+  TrendUpIcon
+} from "@phosphor-icons/react";
 import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface DatabaseStats {
   tables: Array<{
@@ -144,23 +149,18 @@ export default function DatabaseManagementPage() {
     }
   };
 
-  const formatFileSize = (bytes: number) => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  };
+
 
   const getHealthIcon = (health: string) => {
     switch (health) {
       case 'healthy':
-        return <CheckCircle className="h-4 w-4 text-secondary" />;
+        return <CheckCircleIcon className="h-4 w-4 text-secondary" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-warning" />;
+        return <WarningIcon className="h-4 w-4 text-warning" />;
       case 'error':
-        return <AlertTriangle className="h-4 w-4 text-destructive" />;
+        return <WarningIcon className="h-4 w-4 text-destructive" />;
       default:
-        return <Database className="h-4 w-4 text-muted-foreground" />;
+        return <DatabaseIcon className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -179,7 +179,7 @@ export default function DatabaseManagementPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <Database className="h-4 w-4" />
+          <DatabaseIcon className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -194,7 +194,7 @@ export default function DatabaseManagementPage() {
     return (
       <div className="container py-10">
         <Alert>
-          <Database className="h-4 w-4" />
+          <DatabaseIcon className="h-4 w-4" />
           <AlertTitle>No Data</AlertTitle>
           <AlertDescription>Database statistics could not be loaded</AlertDescription>
         </Alert>
@@ -210,7 +210,7 @@ export default function DatabaseManagementPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-linear-to-br from-destructive to-destructive/80 flex items-center justify-center">
-                <Database className="w-6 h-6 text-white" />
+                <DatabaseIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold">Database Management</h1>
@@ -221,7 +221,7 @@ export default function DatabaseManagementPage() {
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" onClick={loadDatabaseStats}>
-                <RefreshCw className="h-4 w-4 mr-2" />
+                <ArrowsClockwiseIcon className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
             </div>
@@ -243,7 +243,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <HardDrive className="w-4 h-4 text-primary" />
+                  <HardDriveIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-sm font-bold">{stats.totalSize}</p>
                     <p className="text-xs text-muted-foreground">Total Size</p>
@@ -254,7 +254,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-secondary" />
+                  <PulseIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-sm font-bold">{stats.performance.connectionCount}</p>
                     <p className="text-xs text-muted-foreground">Connections</p>
@@ -265,7 +265,7 @@ export default function DatabaseManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-accent" />
+                  <ClockIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-sm font-bold">{stats.performance.avgQueryTime}ms</p>
                     <p className="text-xs text-muted-foreground">Avg Query Time</p>
@@ -290,7 +290,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Archive className="w-4 w-4 text-primary" />
+                      <ArchiveIcon className="w-4 text-primary" />
                       <h4 className="font-medium">Backup Database</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -311,7 +311,7 @@ export default function DatabaseManagementPage() {
                       {isBackingUp ? (
                         <Icons.spinner className="h-4 w-4 animate-spin mr-2" />
                       ) : (
-                        <Download className="h-4 w-4 mr-2" />
+                        <DownloadIcon className="h-4 w-4 mr-2" />
                       )}
                       Create Backup
                     </Button>
@@ -323,7 +323,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 w-4 text-secondary" />
+                      <LightningIcon className="w-4 text-secondary" />
                       <h4 className="font-medium">Optimize Tables</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -342,7 +342,7 @@ export default function DatabaseManagementPage() {
                       {isOptimizing ? (
                         <Icons.spinner className="h-4 w-4 animate-spin mr-2" />
                       ) : (
-                        <Zap className="h-4 w-4 mr-2" />
+                        <LightningIcon className="h-4 w-4 mr-2" />
                       )}
                       Optimize
                     </Button>
@@ -354,7 +354,7 @@ export default function DatabaseManagementPage() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Trash2 className="w-4 w-4 text-destructive" />
+                      <TrashIcon className="w-4 text-destructive" />
                       <h4 className="font-medium">Cleanup Old Data</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -369,7 +369,7 @@ export default function DatabaseManagementPage() {
                       size="sm"
                       variant="destructive"
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <TrashIcon  className="h-4 w-4 mr-2" />
                       Cleanup
                     </Button>
                   </div>

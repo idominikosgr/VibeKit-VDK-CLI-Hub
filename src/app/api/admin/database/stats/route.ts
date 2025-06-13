@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();

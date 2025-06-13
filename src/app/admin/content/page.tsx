@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+// Disable static generation to fix createContext build error
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,19 +13,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons';
 import { 
-  FileText, 
-  Search,
-  Filter,
-  Edit,
-  Trash2,
-  Plus,
-  Eye,
-  Flag,
-  CheckCircle,
-  XCircle,
-  Clock
-} from 'lucide-react';
+  FileTextIcon, 
+  MagnifyingGlassIcon,
+  PencilSimpleIcon,
+  TrashIcon,
+  PlusIcon,
+  EyeIcon,
+  FlagIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ClockIcon
+} from "@phosphor-icons/react";
 import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Rule {
   id: string;
@@ -46,7 +55,7 @@ export default function ContentManagementPage() {
   const [rules, setRules] = useState<Rule[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setMagnifyingGlassTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'draft' | 'archived' | 'pending'>('all');
   const [error, setError] = useState<string | null>(null);
 
@@ -125,24 +134,24 @@ export default function ContentManagementPage() {
   };
 
   const filteredRules = rules.filter(rule => {
-    const matchesSearch = rule.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesMagnifyingGlass = rule.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          rule.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || rule.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    return matchesMagnifyingGlass && matchesStatus;
   });
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <CheckCircle className="h-4 w-4 text-secondary" />;
+        return <CheckCircleIcon className="h-4 w-4 text-secondary" />;
       case 'draft':
-        return <Clock className="h-4 w-4 text-warning" />;
+        return <ClockIcon className="h-4 w-4 text-warning" />;
       case 'archived':
-        return <XCircle className="h-4 w-4 text-muted-foreground" />;
+        return <XCircleIcon className="h-4 w-4 text-muted-foreground" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-warning" />;
+        return <ClockIcon className="h-4 w-4 text-warning" />;
       default:
-        return <FileText className="h-4 w-4 text-muted-foreground" />;
+        return <FileTextIcon className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -176,7 +185,7 @@ export default function ContentManagementPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <FileText className="h-4 w-4 text-primary" />
+          <FileTextIcon className="h-4 w-4 text-primary" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -195,7 +204,7 @@ export default function ContentManagementPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-linear-to-br from-muted-foreground to-muted-foreground/80 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
+                <FileTextIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold">Content Management</h1>
@@ -206,7 +215,7 @@ export default function ContentManagementPage() {
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
+                <PlusIcon className="h-4 w-4 mr-2" />
                 Add Rule
               </Button>
             </div>
@@ -217,7 +226,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
+                  <FileTextIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{rules.length}</p>
                     <p className="text-xs text-muted-foreground">Total Rules</p>
@@ -228,7 +237,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-secondary" />
+                  <CheckCircleIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{rules.filter(r => r.status === 'active').length}</p>
                     <p className="text-xs text-muted-foreground">Active</p>
@@ -239,7 +248,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-warning" />
+                  <ClockIcon className="w-4 h-4 text-warning" />
                   <div>
                     <p className="text-2xl font-bold">{rules.filter(r => r.status === 'draft').length}</p>
                     <p className="text-xs text-muted-foreground">Drafts</p>
@@ -250,7 +259,7 @@ export default function ContentManagementPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Flag className="w-4 h-4 text-accent" />
+                  <FlagIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{categories.length}</p>
                     <p className="text-xs text-muted-foreground">Categories</p>
@@ -275,17 +284,17 @@ export default function ContentManagementPage() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                   <div className="relative flex-1">
-                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <MagnifyingGlassIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search rules..."
+                      placeholder="MagnifyingGlass rules..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={(e) => setMagnifyingGlassTerm(e.target.value)}
                       className="pl-8"
                     />
                   </div>
                   <select
                     value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value as any)}
+                    onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'draft' | 'archived' | 'pending')}
                     className="px-3 py-2 border rounded-md bg-background"
                   >
                     <option value="all">All Status</option>
@@ -334,14 +343,14 @@ export default function ContentManagementPage() {
                         <TableCell>
                           <div className="flex items-center gap-1">
                             <Button variant="ghost" size="sm">
-                              <Eye className="h-3 w-3" />
+                              <EyeIcon className="h-3 w-3" />
                             </Button>
                             <Button variant="ghost" size="sm">
-                              <Edit className="h-3 w-3" />
+                              <PencilSimpleIcon className="h-3 w-3" />
                             </Button>
                             <select
                               value={rule.status}
-                              onChange={(e) => updateRuleStatus(rule.id, e.target.value as any)}
+                              onChange={(e) => updateRuleStatus(rule.id, e.target.value as 'active' | 'draft' | 'archived' | 'pending')}
                               className="text-xs border rounded px-2 py-1"
                             >
                               <option value="active">Active</option>
@@ -354,7 +363,7 @@ export default function ContentManagementPage() {
                               size="sm"
                               onClick={() => deleteRule(rule.id)}
                             >
-                              <Trash2 className="h-3 w-3 text-destructive" />
+                              <TrashIcon className="h-3 w-3 text-destructive" />
                             </Button>
                           </div>
                         </TableCell>
@@ -365,7 +374,7 @@ export default function ContentManagementPage() {
 
                 {filteredRules.length === 0 && (
                   <div className="text-center py-8">
-                    <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <FileTextIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">No rules found</p>
                   </div>
                 )}
@@ -384,7 +393,7 @@ export default function ContentManagementPage() {
                     </CardDescription>
                   </div>
                   <Button>
-                    <Plus className="h-4 w-4 mr-2" />
+                    <PlusIcon className="h-4 w-4 mr-2" />
                     Add Category
                   </Button>
                 </div>
@@ -405,11 +414,11 @@ export default function ContentManagementPage() {
                           </p>
                           <div className="flex items-center gap-1 pt-2">
                             <Button variant="outline" size="sm">
-                              <Edit className="h-3 w-3 mr-1" />
-                              Edit
+                              <PencilSimpleIcon className="h-3 w-3 mr-1" />
+                              PencilSimple
                             </Button>
                             <Button variant="outline" size="sm">
-                              <Trash2 className="h-3 w-3 mr-1" />
+                              <TrashIcon className="h-3 w-3 mr-1" />
                               Delete
                             </Button>
                           </div>
@@ -432,7 +441,7 @@ export default function ContentManagementPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Flag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <FlagIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">No items pending moderation</p>
                 </div>
               </CardContent>

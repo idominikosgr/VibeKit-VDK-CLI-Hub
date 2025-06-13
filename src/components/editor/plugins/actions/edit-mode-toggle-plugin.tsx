@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { LockIcon, UnlockIcon } from 'lucide-react'
+import { LockIcon, LockOpenIcon } from '@phosphor-icons/react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +14,7 @@ import {
 
 export function EditModeTogglePlugin() {
   const [editor] = useLexicalComposerContext()
-  const [isEditable, setIsEditable] = useState(() => editor.isEditable())
+  const [isEditable, setIsPencilSimpleable] = useState(() => editor.isEditable())
 
   return (
     <Tooltip>
@@ -23,7 +23,7 @@ export function EditModeTogglePlugin() {
           variant={'ghost'}
           onClick={() => {
             editor.setEditable(!editor.isEditable())
-            setIsEditable(editor.isEditable())
+            setIsPencilSimpleable(editor.isEditable())
           }}
           title="Read-Only Mode"
           aria-label={`${!isEditable ? 'Unlock' : 'Lock'} read-only mode`}
@@ -33,12 +33,12 @@ export function EditModeTogglePlugin() {
           {isEditable ? (
             <LockIcon className="size-4" />
           ) : (
-            <UnlockIcon className="size-4" />
+            <LockOpenIcon className="size-4" />
           )}
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        {isEditable ? 'View Only Mode' : 'Edit Mode'}
+        {isEditable ? 'View Only Mode' : 'PencilSimple Mode'}
       </TooltipContent>
     </Tooltip>
   )

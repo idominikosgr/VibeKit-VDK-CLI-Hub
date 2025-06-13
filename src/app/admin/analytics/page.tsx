@@ -5,20 +5,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Icons } from '@/components/icons';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Download, 
-  Users, 
-  FileText, 
-  Activity,
-  Calendar,
-  Clock,
-  Package,
-  Zap,
-  GitBranch
-} from 'lucide-react';
+import {
+  ChartBarIcon,
+  TrendUpIcon,
+  UsersIcon,
+  FileTextIcon,
+  EyeIcon,
+  HeartIcon,
+  DownloadIcon,
+  PulseIcon,
+  CalendarIcon,
+  ClockIcon,
+  TargetIcon,
+  GlobeIcon,
+  CursorClickIcon,
+  DeviceMobileIcon,
+  MonitorIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  SpinnerIcon,
+} from '@phosphor-icons/react';
 import {
   ChartContainer,
   ChartTooltip,
@@ -68,7 +74,7 @@ interface AnalyticsData {
       users: number;
     }>;
   };
-  userActivity: {
+  userPulse: {
     dailyActiveUsers: number;
     weeklyActiveUsers: number;
     monthlyActiveUsers: number;
@@ -200,7 +206,7 @@ export default function AnalyticsPage() {
     return (
       <div className="container py-10">
         <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
-          <Icons.spinner className="h-8 w-8 animate-spin text-muted-foreground" />
+          <SpinnerIcon className="h-8 w-8 animate-spin text-muted-foreground" />
           <p className="text-muted-foreground">Loading analytics...</p>
         </div>
       </div>
@@ -211,7 +217,7 @@ export default function AnalyticsPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <BarChart3 className="h-4 w-4" />
+          <ChartBarIcon className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
@@ -226,7 +232,7 @@ export default function AnalyticsPage() {
     return (
       <div className="container py-10">
         <Alert>
-          <BarChart3 className="h-4 w-4" />
+          <ChartBarIcon className="h-4 w-4" />
           <AlertTitle>No Data</AlertTitle>
           <AlertDescription>No analytics data available</AlertDescription>
         </Alert>
@@ -242,7 +248,7 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-linear-to-br from-accent to-accent/80 flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-white" />
+                <ChartBarIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold">Analytics & Reports</h1>
@@ -281,7 +287,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
+                  <FileTextIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalRules)}</p>
                     <p className="text-xs text-muted-foreground">Total Rules</p>
@@ -292,7 +298,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Download className="w-4 h-4 text-secondary" />
+                  <DownloadIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalDownloads)}</p>
                     <p className="text-xs text-muted-foreground">Downloads</p>
@@ -303,7 +309,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-accent" />
+                  <UsersIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.totalUsers)}</p>
                     <p className="text-xs text-muted-foreground">Users</p>
@@ -314,7 +320,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Package className="w-4 h-4 text-muted-foreground" />
+                  <DownloadIcon className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-2xl font-bold">{formatNumber(data.overview.setupPackagesGenerated)}</p>
                     <p className="text-xs text-muted-foreground">Packages</p>
@@ -325,7 +331,7 @@ export default function AnalyticsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-destructive" />
+                  <ClockIcon className="w-4 h-4 text-destructive" />
                   <div>
                     <p className="text-lg font-bold">{formatDuration(data.overview.avgSyncTime)}</p>
                     <p className="text-xs text-muted-foreground">Avg Sync</p>
@@ -340,7 +346,7 @@ export default function AnalyticsPage() {
         <Tabs defaultValue="rules" className="space-y-6">
           <TabsList>
             <TabsTrigger value="rules">Rule Analytics</TabsTrigger>
-            <TabsTrigger value="users">User Activity</TabsTrigger>
+            <TabsTrigger value="users">User Pulse</TabsTrigger>
             <TabsTrigger value="wizard">Setup Wizard</TabsTrigger>
             <TabsTrigger value="sync">Sync Performance</TabsTrigger>
           </TabsList>
@@ -469,9 +475,9 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-secondary" />
+                    <PulseIcon className="w-4 h-4 text-secondary" />
                     <div>
-                      <p className="text-2xl font-bold">{formatNumber(data.userActivity.dailyActiveUsers)}</p>
+                      <p className="text-2xl font-bold">{formatNumber(data.userPulse.dailyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Daily Active</p>
                     </div>
                   </div>
@@ -480,9 +486,9 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-primary" />
+                    <CalendarIcon className="w-4 h-4 text-primary" />
                     <div>
-                      <p className="text-2xl font-bold">{formatNumber(data.userActivity.weeklyActiveUsers)}</p>
+                      <p className="text-2xl font-bold">{formatNumber(data.userPulse.weeklyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Weekly Active</p>
                     </div>
                   </div>
@@ -491,9 +497,9 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-accent" />
+                    <TrendUpIcon className="w-4 h-4 text-accent" />
                     <div>
-                      <p className="text-2xl font-bold">{formatNumber(data.userActivity.monthlyActiveUsers)}</p>
+                      <p className="text-2xl font-bold">{formatNumber(data.userPulse.monthlyActiveUsers)}</p>
                       <p className="text-xs text-muted-foreground">Monthly Active</p>
                     </div>
                   </div>
@@ -502,9 +508,9 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-muted-foreground" />
+                    <UsersIcon className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="text-2xl font-bold">{formatNumber(data.userActivity.newUsersThisWeek)}</p>
+                      <p className="text-2xl font-bold">{formatNumber(data.userPulse.newUsersThisWeek)}</p>
                       <p className="text-xs text-muted-foreground">New This Week</p>
                     </div>
                   </div>
@@ -512,10 +518,10 @@ export default function AnalyticsPage() {
               </Card>
             </div>
 
-            {/* User Activity Over Time Chart */}
+            {/* User Pulse Over Time Chart */}
             <Card>
               <CardHeader>
-                <CardTitle>User Activity Over Time</CardTitle>
+                <CardTitle>User Pulse Over Time</CardTitle>
                 <CardDescription>Daily, weekly, and monthly active user trends</CardDescription>
               </CardHeader>
               <CardContent>
@@ -524,7 +530,7 @@ export default function AnalyticsPage() {
                   className="min-h-[400px]"
                 >
                   <LineChart
-                    data={data.userActivity.activityOverTime}
+                    data={data.userPulse.activityOverTime}
                     margin={{
                       top: 20,
                       right: 30,
@@ -667,7 +673,7 @@ export default function AnalyticsPage() {
               <CardContent>
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-primary" />
+                    <TargetIcon className="w-5 h-5 text-primary" />
                     <div>
                       <p className="text-lg font-bold">{formatNumber(data.setupWizard.totalGenerations)}</p>
                       <p className="text-sm text-muted-foreground">Total Generations</p>
@@ -683,7 +689,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <GitBranch className="w-4 h-4 text-primary" />
+                    <TargetIcon className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-2xl font-bold">{formatNumber(data.syncMetrics.totalSyncs)}</p>
                       <p className="text-xs text-muted-foreground">Total Syncs</p>
@@ -694,7 +700,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-secondary" />
+                    <ClockIcon className="w-4 h-4 text-secondary" />
                     <div>
                       <p className="text-lg font-bold">{formatDuration(data.syncMetrics.averageDuration)}</p>
                       <p className="text-xs text-muted-foreground">Avg Duration</p>
@@ -705,7 +711,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <Activity className={`w-4 h-4 ${data.syncMetrics.lastSyncSuccess ? 'text-secondary' : 'text-destructive'}`} />
+                    <PulseIcon className={`w-4 h-4 ${data.syncMetrics.lastSyncSuccess ? 'text-secondary' : 'text-destructive'}`} />
                     <div>
                       <p className="text-lg font-bold">
                         {data.syncMetrics.lastSyncSuccess ? 'Success' : 'Failed'}
@@ -718,7 +724,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className={`w-4 h-4 ${data.syncMetrics.errorRate < 5 ? 'text-secondary' : 'text-destructive'}`} />
+                    <TrendUpIcon className={`w-4 h-4 ${data.syncMetrics.errorRate < 5 ? 'text-secondary' : 'text-destructive'}`} />
                     <div>
                       <p className="text-lg font-bold">{data.syncMetrics.errorRate.toFixed(1)}%</p>
                       <p className="text-xs text-muted-foreground">Error Rate</p>

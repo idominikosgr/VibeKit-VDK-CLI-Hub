@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createGitHubSync } from '@/lib/services/github/github-sync';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
+
+// Force dynamic rendering to prevent build-time cookie errors
+export const dynamic = 'force-dynamic';
 
 /**
  * API route for syncing rules from GitHub to Supabase
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest) {
     const path = url.searchParams.get('path') || undefined;
     
     // Initialize Supabase client (needed for the sync process)
-    await createServerSupabaseClient();
+    await createDatabaseSupabaseClient();
     
     // Create GitHub sync instance with options
     const githubSync = createGitHubSync({
@@ -65,7 +68,15 @@ export async function POST(request: NextRequest) {
  */
 export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient();
+    // Prevent execution during build time
+    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL) {
+      return NextResponse.json({
+        success: false,
+        error: 'Not available during build',
+      }, { status: 503 });
+    }
+
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get last sync record
     const { data: lastSync, error } = await supabase

@@ -1,5 +1,5 @@
 // Service for managing user collections - FIXED SCHEMA ALIGNMENT
-import { createServerSupabaseClient } from "../supabase/server-client";
+import { createDatabaseSupabaseClient } from "../supabase/server-client";
 import { Collection, Rule } from "../types";
 import { ApiError, errorLogger } from "../error-handling";
 import { Database } from "../supabase/database.types";
@@ -50,7 +50,7 @@ const mapDbRuleToRule = (dbRule: DbRule): Rule => {
 // Get all collections for a user
 export async function getUserCollections(userId: string): Promise<Collection[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     const { data, error } = await supabase
       .from('collections')
@@ -73,7 +73,7 @@ export async function getUserCollections(userId: string): Promise<Collection[]> 
 // FIXED: Use correct table name 'collection_items' instead of 'collection_rules'
 export async function getCollection(collectionId: string, userId?: string): Promise<Collection | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Build the base query
     let query = supabase
@@ -126,7 +126,7 @@ export async function createCollection(
   userId: string
 ): Promise<Collection | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     const { data, error } = await supabase
       .from('collections')
@@ -157,7 +157,7 @@ export async function updateCollection(
   userId: string
 ): Promise<Collection | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // First verify ownership
     const { data: existingCollection, error: fetchError } = await supabase
@@ -204,7 +204,7 @@ export async function updateCollection(
 // FIXED: Use correct table name 'collection_items'
 export async function addRuleToCollection(collectionId: string, ruleId: string, userId: string): Promise<boolean> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // First verify ownership
     const { data: collection, error: fetchError } = await supabase
@@ -250,7 +250,7 @@ export async function addRuleToCollection(collectionId: string, ruleId: string, 
 // FIXED: Use correct table name 'collection_items'
 export async function removeRuleFromCollection(collectionId: string, ruleId: string, userId: string): Promise<boolean> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // First verify ownership
     const { data: collection, error: fetchError } = await supabase
@@ -290,7 +290,7 @@ export async function removeRuleFromCollection(collectionId: string, ruleId: str
 // FIXED: Use correct table name 'collection_items'
 export async function deleteCollection(collectionId: string, userId: string): Promise<boolean> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // First verify ownership
     const { data: collection, error: fetchError } = await supabase
@@ -335,7 +335,7 @@ export async function deleteCollection(collectionId: string, userId: string): Pr
 // Get public collections (for discovery)
 export async function getPublicCollections(limit: number = 20): Promise<Collection[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     const { data, error } = await supabase
       .from('collections')
@@ -358,7 +358,7 @@ export async function getPublicCollections(limit: number = 20): Promise<Collecti
 // Get collection with rule count (for listing views)
 export async function getCollectionsWithCounts(userId: string): Promise<(Collection & { ruleCount: number })[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     const { data, error } = await supabase
       .from('collections')

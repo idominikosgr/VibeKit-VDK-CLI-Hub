@@ -11,7 +11,7 @@ import { Icons } from "@/components/icons"
 import { Collection, Rule } from "@/lib/types"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
-import { ChevronRight } from "lucide-react"
+import { CaretRight } from "@phosphor-icons/react"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -205,7 +205,7 @@ export default function CollectionDetailPage() {
         <Link href="/collections" className="hover:text-foreground transition-colors">
           Collections
         </Link>
-        <ChevronRight className="w-4 h-4" />
+        <CaretRight className="w-4 h-4" />
         <span className="text-foreground">{collection.name}</span>
       </motion.div>
 

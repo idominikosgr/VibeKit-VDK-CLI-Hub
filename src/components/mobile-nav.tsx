@@ -28,7 +28,7 @@ export function MobileNav() {
           )}
         >
           <Icons.logo className="mr-2 h-4 w-4" />
-          Home
+          House
         </Link>
         <Link
           href="/docs"

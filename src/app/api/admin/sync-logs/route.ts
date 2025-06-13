@@ -1,12 +1,12 @@
 // API route for fetching sync logs
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 
 /**
  * Check if the user is an admin
  */
 async function isAdmin(email: string): Promise<boolean> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   const { data } = await supabase
     .from('admins')
     .select('email')
@@ -21,7 +21,7 @@ async function isAdmin(email: string): Promise<boolean> {
  */
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get URL parameters
     const url = new URL(request.url);

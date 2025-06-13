@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/admin-auth';
+
+// Add dynamic export to prevent static generation
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const period = searchParams.get('period') || '30d';
-    const supabase = createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Calculate date range
     const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
@@ -153,7 +156,7 @@ async function getRealAnalyticsData(supabase: any, period: string, days: number,
         })),
         downloadsOverTime,
       },
-      userActivity: {
+      userPulse: {
         dailyActiveUsers: 0, // Would need user session tracking
         weeklyActiveUsers: 0,
         monthlyActiveUsers: totalUsers,
@@ -267,7 +270,7 @@ function getZeroAnalyticsData(days: number, startDate: Date) {
       recentlyAdded: [],
       downloadsOverTime,
     },
-    userActivity: {
+    userPulse: {
       dailyActiveUsers: 0,
       weeklyActiveUsers: 0,
       monthlyActiveUsers: 0,

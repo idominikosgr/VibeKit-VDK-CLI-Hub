@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server-client";
+import { createDatabaseSupabaseClient } from "@/lib/supabase/server-client";
 // import { CollectionForm } from "@/components/collections/collection-form";
 
 // Force dynamic rendering to prevent static generation errors with cookies
 export const dynamic = 'force-dynamic';
 
 export default async function NewCollectionPage() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   
   const { data: { user }, error } = await supabase.auth.getUser();
   

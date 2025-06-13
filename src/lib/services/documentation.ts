@@ -4,15 +4,45 @@ import { SerializedEditorState } from 'lexical'
 class DocumentationService {
   private baseUrl = '/api/docs'
 
+  private async handleResponse(response: Response, operation: string) {
+    if (!response.ok) {
+      let errorMessage = `Failed to ${operation}`
+      
+      try {
+        const errorData = await response.json()
+        if (errorData.error) {
+          errorMessage = errorData.error
+        }
+        if (errorData.details) {
+          errorMessage += `: ${errorData.details}`
+        }
+      } catch {
+        // If we can't parse the error response, use status-based messages
+        if (response.status === 401) {
+          errorMessage = 'Authentication required. Please sign in to continue.'
+        } else if (response.status === 403) {
+          errorMessage = 'Access denied. You do not have permission to perform this action.'
+        } else if (response.status === 404) {
+          errorMessage = 'Page not found'
+        } else if (response.status >= 500) {
+          errorMessage = 'Database error. Please try again later.'
+        }
+      }
+      
+      throw new Error(errorMessage)
+    }
+  }
+
   async getAllPages(includeChildren = false): Promise<DocumentPageWithChildren[]> {
     const url = includeChildren 
       ? `${this.baseUrl}?include_children=true` 
       : this.baseUrl
     
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('Failed to fetch pages')
-    }
+    const response = await fetch(url, {
+      credentials: 'include'
+    })
+    
+    await this.handleResponse(response, 'fetch pages')
     
     const data = await response.json()
     return data.pages || []
@@ -23,23 +53,22 @@ class DocumentationService {
       ? `${this.baseUrl}?parent_id=${parentId}` 
       : this.baseUrl
     
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('Failed to fetch pages')
-    }
+    const response = await fetch(url, {
+      credentials: 'include'
+    })
+    
+    await this.handleResponse(response, 'fetch pages')
     
     const data = await response.json()
     return data.pages || []
   }
 
   async getPage(id: string): Promise<DocumentPage> {
-    const response = await fetch(`${this.baseUrl}/${id}`)
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error('Page not found')
-      }
-      throw new Error('Failed to fetch page')
-    }
+    const response = await fetch(`${this.baseUrl}/${id}`, {
+      credentials: 'include'
+    })
+    
+    await this.handleResponse(response, 'fetch page')
     
     const data = await response.json()
     return data.page
@@ -51,12 +80,11 @@ class DocumentationService {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(request),
     })
 
-    if (!response.ok) {
-      throw new Error('Failed to create page')
-    }
+    await this.handleResponse(response, 'create page')
 
     const data = await response.json()
     return data.page
@@ -68,15 +96,11 @@ class DocumentationService {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify(request),
     })
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error('Page not found')
-      }
-      throw new Error('Failed to update page')
-    }
+    await this.handleResponse(response, 'update page')
 
     const data = await response.json()
     return data.page
@@ -101,18 +125,18 @@ class DocumentationService {
   async deletePage(id: string): Promise<void> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
       method: 'DELETE',
+      credentials: 'include',
     })
 
-    if (!response.ok) {
-      throw new Error('Failed to delete page')
-    }
+    await this.handleResponse(response, 'delete page')
   }
 
   async searchPages(query: string): Promise<DocumentPage[]> {
-    const response = await fetch(`${this.baseUrl}/search?q=${encodeURIComponent(query)}`)
-    if (!response.ok) {
-      throw new Error('Failed to search pages')
-    }
+    const response = await fetch(`${this.baseUrl}/search?q=${encodeURIComponent(query)}`, {
+      credentials: 'include'
+    })
+    
+    await this.handleResponse(response, 'search pages')
     
     const data = await response.json()
     return data.pages || []

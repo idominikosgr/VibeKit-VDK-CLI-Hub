@@ -19,7 +19,7 @@ StorageService (abstraction)
 
 1. **Apply Database Migrations**:
    ```bash
-   cd codepilotrules-hub
+   cd vibecodingrules-hub
    supabase db reset
    ```
 

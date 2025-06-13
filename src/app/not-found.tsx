@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Home, Search, ArrowLeft } from 'lucide-react';
+import { HomeIcon, MagnifyingGlassIcon, ArrowLeftIcon } from "@radix-ui/react-icons";
 
 export default function NotFound() {
   return (
@@ -63,8 +63,8 @@ export default function NotFound() {
               className="bg-linear-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <Link href="/">
-                <Home className="w-4 h-4 mr-2" />
-                Return Home
+                <HomeIcon className="w-4 h-4 mr-2" />
+                Return House
               </Link>
             </Button>
           </motion.div>
@@ -79,7 +79,7 @@ export default function NotFound() {
               className="border-2 hover:bg-muted/50"
             >
               <Link href="/rules">
-                <Search className="w-4 h-4 mr-2" />
+                <MagnifyingGlassIcon className="w-4 h-4 mr-2" />
                 Browse Rules
               </Link>
             </Button>

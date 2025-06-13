@@ -16,7 +16,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { GlobalSearch } from "./search/global-search"
+import { GlobalMagnifyingGlass } from "./search/global-search"
 import { cn } from "@/lib/utils"
 import { useAuth } from "./auth/auth-provider"
 import { useAdmin } from "@/hooks/use-admin"
@@ -75,7 +75,7 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <div className="flex items-center gap-4">
-              <GlobalSearch />
+              <GlobalMagnifyingGlass />
               <div className="hidden sm:flex gap-2">
                 <AdminCTA />
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -246,16 +246,6 @@ function MobileNav() {
   return (
     <div className="flex flex-col space-y-3 p-4">
       <Link
-        href="/"
-        className={cn(
-          "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          pathname === "/" && "bg-accent"
-        )}
-      >
-        <Icons.logo className="mr-2 h-4 w-4" />
-        Home
-      </Link>
-      <Link
         href="/rules"
         className={cn(
           "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -264,6 +254,16 @@ function MobileNav() {
       >
         <Icons.code className="mr-2 h-4 w-4" />
         Rules
+      </Link>
+      <Link
+                          href="/hub"
+        className={cn(
+          "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      pathname?.startsWith("/hub") && "bg-accent"
+        )}
+      >
+        <Icons.brain className="mr-2 h-4 w-4" />
+        Framework
       </Link>
       <Link
         href="/setup"

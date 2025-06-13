@@ -25,7 +25,7 @@ const cardHover = {
   hover: { y: -4, transition: { duration: 0.2 } }
 }
 
-export default function Home() {
+export default function House() {
   return (
     <div className="space-y-16 pb-16 pt-10">
       {/* Hero Section */}
@@ -41,8 +41,8 @@ export default function Home() {
             Enhance Your AI-Assisted Development
           </h1>
           <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl dark:text-muted-foreground">
-            Vibe Coding Rules Hub provides comprehensive guidelines for AI coding assistants across
-            multiple platforms, languages, and technologies.
+            The comprehensive framework for AI-assisted development. Browse curated expert rules on our web platform 
+            or deploy the VibeCodingRules CLI framework for automated, project-aware AI intelligence.
           </p>
         </div>
         <motion.div 
@@ -186,6 +186,184 @@ export default function Home() {
               </CardHeader>
             </Card>
           </motion.div>
+          
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <motion.div 
+                  className="rounded-md bg-linear-to-br from-emerald-500/10 to-emerald-500/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-emerald-500/20 group-hover:to-emerald-500/10 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <Icons.settings className="h-5 w-5 text-emerald-600" />
+                </motion.div>
+                <CardTitle className="group-hover:text-emerald-600 transition-colors duration-300">AI Context Framework</CardTitle>
+                <CardDescription>
+                  Deploy intelligent, project-aware rules with the VibeCodingRules CLI framework.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Ecosystem Section */}
+      <section className="container">
+        <motion.div 
+          className="mx-auto flex max-w-232 flex-col items-center space-y-4 text-center mb-12"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Choose Your Intelligence Path</h2>
+          <p className="max-w-[85%] text-muted-foreground dark:text-muted-foreground">
+            Browse and customize on the web, or deploy automated intelligence with our CLI framework.
+          </p>
+        </motion.div>
+        
+        <motion.div 
+          className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          {/* Web Platform Card */}
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <motion.div 
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-3 w-12 h-12 flex items-center justify-center mb-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <Icons.web className="h-6 w-6 text-primary" />
+                </motion.div>
+                <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">CodePilot Rules Hub</CardTitle>
+                <CardDescription className="text-base">
+                  Discover, customize, and download rules through our intelligent web platform.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-primary" />
+                    Browse 108+ expert-curated rules
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-primary" />
+                    Interactive setup wizard
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-primary" />
+                    Custom rule packages
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Link href="/setup" className="w-full">
+                  <Button className="w-full hover:scale-105 transition-transform duration-200">
+                    Start Setup Wizard
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </motion.div>
+          
+          {/* CLI Framework Card */}
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 border-border/50 hover:border-emerald-500/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <motion.div 
+                  className="rounded-md bg-linear-to-br from-emerald-500/10 to-emerald-500/5 p-3 w-12 h-12 flex items-center justify-center mb-4 group-hover:from-emerald-500/20 group-hover:to-emerald-500/10 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <Icons.terminal className="h-6 w-6 text-emerald-600" />
+                </motion.div>
+                <CardTitle className="text-xl group-hover:text-emerald-600 transition-colors duration-300">VibeCodingRules Framework</CardTitle>
+                <CardDescription className="text-base">
+                  Deploy intelligent, project-aware AI rules with one command.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-emerald-600" />
+                    Automated project analysis
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-emerald-600" />
+                    Context-aware rule generation
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Icons.check className="h-4 w-4 text-emerald-600" />
+                    Multi-IDE deployment
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Link href="/framework" className="w-full">
+                  <Button variant="outline" className="w-full hover:scale-105 transition-transform duration-200 border-emerald-500/50 hover:border-emerald-500 hover:bg-emerald-500/10">
+                    Learn About Framework
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Getting Started */}
+      <section className="container">
+        <motion.div 
+          className="mx-auto flex max-w-232 flex-col items-center space-y-4 text-center"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Getting Started</h2>
+          <p className="max-w-[85%] text-muted-foreground dark:text-muted-foreground">
+            Ready to transform your AI-assisted development workflow?
+          </p>
+        </motion.div>
+        <motion.div 
+          className="mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 pt-8 max-w-4xl"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="text-center">
+                <motion.div 
+                  className="rounded-full bg-primary/10 p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <span className="text-2xl font-bold text-primary">1</span>
+                </motion.div>
+                <CardTitle className="group-hover:text-primary transition-colors duration-300">Explore Rules</CardTitle>
+                <CardDescription>
+                  The VibeCodingRules framework automatically analyzes your codebase and generates context-aware rules for intelligent AI assistance.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
+          
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <motion.div 
+                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <Icons.aitools className="h-5 w-5 text-primary" />
+                </motion.div>
+                <CardTitle className="group-hover:text-primary transition-colors duration-300">Universal AI Integration</CardTitle>
+                <CardDescription>
+                  Seamlessly works with Claude, GitHub Copilot, Cursor, Windsurf, VS Code, and any AI coding assistant.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -292,10 +470,11 @@ export default function Home() {
             Ready to enhance your AI-assisted development?
           </h2>
           <p className="max-w-[85%] text-muted-foreground dark:text-muted-foreground">
-            Get started with Vibe Coding Rules today and experience more efficient,
-            consistent, and high-quality AI assistance.
+            Transform your AI assistant into a project-aware coding genius. Experience systematic intelligence 
+            with our curated rules platform or deploy the automated VibeCodingRules framework.
           </p>
           <motion.div
+            className="flex flex-wrap items-center justify-center gap-4"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
@@ -303,6 +482,12 @@ export default function Home() {
               <Button size="lg" className="mt-4">
                 <Icons.settings className="mr-2 h-4 w-4" />
                 Start Setup Wizard
+              </Button>
+            </Link>
+                            <Link href="/hub">
+              <Button variant="outline" size="lg" className="mt-4">
+                <Icons.brain className="mr-2 h-4 w-4" />
+                Explore the Framework
               </Button>
             </Link>
           </motion.div>

@@ -47,9 +47,9 @@ export async function fetchAllRules(page: number = 1, limit: number = 50): Promi
 }
 
 /**
- * Search rules with pagination
+ * MagnifyingGlass rules with pagination
  */
-export async function fetchSearchRules(query: string, page: number = 1, limit: number = 50): Promise<PaginatedResult<Rule>> {
+export async function fetchMagnifyingGlassRules(query: string, page: number = 1, limit: number = 50): Promise<PaginatedResult<Rule>> {
   try {
     const params = new URLSearchParams({
       q: query,

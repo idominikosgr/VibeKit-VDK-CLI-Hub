@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FolderOpen, Plus, Calendar, Eye, Lock, Sparkles } from 'lucide-react';
+import { FolderOpenIcon, PlusIcon, CalendarIcon, EyeIcon, LockIcon, SparkleIcon } from '@phosphor-icons/react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -76,7 +76,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
               transition={{ type: "spring", stiffness: 300 }}
               className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg"
             >
-              <FolderOpen className="w-6 h-6 text-white" />
+              <FolderOpenIcon className="w-6 h-6 text-white" />
             </motion.div>
             <div>
               <h1 className="text-4xl font-bold text-primary">
@@ -96,7 +96,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
               className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
             >
               <Link href="/collections/new">
-                <Plus className="mr-2 h-5 w-5" />
+                <PlusIcon className="mr-2 h-5 w-5" />
                 Create Collection
               </Link>
             </Button>
@@ -138,7 +138,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                               variant="outline" 
                               className="bg-linear-to-r from-success/20 to-success/30 dark:from-success/10 dark:to-success/20 border-success/50 dark:border-success/30 text-success dark:text-success/90"
                             >
-                              <Eye className="w-3 h-3 mr-1" />
+                              <EyeIcon className="w-3 h-3 mr-1" />
                               Public
                             </Badge>
                           ) : (
@@ -146,7 +146,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                               variant="outline"
                               className="bg-linear-to-r from-muted to-muted/80 dark:from-muted/30 dark:to-muted/20 border-border dark:border-border/50 text-muted-foreground"
                             >
-                              <Lock className="w-3 h-3 mr-1" />
+                              <LockIcon className="w-3 h-3 mr-1" />
                               Private
                             </Badge>
                           )}
@@ -162,7 +162,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           whileHover={{ scale: 1.1 }}
                           className="flex items-center gap-1"
                         >
-                          <Sparkles className="w-4 h-4" />
+                          <SparkleIcon className="w-4 h-4" />
                           <span className="font-medium">
                             {collection.rules?.length || 0} rules
                           </span>
@@ -172,7 +172,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                     <CardFooter className="border-t border-border/20 pt-4 bg-linear-to-r from-muted/40 to-muted/20 dark:from-muted/20 dark:to-muted/10">
                       <div className="flex justify-between items-center w-full text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
+                          <CalendarIcon className="w-3 h-3" />
                           <span>
                             Updated {collection.updated_at ? new Date(collection.updated_at).toLocaleDateString() : 'Unknown'}
                           </span>
@@ -182,7 +182,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                           whileHover={{ scale: 1.2, rotate: 180 }}
                           transition={{ type: "spring", stiffness: 300 }}
                         >
-                          <FolderOpen className="w-3 h-3 text-white" />
+                          <FolderOpenIcon className="w-3 h-3 text-white" />
                         </motion.div>
                       </div>
                     </CardFooter>
@@ -209,7 +209,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                   }}
                   className="mx-auto w-20 h-20 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg mb-6"
                 >
-                  <FolderOpen className="w-10 h-10 text-white" />
+                  <FolderOpenIcon className="w-10 h-10 text-white" />
                 </motion.div>
                 <motion.h3
                   initial={{ opacity: 0, y: 10 }}
@@ -239,7 +239,7 @@ export function CollectionsPageClient({ collections }: CollectionsPageClientProp
                     className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-6"
                   >
                     <Link href="/collections/new">
-                      <Plus className="mr-2 h-5 w-5" />
+                      <PlusIcon className="mr-2 h-5 w-5" />
                       Create Your First Collection
                     </Link>
                   </Button>

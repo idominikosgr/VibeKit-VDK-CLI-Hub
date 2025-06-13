@@ -8,11 +8,11 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Icons } from "@/components/icons"
-import { fetchRuleCategories, fetchSearchRules, fetchAllRules, fetchSingleRule } from "@/lib/services/client-rule-service"
-import { SearchBar } from "@/components/search/search-bar"
+import { fetchRuleCategories, fetchMagnifyingGlassRules, fetchAllRules, fetchSingleRule } from "@/lib/services/client-rule-service"
+import { MagnifyingGlassBar } from "@/components/search/search-bar"
 import { CategoryGridSkeleton } from '@/components/ui/loading'
 import { RuleCategory, Rule } from '@/lib/types'
-import { AlertCircle } from 'lucide-react'
+import { WarningIcon } from "@phosphor-icons/react"
 import { CategoryCard } from "@/components/rules/category-card"
 import { RuleCard } from "@/components/rules/rule-card"
 import { ViewToggle } from "@/components/ui/view-toggle"
@@ -65,7 +65,7 @@ export function RulesCatalogClient() {
         // If we're on the rules tab, fetch rules
         if (tab === "rules") {
           if (searchQuery) {
-            const rulesResult = await fetchSearchRules(searchQuery, 1, 50)
+            const rulesResult = await fetchMagnifyingGlassRules(searchQuery, 1, 50)
             setRules(rulesResult.data)
           } else {
             const rulesResult = await fetchAllRules(1, 50)
@@ -159,8 +159,8 @@ export function RulesCatalogClient() {
           
           <div className="flex items-center gap-4">
             <div className="w-full max-w-sm">
-              <SearchBar
-                placeholder={tab === "rules" ? "Search rules..." : "Search categories..."}
+              <MagnifyingGlassBar
+                placeholder={tab === "rules" ? "MagnifyingGlass rules..." : "MagnifyingGlass categories..."}
               />
             </div>
             <ViewToggle
@@ -183,7 +183,7 @@ export function RulesCatalogClient() {
             animate="visible"
             variants={itemVariants}
           >
-            <AlertCircle className="h-16 w-16 text-destructive mb-4" />
+            <WarningIcon className="h-16 w-16 text-destructive mb-4" />
             <h3 className="text-2xl font-bold mb-2">Failed to load data</h3>
             <p className="text-muted-foreground mb-6">{error}</p>
             <Button variant="outline" asChild>
@@ -270,7 +270,7 @@ export function RulesCatalogClient() {
                   animate="visible"
                   variants={itemVariants}
                 >
-                  <AlertCircle className="h-16 w-16 text-muted-foreground mb-4" />
+                  <WarningIcon className="h-16 w-16 text-muted-foreground mb-4" />
                   <h3 className="text-2xl font-bold mb-2">No rules found</h3>
                   <p className="text-muted-foreground mb-6">
                     {searchQuery 

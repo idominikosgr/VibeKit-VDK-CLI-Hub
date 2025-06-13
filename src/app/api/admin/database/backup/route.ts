@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 
-export async function POST() {
+// Add dynamic export to prevent static generation
+export const dynamic = 'force-dynamic';
+
+export async function POST(_request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();

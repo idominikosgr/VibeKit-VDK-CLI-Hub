@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Icons } from '@/components/icons';
+import { TriangleIcon } from '@phosphor-icons/react';
 import { errorLogger } from '@/lib/error-handling';
 
 interface ErrorBoundaryProps {
@@ -73,7 +73,7 @@ export function ErrorFallback({ error, reset }: ErrorFallbackProps): React.React
 
   return (
     <Alert variant="destructive" className="my-8">
-      <Icons.alertTriangle className="h-5 w-5" />
+      <TriangleIcon className="h-5 w-5" />
       <AlertTitle>Something went wrong</AlertTitle>
       <AlertDescription className="mt-2 flex flex-col gap-4">
         <p className="text-sm text-muted-foreground">

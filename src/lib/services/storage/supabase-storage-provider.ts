@@ -3,13 +3,13 @@
  * Implements the StorageProvider interface using Supabase Storage
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { StorageProvider, UploadOptions, UploadResult } from './storage-service';
 
 export class SupabaseStorageProvider implements StorageProvider {
-  private supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>;
+  private supabase: Awaited<ReturnType<typeof createDatabaseSupabaseClient>>;
 
-  constructor(supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>) {
+  constructor(supabase: Awaited<ReturnType<typeof createDatabaseSupabaseClient>>) {
     this.supabase = supabase;
   }
 
@@ -83,7 +83,7 @@ export class SupabaseStorageProvider implements StorageProvider {
  * Factory function to create a configured storage service
  */
 export async function createStorageService() {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   const provider = new SupabaseStorageProvider(supabase);
   
   // Import the StorageService class

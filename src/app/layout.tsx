@@ -10,6 +10,7 @@ import { BrowserCompatibilityCheck } from '@/components/browser-compatibility';
 import { ErrorBoundary, GlobalErrorHandler } from '@/components/error-boundary';
 import { WebVitals } from '@/components/web-vitals';
 import { VercelAnalytics, VercelSpeedInsights } from '@/components/analytics-provider';
+import { WebsiteStructuredData } from '@/components/structured-data';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -67,17 +68,17 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: '/images/og-image.png',
+        url: `${siteUrl}/images/og-image.png`,
         width: 1200,
         height: 630,
-        alt: `${siteName} - AI-assisted development rules and guidelines`,
+        alt: `${siteName} - Custom branded OG image`,
         type: 'image/png',
       },
       {
-        url: '/images/og-image-square.png',
+        url: `${siteUrl}/og?title=${encodeURIComponent(siteName)}&description=${encodeURIComponent(siteDescription)}`,
         width: 1200,
-        height: 1200,
-        alt: `${siteName} - Square format`,
+        height: 630,
+        alt: `${siteName} - Dynamic generated image`,
         type: 'image/png',
       },
     ],
@@ -88,11 +89,15 @@ export const metadata: Metadata = {
     creator: '@idominikosgr',
     title: siteName,
     description: siteDescription,
-    images: ['/images/twitter-card.png'],
+    images: [
+      `${siteUrl}/images/twitter-card.png`,
+      `${siteUrl}/og?title=${encodeURIComponent(siteName)}&description=${encodeURIComponent(siteDescription)}`,
+    ],
   },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
+      { url: '/images/favicon.ico', sizes: 'any' },
       { url: '/images/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/images/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
@@ -117,6 +122,19 @@ export const metadata: Metadata = {
   other: {
     'msapplication-TileColor': '#E5532A',
     'theme-color': '#E5532A',
+    // Additional meta tags for better social sharing
+    'og:image:width': '1200',
+    'og:image:height': '630',
+    'og:image:type': 'image/png',
+    'og:image:secure_url': `${siteUrl}/images/og-image.png`,
+    'twitter:image:alt': siteDescription,
+    'twitter:domain': 'hub.vibecodingrules.rocks',
+    'twitter:url': siteUrl,
+    // Help social media crawlers
+    'robots': 'index,follow',
+    'referrer': 'no-referrer-when-downgrade',
+    // Force crawlers to refresh cache
+    'og:updated_time': new Date().toISOString(),
   },
 };
 
@@ -146,6 +164,15 @@ export default function RootLayout({
               <WebVitals />
               <VercelAnalytics />
               <VercelSpeedInsights />
+              <WebsiteStructuredData
+                name={siteName}
+                description={siteDescription}
+                url={siteUrl}
+                sameAs={[
+                  'https://github.com/idominikosgr/Vibe-Coding-Rules-hub',
+                  'https://twitter.com/vibecodingrules',
+                ]}
+              />
             </ErrorBoundary>
           </AuthProvider>
         </ThemeProvider>

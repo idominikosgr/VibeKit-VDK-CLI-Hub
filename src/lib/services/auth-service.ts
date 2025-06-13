@@ -8,24 +8,99 @@ import { User } from '../types';
 const mapSupabaseUser = async (user: SupabaseUser): Promise<User> => {
   const supabase = createBrowserSupabaseClient();
 
-  // Get profile information
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
+  try {
+    // Get profile information
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
-  return {
-    id: user.id,
-    email: user.email || '',
-    name: profile?.name || null,
-    github_username: profile?.github_username || null,
-    avatar_url: profile?.avatar_url || null,
-    preferred_language: profile?.preferred_language || null,
-    preferred_theme: profile?.preferred_theme || null,
-    created_at: profile?.created_at || null,
-    updated_at: profile?.updated_at || null
-  };
+    // If profile doesn't exist, create it
+    if (profileError && profileError.code === 'PGRST116') {
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.name || null,
+          avatar_url: user.user_metadata?.avatar_url || null,
+          github_username: user.user_metadata?.user_name || null
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('Error creating profile:', createError);
+        // If profile creation fails, return user with basic info
+        return {
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.name || null,
+          github_username: user.user_metadata?.user_name || null,
+          avatar_url: user.user_metadata?.avatar_url || null,
+          preferred_language: null,
+          preferred_theme: null,
+          created_at: null,
+          updated_at: null
+        };
+      }
+
+      return {
+        id: newProfile.id,
+        email: newProfile.email,
+        name: newProfile.name,
+        github_username: newProfile.github_username,
+        avatar_url: newProfile.avatar_url,
+        preferred_language: newProfile.preferred_language,
+        preferred_theme: newProfile.preferred_theme,
+        created_at: newProfile.created_at,
+        updated_at: newProfile.updated_at
+      };
+    }
+
+    if (profileError) {
+      console.error('Error fetching profile:', profileError);
+      // Return user with basic info if profile fetch fails
+      return {
+        id: user.id,
+        email: user.email || '',
+        name: user.user_metadata?.name || null,
+        github_username: user.user_metadata?.user_name || null,
+        avatar_url: user.user_metadata?.avatar_url || null,
+        preferred_language: null,
+        preferred_theme: null,
+        created_at: null,
+        updated_at: null
+      };
+    }
+
+    return {
+      id: user.id,
+      email: user.email || '',
+      name: profile?.name || null,
+      github_username: profile?.github_username || null,
+      avatar_url: profile?.avatar_url || null,
+      preferred_language: profile?.preferred_language || null,
+      preferred_theme: profile?.preferred_theme || null,
+      created_at: profile?.created_at || null,
+      updated_at: profile?.updated_at || null
+    };
+  } catch (err) {
+    console.error('Error in mapSupabaseUser:', err);
+    // Return user with basic info if anything fails
+    return {
+      id: user.id,
+      email: user.email || '',
+      name: user.user_metadata?.name || null,
+      github_username: user.user_metadata?.user_name || null,
+      avatar_url: user.user_metadata?.avatar_url || null,
+      preferred_language: null,
+      preferred_theme: null,
+      created_at: null,
+      updated_at: null
+    };
+  }
 };
 
 // Sign in with email and password
@@ -75,19 +150,8 @@ export async function signUpWithEmail(email: string, password: string, name: str
       return { user: null, error: 'No user returned from registration' };
     }
 
-    // Profile will be created by database trigger or we create it here
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        id: data.user.id,
-        email: data.user.email || '',
-        name
-      });
-
-    if (profileError) {
-      console.error('Error creating profile:', profileError);
-    }
-
+    // Profile will be created automatically by mapSupabaseUser if it doesn't exist
+    // No need to create it here to avoid conflicts
     const user = await mapSupabaseUser(data.user);
     return { user, error: null };
   } catch (err) {

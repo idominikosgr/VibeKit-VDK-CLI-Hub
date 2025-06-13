@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { errorLogger } from '@/lib/error-handling';
-import { AlertTriangle, RotateCcw, Home } from 'lucide-react';
+import { Warning, ArrowCounterClockwise, House } from "@phosphor-icons/react";
 import Link from 'next/link';
 
 export default function Error({
@@ -38,7 +38,7 @@ export default function Error({
           }}
           className="mx-auto mb-8 w-20 h-20 rounded-full bg-linear-to-br from-destructive/80 to-destructive flex items-center justify-center shadow-lg"
         >
-          <AlertTriangle className="w-10 h-10 text-white" />
+          <Warning className="w-10 h-10 text-white" />
         </motion.div>
 
         <motion.h2 
@@ -73,7 +73,7 @@ export default function Error({
               onClick={() => reset()}
               className="bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
+              <ArrowCounterClockwise className="w-4 h-4 mr-2" />
               Try again
             </Button>
           </motion.div>
@@ -84,7 +84,7 @@ export default function Error({
           >
             <Button asChild variant="outline" className="border-2 hover:bg-muted/50">
               <Link href="/">
-                <Home className="w-4 h-4 mr-2" />
+                <House className="w-4 h-4 mr-2" />
                 Go home
               </Link>
             </Button>

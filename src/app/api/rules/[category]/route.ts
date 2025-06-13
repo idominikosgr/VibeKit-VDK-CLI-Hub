@@ -56,7 +56,7 @@ function ensureSerializable<T>(obj: T): T {
  * GET /api/rules/[category]
  * 
  * Query parameters:
- * - q: Search query
+ * - q: MagnifyingGlass query
  * - page: Page number (default: 1)
  * - limit: Items per page (default: 20)
  */

@@ -12,11 +12,11 @@ import { Icons } from "@/components/icons"
 
 import { Rule, PaginatedResult } from "@/lib/types"
 
-type GlobalSearchProps = {
+type GlobalMagnifyingGlassProps = {
   shortcutKey?: string
 }
 
-export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
+export function GlobalMagnifyingGlass({ shortcutKey = "k" }: GlobalMagnifyingGlassProps) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [results, setResults] = useState<Rule[]>([])
@@ -62,7 +62,7 @@ export function GlobalSearch({ shortcutKey = "k" }: GlobalSearchProps) {
           clearTimeout(timeoutId)
           
           if (!response.ok) {
-            throw new Error(`Search failed with status: ${response.status}`)
+            throw new Error(`MagnifyingGlass failed with status: ${response.status}`)
           }
           
           const searchResults: PaginatedResult<Rule> = await response.json()

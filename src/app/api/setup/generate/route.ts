@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RuleGenerationEngine } from '@/lib/services/rule-generator';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Initialize rule generation engine
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const generator = new RuleGenerationEngine(supabase);
 
     // Generate package

@@ -1,8 +1,11 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CodeIcon, GitHubLogoIcon, FileTextIcon } from "@radix-ui/react-icons"
+
+// Disable static generation to fix createContext build error
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: "Contribute | Vibe Coding Rules Hub",
@@ -23,7 +26,7 @@ export default function ContributePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Icons.code className="h-5 w-5" />
+              <CodeIcon className="h-5 w-5" />
               Submit Rules
             </CardTitle>
             <CardDescription>
@@ -43,7 +46,7 @@ export default function ContributePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Icons.github className="h-5 w-5" />
+              <GitHubLogoIcon className="h-5 w-5" />
               GitHub Issues
             </CardTitle>
             <CardDescription>
@@ -60,7 +63,7 @@ export default function ContributePage() {
                 target="_blank" 
                 rel="noopener noreferrer"
               >
-                <Icons.github className="mr-2 h-4 w-4" />
+                <GitHubLogoIcon className="mr-2 h-4 w-4" />
                 Open Issue
               </a>
             </Button>
@@ -70,7 +73,7 @@ export default function ContributePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Icons.documentation className="h-5 w-5" />
+              <FileTextIcon className="h-5 w-5" />
               Documentation
             </CardTitle>
             <CardDescription>

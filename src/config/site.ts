@@ -25,12 +25,16 @@ export const siteConfig: SiteConfig = {
   },
   nav: [
     {
-      title: "Home",
-      href: "/",
-    },
-    {
       title: "Rules",
       href: "/rules",
+    },
+    {
+      title: "Framework",
+      href: "/framework",
+    },
+    {
+      title: "Hub",
+      href: "/hub",
     },
     {
       title: "Setup Wizard",

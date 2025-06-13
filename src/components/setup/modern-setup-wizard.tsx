@@ -11,7 +11,7 @@ import { ToolPreferencesStep } from './wizard-steps/tool-preferences-step'
 import { EnvironmentStep } from './wizard-steps/environment-step'
 import { PreviewStep } from './wizard-steps/preview-step'
 import type { StepData } from './wizard-steps/types'
-import { CheckCircle, Circle, ChevronRight, Sparkles } from 'lucide-react'
+import { CheckCircleIcon, CircleIcon, CaretRightIcon, SparkleIcon } from "@phosphor-icons/react"
 
 const WIZARD_STEPS = [
   {
@@ -139,7 +139,7 @@ export function ModernSetupWizard() {
                   transition={{ delay: 0.2 }}
                   className="flex items-center gap-2"
                 >
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <SparkleIcon className="w-5 h-5 text-primary" />
                   <span className="text-lg font-semibold text-primary">
                     Step {currentStep + 1} of {totalSteps}
                   </span>
@@ -191,11 +191,11 @@ export function ModernSetupWizard() {
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {index < currentStep ? (
-                        <CheckCircle className="w-4 h-4 text-success" />
+                        <CheckCircleIcon className="w-4 h-4 text-success" />
                       ) : (
-                        <Circle className={`w-4 h-4 ${
+                        <CircleIcon className={`w-4 h-4 ${
                           index === currentStep 
-                            ? 'text-primary' 
+                            ? 'text-primary'
                             : 'text-muted-foreground'
                         }`} />
                       )}

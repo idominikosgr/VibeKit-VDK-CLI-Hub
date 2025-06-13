@@ -123,7 +123,7 @@ docs/
 - **General**: Universal markdown format
 
 ### AI Assistants
-- **CodePilot**: Cursor's built-in AI assistant
+- Cursor's built-in AI assistant
 - **GitHub Copilot**: GitHub's AI pair programmer
 - **CodeWhisperer**: Amazon's AI coding companion
 - **Tabnine**: AI assistant for code completion

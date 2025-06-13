@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Icons } from "@/components/icons";
 import { Rule } from "@/lib/types";
-import { AlertCircle, ChevronRight, Download, Copy, Eye, Calendar, Hash, Cpu, Sparkles, FileText, Layers } from "lucide-react";
+import { WarningIcon, CaretRightIcon, DownloadIcon, CopyIcon, EyeIcon, CalendarIcon, HashIcon, CpuIcon, SparkleIcon, FileTextIcon, StackIcon } from "@phosphor-icons/react";
 import { RuleModal } from "@/components/rules/rule-modal";
 import { RuleActions } from "@/components/rules/rule-actions";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
@@ -238,7 +238,7 @@ export default function RulePage({ params }: RulePageProps) {
           transition={{ delay: 0.1 }}
         >
           <Link href="/rules" className="hover:text-foreground transition-colors">Rules</Link>
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           {category ? (
             <Link href={`/rules/${category}`} className="hover:text-foreground transition-colors">
               {category}
@@ -246,7 +246,7 @@ export default function RulePage({ params }: RulePageProps) {
           ) : (
             <span>Loading...</span>
           )}
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           <div className="flex items-center gap-2">
             <motion.div
               className="w-4 h-4 bg-muted rounded animate-pulse"
@@ -295,11 +295,11 @@ export default function RulePage({ params }: RulePageProps) {
           transition={{ delay: 0.1 }}
         >
           <Link href="/rules" className="hover:text-foreground transition-colors">Rules</Link>
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           <Link href={`/rules/${category}`} className="hover:text-foreground transition-colors">
             {category}
           </Link>
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           <span className="text-destructive">Error</span>
         </motion.div>
         
@@ -320,7 +320,7 @@ export default function RulePage({ params }: RulePageProps) {
             }}
             className="mx-auto w-20 h-20 rounded-full bg-linear-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg mb-6"
           >
-            <AlertCircle className="h-10 w-10 text-white" />
+            <WarningIcon className="h-10 w-10 text-white" />
           </motion.div>
           <motion.h2 
             className="text-3xl font-bold mb-4 bg-linear-to-r from-destructive to-destructive/80 bg-clip-text text-transparent"
@@ -383,11 +383,11 @@ export default function RulePage({ params }: RulePageProps) {
           variants={itemVariants}
         >
           <Link href="/rules" className="hover:text-primary transition-colors">Rules</Link>
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           <Link href={`/rules/${category}`} className="hover:text-primary transition-colors">
             {category}
           </Link>
-          <ChevronRight className="w-4 h-4" />
+          <CaretRightIcon className="w-4 h-4" />
           <span className="text-foreground font-medium">{rule.title}</span>
         </motion.div>
         
@@ -434,7 +434,7 @@ export default function RulePage({ params }: RulePageProps) {
                       variant="secondary" 
                       className="bg-linear-to-r from-primary/20 to-primary/30 dark:from-primary/10 dark:to-primary/20 border border-primary/50 dark:border-primary/30 text-primary"
                     >
-                      <Hash className="w-3 h-3 mr-1" />
+                      <HashIcon className="w-3 h-3 mr-1" />
                       {tag}
                     </Badge>
                   </motion.div>
@@ -453,7 +453,7 @@ export default function RulePage({ params }: RulePageProps) {
             <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
-                  <FileText className="w-5 h-5" />
+                  <FileTextIcon className="w-5 h-5" />
                   Rule Content
                 </CardTitle>
                 <CardDescription>
@@ -487,7 +487,7 @@ export default function RulePage({ params }: RulePageProps) {
                           onClick={handleOpenModal}
                           className="bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                         >
-                          <Eye className="w-4 h-4 mr-2" />
+                          <EyeIcon className="w-4 h-4 mr-2" />
                           View Full Content
                         </Button>
                       </motion.div>
@@ -516,7 +516,7 @@ export default function RulePage({ params }: RulePageProps) {
               <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" />
+                    <SparkleIcon className="w-5 h-5" />
                     Rule Information
                   </CardTitle>
                 </CardHeader>
@@ -527,7 +527,7 @@ export default function RulePage({ params }: RulePageProps) {
                       className="p-3 rounded-lg bg-linear-to-r from-primary/10 to-primary/20 dark:from-primary/10 dark:to-primary/20 border border-primary/30"
                     >
                       <dt className="text-sm font-medium text-primary dark:text-primary/90 flex items-center gap-1">
-                        <Hash className="w-3 h-3" />
+                        <HashIcon className="w-3 h-3" />
                         Version
                       </dt>
                       <dd className="font-semibold text-primary dark:text-primary/90">{rule.version}</dd>
@@ -537,7 +537,7 @@ export default function RulePage({ params }: RulePageProps) {
                       className="p-3 rounded-lg bg-linear-to-r from-muted/10 to-muted/20 dark:from-muted/10 dark:to-muted/20 border border-muted/30"
                     >
                       <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                        <CalendarIcon className="w-3 h-3" />
                         Last Updated
                       </dt>
                       <dd className="font-semibold text-muted-foreground dark:text-muted-foreground/90">{formattedDate}</dd>
@@ -547,7 +547,7 @@ export default function RulePage({ params }: RulePageProps) {
                       className="p-3 rounded-lg bg-linear-to-r from-accent/10 to-accent/20 dark:from-accent/10 dark:to-accent/20 border border-accent/30"
                     >
                       <dt className="text-sm font-medium text-accent-foreground dark:text-accent-foreground/90 flex items-center gap-1">
-                        <Download className="w-3 h-3" />
+                        <DownloadIcon className="w-3 h-3" />
                         Downloads
                       </dt>
                       <dd className="font-semibold text-accent-foreground dark:text-accent-foreground/90">
@@ -559,7 +559,7 @@ export default function RulePage({ params }: RulePageProps) {
                       className="p-3 rounded-lg bg-linear-to-r from-secondary/10 to-secondary/20 dark:from-secondary/10 dark:to-secondary/20 border border-secondary/30"
                     >
                       <dt className="text-sm font-medium text-secondary dark:text-secondary/90 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" />
+                        <SparkleIcon className="w-3 h-3" />
                         Votes
                       </dt>
                       <dd className="font-semibold text-secondary dark:text-secondary/90">
@@ -571,7 +571,7 @@ export default function RulePage({ params }: RulePageProps) {
                       className="p-3 rounded-lg bg-linear-to-r from-muted-foreground/10 to-muted-foreground/20 dark:from-muted-foreground/10 dark:to-muted-foreground/20 border border-muted-foreground/30"
                     >
                       <dt className="text-sm font-medium text-muted-foreground dark:text-muted-foreground/90 flex items-center gap-1">
-                        <Layers className="w-3 h-3" />
+                        <StackIcon className="w-3 h-3" />
                         Category
                       </dt>
                       <dd className="font-semibold text-muted-foreground dark:text-muted-foreground/90">
@@ -593,7 +593,7 @@ export default function RulePage({ params }: RulePageProps) {
                 <Card className="bg-linear-to-br from-card/80 to-muted/60 dark:from-card/80 dark:to-muted/60 backdrop-blur-sm border-2 border-border/20 shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Cpu className="w-5 h-5" />
+                      <CpuIcon className="w-5 h-5" />
                       Compatibility
                     </CardTitle>
                   </CardHeader>
@@ -605,7 +605,7 @@ export default function RulePage({ params }: RulePageProps) {
                         transition={{ delay: 0.1 }}
                       >
                         <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                          <Layers className="w-3 h-3" />
+                          <StackIcon className="w-3 h-3" />
                           Frameworks
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -636,7 +636,7 @@ export default function RulePage({ params }: RulePageProps) {
                         transition={{ delay: 0.2 }}
                       >
                         <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                          <Cpu className="w-3 h-3" />
+                          <CpuIcon className="w-3 h-3" />
                           IDEs
                         </h3>
                         <div className="flex flex-wrap gap-2">
@@ -667,7 +667,7 @@ export default function RulePage({ params }: RulePageProps) {
                         transition={{ delay: 0.3 }}
                       >
                         <h3 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" />
+                          <SparkleIcon className="w-3 h-3" />
                           AI Assistants
                         </h3>
                         <div className="flex flex-wrap gap-2">

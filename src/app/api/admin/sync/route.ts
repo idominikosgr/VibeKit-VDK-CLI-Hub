@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { synchronizeRules, cleanupOrphanedRules } from '@/lib/services/rule-sync-service';
 import { requireAdmin } from '@/lib/middleware/admin-auth';
 
@@ -13,7 +13,7 @@ const execAsync = promisify(exec);
  * Check if the user is an admin
  */
 async function isAdmin(email: string): Promise<boolean> {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   const { data } = await supabase
     .from('admins')
     .select('email')
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get count of rules and categories
     const [rulesResult, categoriesResult, usersResult, syncsResult] = await Promise.all([
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
     const duration = Date.now() - startTime;
     
     // Log the sync operation to the database
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     await supabase.from('sync_logs').insert({
       sync_type: 'manual',

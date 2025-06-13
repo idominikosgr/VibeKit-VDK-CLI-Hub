@@ -2,7 +2,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Rules Catalog",
-  description: "Browse the complete collection of CodePilotRules.",
+  description: "Browse the complete collection of Vibe Coding Rules.",
 }
 
 export default function RulesLayout({

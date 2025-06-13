@@ -6,7 +6,7 @@ interface RealtimeAnalytics {
   totalRules: number;
   totalUsers: number;
   totalDownloads: number;
-  recentActivity: Array<{
+  recentPulse: Array<{
     type: 'download' | 'vote' | 'user_signup';
     ruleId?: string;
     userId?: string;
@@ -19,7 +19,7 @@ export function useRealtimeAnalytics() {
     totalRules: 0,
     totalUsers: 0,
     totalDownloads: 0,
-    recentActivity: []
+    recentPulse: []
   });
   const [isConnected, setIsConnected] = useState(false);
   const supabase = createBrowserSupabaseClient();
@@ -46,13 +46,13 @@ export function useRealtimeAnalytics() {
                 setAnalytics(prev => ({
                   ...prev,
                   totalRules: prev.totalRules + 1,
-                  recentActivity: [
+                  recentPulse: [
                     {
                       type: 'download',
                       ruleId: payload.new.id as string,
                       timestamp: new Date().toISOString()
                     },
-                    ...prev.recentActivity.slice(0, 9) // Keep last 10
+                    ...prev.recentPulse.slice(0, 9) // Keep last 10
                   ]
                 }));
               }
@@ -62,13 +62,13 @@ export function useRealtimeAnalytics() {
                 setAnalytics(prev => ({
                   ...prev,
                   totalDownloads: prev.totalDownloads + downloadDiff,
-                  recentActivity: [
+                  recentPulse: [
                     {
                       type: 'download',
                       ruleId: payload.new.id as string,
                       timestamp: new Date().toISOString()
                     },
-                    ...prev.recentActivity.slice(0, 9)
+                    ...prev.recentPulse.slice(0, 9)
                   ]
                 }));
               }
@@ -95,14 +95,14 @@ export function useRealtimeAnalytics() {
               if (ruleId) {
                 setAnalytics(prev => ({
                   ...prev,
-                  recentActivity: [
+                  recentPulse: [
                     {
                       type: 'vote',
                       ruleId,
                       userId,
                       timestamp: new Date().toISOString()
                     },
-                    ...prev.recentActivity.slice(0, 9)
+                    ...prev.recentPulse.slice(0, 9)
                   ]
                 }));
               }
@@ -125,13 +125,13 @@ export function useRealtimeAnalytics() {
               setAnalytics(prev => ({
                 ...prev,
                 totalUsers: prev.totalUsers + 1,
-                recentActivity: [
+                recentPulse: [
                   {
                     type: 'user_signup',
                     userId: payload.new.id as string,
                     timestamp: new Date().toISOString()
                   },
-                  ...prev.recentActivity.slice(0, 9)
+                  ...prev.recentPulse.slice(0, 9)
                 ]
               }));
             }

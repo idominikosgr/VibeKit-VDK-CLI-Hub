@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * This script creates the necessary database schema for the CodePilotRules app
+ * This script creates the necessary database schema for the Vibe Coding Rules Hub app
  */
 
 // Set environment variables directly

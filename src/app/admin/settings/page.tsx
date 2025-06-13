@@ -12,22 +12,22 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Icons } from '@/components/icons';
 import { 
-  Settings, 
-  Key, 
-  Database, 
-  Mail, 
-  Globe, 
-  Shield, 
-  Clock,
-  Save,
-  RefreshCw,
-  AlertTriangle,
-  CheckCircle,
-  ExternalLink
-} from 'lucide-react';
+  GearIcon, 
+  KeyIcon, 
+  DatabaseIcon, 
+  EnvelopeIcon, 
+  GlobeIcon, 
+  ShieldIcon, 
+  ClockIcon,
+  FloppyDiskIcon,
+  ArrowsClockwiseIcon,
+  WarningIcon,
+  CheckCircleIcon,
+  ArrowSquareOutIcon
+} from "@phosphor-icons/react";
 import { toast } from 'sonner';
 
-interface SystemSettings {
+interface SystemGear {
   github: {
     token: string;
     repoOwner: string;
@@ -67,18 +67,18 @@ interface SystemSettings {
   };
 }
 
-export default function SystemSettingsPage() {
-  const [settings, setSettings] = useState<SystemSettings | null>(null);
+export default function SystemGearPage() {
+  const [settings, setGear] = useState<SystemGear | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState(false);
 
   useEffect(() => {
-    loadSettings();
+    loadGear();
   }, []);
 
-  const loadSettings = async () => {
+  const loadGear = async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/admin/settings');
@@ -88,7 +88,7 @@ export default function SystemSettingsPage() {
       }
       
       const data = await response.json();
-      setSettings(data.settings);
+      setGear(data.settings);
     } catch (err) {
       console.error('Error loading settings:', err);
       setError(err instanceof Error ? err.message : 'Failed to load settings');
@@ -97,10 +97,10 @@ export default function SystemSettingsPage() {
     }
   };
 
-  const updateSetting = (section: keyof SystemSettings, key: string, value: any) => {
+  const updateSetting = (section: keyof SystemGear, key: string, value: any) => {
     if (!settings) return;
     
-    setSettings(prev => ({
+    setGear(prev => ({
       ...prev!,
       [section]: {
         ...prev![section],
@@ -110,7 +110,7 @@ export default function SystemSettingsPage() {
     setPendingChanges(true);
   };
 
-  const saveSettings = async () => {
+  const saveGear = async () => {
     if (!settings) return;
     
     setIsSaving(true);
@@ -125,7 +125,7 @@ export default function SystemSettingsPage() {
         throw new Error('Failed to save settings');
       }
 
-      toast.success('Settings saved successfully');
+      toast.success('Gear saved successfully');
       setPendingChanges(false);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to save settings');
@@ -176,12 +176,12 @@ export default function SystemSettingsPage() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <Settings className="h-4 w-4" />
+          <GearIcon className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <div className="mt-4">
-          <Button onClick={loadSettings}>Retry</Button>
+          <Button onClick={loadGear}>Retry</Button>
         </div>
       </div>
     );
@@ -191,8 +191,8 @@ export default function SystemSettingsPage() {
     return (
       <div className="container py-10">
         <Alert>
-          <Settings className="h-4 w-4" />
-          <AlertTitle>No Settings</AlertTitle>
+          <GearIcon className="h-4 w-4" />
+          <AlertTitle>No Gear</AlertTitle>
           <AlertDescription>System settings could not be loaded</AlertDescription>
         </Alert>
       </div>
@@ -207,10 +207,10 @@ export default function SystemSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-linear-to-br from-gray-500 to-gray-600 flex items-center justify-center">
-                <Settings className="w-6 h-6 text-white" />
+                <GearIcon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">System Settings</h1>
+                <h1 className="text-3xl font-bold">System Gear</h1>
                 <p className="text-muted-foreground">
                   Configure system settings, API keys, and application behavior
                 </p>
@@ -220,13 +220,13 @@ export default function SystemSettingsPage() {
               {pendingChanges && (
                 <Badge variant="secondary">Unsaved changes</Badge>
               )}
-              <Button onClick={saveSettings} disabled={isSaving || !pendingChanges}>
+              <Button onClick={saveGear} disabled={isSaving || !pendingChanges}>
                 {isSaving ? (
                   <Icons.spinner className="h-4 w-4 animate-spin mr-2" />
                 ) : (
-                  <Save className="h-4 w-4 mr-2" />
+                  <FloppyDiskIcon className="h-4 w-4 mr-2" />
                 )}
-                Save Changes
+                FloppyDisk Changes
               </Button>
             </div>
           </div>
@@ -236,7 +236,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-secondary" />
+                  <GlobeIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-sm font-bold capitalize">{settings.system.environment}</p>
                     <p className="text-xs text-muted-foreground">Environment</p>
@@ -247,7 +247,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Database className={`w-4 h-4 ${settings.database.connectionStatus === 'connected' ? 'text-secondary' : 'text-destructive'}`} />
+                  <DatabaseIcon className={`w-4 h-4 ${settings.database.connectionStatus === 'connected' ? 'text-secondary' : 'text-destructive'}`} />
                   <div>
                     <p className="text-sm font-bold capitalize">{settings.database.connectionStatus}</p>
                     <p className="text-xs text-muted-foreground">Database</p>
@@ -258,7 +258,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary" />
+                  <ClockIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-sm font-bold">{formatUptime(settings.system.uptime)}</p>
                     <p className="text-xs text-muted-foreground">Uptime</p>
@@ -269,7 +269,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-accent" />
+                  <ShieldIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-sm font-bold">v{settings.system.version}</p>
                     <p className="text-xs text-muted-foreground">Version</p>
@@ -280,7 +280,7 @@ export default function SystemSettingsPage() {
           </div>
         </div>
 
-        {/* Settings Tabs */}
+        {/* Gear Tabs */}
         <Tabs defaultValue="github" className="space-y-6">
           <TabsList>
             <TabsTrigger value="github">GitHub Integration</TabsTrigger>
@@ -294,7 +294,7 @@ export default function SystemSettingsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>GitHub Configuration</CardTitle>
-                <CardDescription>Settings for GitHub repository synchronization</CardDescription>
+                <CardDescription>Gear for GitHub repository synchronization</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -348,7 +348,7 @@ export default function SystemSettingsPage() {
                     <Label htmlFor="auto-sync">Enable automatic synchronization</Label>
                   </div>
                   <Button variant="outline" onClick={() => testConnection('github')}>
-                    <ExternalLink className="h-4 w-4 mr-2" />
+                    <ArrowSquareOutIcon className="h-4 w-4 mr-2" />
                     Test Connection
                   </Button>
                 </div>
@@ -366,7 +366,7 @@ export default function SystemSettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-muted rounded-md">
                     <div className="flex items-center gap-2 mb-2">
-                      <Database className="w-4 h-4" />
+                      <DatabaseIcon className="w-4 h-4" />
                       <span className="font-medium">Connection Status</span>
                     </div>
                     <Badge variant={settings.database.connectionStatus === 'connected' ? 'default' : 'destructive'}>
@@ -375,14 +375,14 @@ export default function SystemSettingsPage() {
                   </div>
                   <div className="p-4 bg-muted rounded-md">
                     <div className="flex items-center gap-2 mb-2">
-                      <Database className="w-4 h-4" />
+                      <DatabaseIcon className="w-4 h-4" />
                       <span className="font-medium">Tables</span>
                     </div>
                     <p className="text-2xl font-bold">{settings.database.totalTables}</p>
                   </div>
                   <div className="p-4 bg-muted rounded-md">
                     <div className="flex items-center gap-2 mb-2">
-                      <Database className="w-4 h-4" />
+                      <DatabaseIcon className="w-4 h-4" />
                       <span className="font-medium">Total Rows</span>
                     </div>
                     <p className="text-2xl font-bold">{settings.database.totalRows.toLocaleString()}</p>
@@ -413,7 +413,7 @@ export default function SystemSettingsPage() {
                         </p>
                       </div>
                       <Button variant="outline" onClick={() => testConnection('database')}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
+                        <ArrowsClockwiseIcon className="h-4 w-4 mr-2" />
                         Test Connection
                       </Button>
                     </div>
@@ -480,7 +480,7 @@ export default function SystemSettingsPage() {
                     <Label htmlFor="email-notifications">Enable email notifications</Label>
                   </div>
                   <Button variant="outline" onClick={() => testConnection('email')}>
-                    <Mail className="h-4 w-4 mr-2" />
+                    <EnvelopeIcon className="h-4 w-4 mr-2" />
                     Test Email
                   </Button>
                 </div>
@@ -553,7 +553,7 @@ export default function SystemSettingsPage() {
           <TabsContent value="security" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Security Settings</CardTitle>
+                <CardTitle>Security Gear</CardTitle>
                 <CardDescription>Authentication and security configuration</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

@@ -76,7 +76,7 @@ export function useRealtimeVotes(ruleId?: string) {
 }
 
 // Hook for global vote activity feed
-export function useRealtimeVoteActivity() {
+export function useRealtimeVotePulse() {
   const [recentVotes, setRecentVotes] = useState<Array<{
     ruleId: string;
     userId: string;

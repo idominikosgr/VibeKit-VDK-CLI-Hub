@@ -22,7 +22,7 @@ export function RuleCompatibility({ compatibility }: RuleCompatibilityProps) {
     <div className="space-y-6">
       {compatibility.ides && compatibility.ides.length > 0 && (
         <div>
-          <h3 className="mb-3 text-lg font-medium">IDEs & Text Editors</h3>
+          <h3 className="mb-3 text-lg font-medium">IDEs & Text PencilSimpleors</h3>
           <div className="flex flex-wrap gap-2">
             {compatibility.ides.map((ide) => (
               <CompatibilityBadge key={ide} name={formatName(ide)} />

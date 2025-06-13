@@ -7,33 +7,33 @@ import { Pagination } from '../ui/pagination';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { MagnifyingGlassIcon, SlidersIcon } from '@phosphor-icons/react';
 import { PaginatedResult } from '@/lib/types';
 
 type RuleListProps = {
   initialRules: PaginatedResult<Rule>;
-  onSearch: (search: string, sortBy: string, page: number) => Promise<PaginatedResult<Rule>>;
+  onMagnifyingGlass: (search: string, sortBy: string, page: number) => Promise<PaginatedResult<Rule>>;
   className?: string;
 };
 
-export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
+export function RuleList({ initialRules, onMagnifyingGlass, className }: RuleListProps) {
   // State
   const [rules, setRules] = useState<PaginatedResult<Rule>>(initialRules);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setMagnifyingGlassQuery] = useState('');
   const [sortBy, setSortBy] = useState<string>('newest');
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Handle search submit
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleMagnifyingGlass = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
     setIsLoading(true);
     setError(null);
     
     try {
-      const results = await onSearch(searchQuery, sortBy, 1);
+      const results = await onMagnifyingGlass(searchQuery, sortBy, 1);
       
       if (!results || !results.data) {
         throw new Error('Received invalid search results');
@@ -41,8 +41,8 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
       
       setRules(results);
     } catch (error) {
-      console.error('Search failed:', error);
-      setError(error instanceof Error ? error.message : 'Search failed. Please try again.');
+      console.error('MagnifyingGlass failed:', error);
+      setError(error instanceof Error ? error.message : 'MagnifyingGlass failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +54,7 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
     setError(null);
     
     try {
-      const results = await onSearch(searchQuery, sortBy, page);
+      const results = await onMagnifyingGlass(searchQuery, sortBy, page);
       
       if (!results || !results.data) {
         throw new Error('Received invalid pagination results');
@@ -80,7 +80,7 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
     setError(null);
     
     try {
-      const results = await onSearch(searchQuery, value, 1);
+      const results = await onMagnifyingGlass(searchQuery, value, 1);
       
       if (!results || !results.data) {
         throw new Error('Received invalid sort results');
@@ -97,29 +97,29 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
 
   return (
     <div className={className}>
-      {/* Search and filters */}
+      {/* MagnifyingGlass and filters */}
       <div className="mb-6 space-y-4">
-        <form onSubmit={handleSearch} className="flex gap-2">
+        <form onSubmit={handleMagnifyingGlass} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <MagnifyingGlassIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search rules..."
+              placeholder="MagnifyingGlass rules..."
               className="pl-9"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
               disabled={isLoading}
             />
           </div>
           <Button type="submit" disabled={isLoading}>
-            Search
+            MagnifyingGlass
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <SlidersHorizontal className="h-4 w-4 mr-2" />
+            <SlidersIcon className="h-4 w-4 mr-2" />
             Filters
           </Button>
         </form>
@@ -155,7 +155,7 @@ export function RuleList({ initialRules, onSearch, className }: RuleListProps) {
             variant="outline" 
             size="sm" 
             className="mt-2" 
-            onClick={() => handleSearch()}
+            onClick={() => handleMagnifyingGlass()}
           >
             Try Again
           </Button>

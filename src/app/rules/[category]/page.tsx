@@ -4,11 +4,13 @@ import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Icons } from "@/components/icons"
-import { SearchBar } from "@/components/search/search-bar"
+import { MagnifyingGlassBar } from "@/components/search/search-bar"
 import { Rule, RuleCategory, PaginatedResult } from "@/lib/types"
-import { AlertCircle } from "lucide-react"
+import { ExclamationTriangleIcon, CodeIcon } from "@radix-ui/react-icons"
 import { getCategory, getRulesByCategory } from "@/lib/services/supabase-rule-service"
+
+// Disable static generation to fix createContext build error
+export const dynamic = 'force-dynamic'
 
 interface CategoryPageProps {
   params: Promise<{
@@ -23,11 +25,11 @@ interface CategoryPageProps {
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   // Await the params and searchParams for Next.js 15+
   const awaitedParams = await params;
-  const awaitedSearchParams = await searchParams;
+  const awaitedMagnifyingGlassParams = await searchParams;
   
   const categorySlug = awaitedParams.category;
-  const searchQuery = awaitedSearchParams?.q || '';
-  const currentPage = awaitedSearchParams?.page ? parseInt(awaitedSearchParams.page, 10) : 1;
+  const searchQuery = awaitedMagnifyingGlassParams?.q || '';
+  const currentPage = awaitedMagnifyingGlassParams?.page ? parseInt(awaitedMagnifyingGlassParams.page, 10) : 1;
 
   try {
     // Fetch category data
@@ -60,17 +62,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           {/* Category header */}
           <div>
             <div className="flex items-center gap-2">
-              <Icons.code className="h-5 w-5" />
+              <CodeIcon className="h-5 w-5" />
               <h1 className="text-3xl font-bold">{category.title}</h1>
             </div>
             <p className="mt-2 text-lg text-muted-foreground">{category.description}</p>
           </div>
 
-          {/* Search and filter */}
+          {/* MagnifyingGlass and filter */}
           <div className="flex flex-col sm:flex-row justify-between gap-4">
             <div className="w-full max-w-md">
-              <SearchBar 
-                placeholder="Search rules..." 
+              <MagnifyingGlassBar 
+                placeholder="MagnifyingGlass rules..." 
                 defaultValue={searchQuery}
               />
             </div>
@@ -167,7 +169,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           ) : (
             // Empty state
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <AlertCircle className="h-16 w-16 text-muted-foreground mb-4" />
+              <ExclamationTriangleIcon className="h-16 w-16 text-muted-foreground mb-4" />
               <h3 className="text-2xl font-bold mb-2">No rules found</h3>
               <p className="text-muted-foreground mb-6">
                 {searchQuery 
@@ -177,7 +179,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               </p>
               {searchQuery && (
                 <Button variant="outline" asChild>
-                  <Link href={`/rules/${categorySlug}`}>Clear Search</Link>
+                  <Link href={`/rules/${categorySlug}`}>Clear MagnifyingGlass</Link>
                 </Button>
               )}
             </div>
@@ -191,7 +193,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     return (
       <div className="container py-10">
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <AlertCircle className="h-16 w-16 text-destructive mb-4" />
+          <ExclamationTriangleIcon className="h-16 w-16 text-destructive mb-4" />
           <h2 className="text-2xl font-bold mb-2">Failed to load category</h2>
           <p className="text-muted-foreground mb-6">
             {error instanceof Error ? error.message : 'An unexpected error occurred'}

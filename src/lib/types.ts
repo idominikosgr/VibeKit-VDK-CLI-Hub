@@ -37,7 +37,7 @@ export interface Rule {
     ides?: string[];
     aiAssistants?: string[];
     frameworks?: string[];
-    mcpServers?: string[];
+    mcpDatabases?: string[];
   } | null;
   examples: Record<string, any> | null;
   always_apply: boolean | null;
@@ -79,8 +79,8 @@ export interface RuleCategory {
   count?: number;
 }
 
-// Search result type (application-level)
-export interface SearchResult {
+// MagnifyingGlass result type (application-level)
+export interface MagnifyingGlassResult {
   id: string;
   title: string;
   path: string;

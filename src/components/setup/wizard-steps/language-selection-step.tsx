@@ -87,7 +87,7 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   {
     id: 'php',
     name: 'PHP',
-    description: 'Server-side scripting language for web development',
+    description: 'Database-side scripting language for web development',
     category: 'web',
     extensions: ['.php'],
     frameworks: []

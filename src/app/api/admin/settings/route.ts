@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/admin-auth';
 
 // Mock settings - in a real app, these would be stored in a database or environment
-const defaultSettings = {
+const defaultGear = {
   github: {
     token: process.env.GITHUB_TOKEN || '',
     repoOwner: process.env.GITHUB_REPO_OWNER || 'idominikosgr',
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get database statistics
     const [rulesCount, categoriesCount, usersCount] = await Promise.all([
@@ -65,9 +65,9 @@ export async function GET(request: NextRequest) {
 
     // Update settings with real data
     const settings = {
-      ...defaultSettings,
+      ...defaultGear,
       database: {
-        ...defaultSettings.database,
+        ...defaultGear.database,
         totalRows: (rulesCount.count || 0) + (categoriesCount.count || 0) + (usersCount.count || 0)
       }
     };
@@ -110,7 +110,7 @@ export async function PUT(request: NextRequest) {
 
     if (!settings) {
       return NextResponse.json(
-        { error: 'Settings data is required' },
+        { error: 'Gear data is required' },
         { status: 400 }
       );
     }
@@ -130,11 +130,11 @@ export async function PUT(request: NextRequest) {
     }
 
     // Here you would typically save to database or update environment variables
-    console.log('Settings update request:', settings);
+    console.log('Gear update request:', settings);
 
     return NextResponse.json({
       success: true,
-      message: 'Settings updated successfully'
+      message: 'Gear updated successfully'
     });
 
   } catch (error) {

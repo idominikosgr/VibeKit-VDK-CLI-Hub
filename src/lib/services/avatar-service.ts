@@ -1,5 +1,5 @@
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 
 export interface AvatarUploadResult {
   success: boolean;
@@ -147,7 +147,7 @@ export function generateAvatarFromInitials(initials: string, options: AvatarGene
  */
 export async function getUserAvatar(userId: string): Promise<string> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     const { data: profile } = await supabase
       .from('profiles')

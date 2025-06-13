@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createServerSupabaseClient } from '../supabase/server-client';
+import { createDatabaseSupabaseClient } from '../supabase/server-client';
 import { handleApiRequest } from '../error-handling';
 import { getRule as getSupabaseRule } from '@/lib/services/supabase-rule-service';
 import { Rule, RuleFormData, RuleInsertData } from '@/lib/types';
@@ -21,7 +21,7 @@ const ruleFormSchema = z.object({
     ides: z.array(z.string()).optional(),
     aiAssistants: z.array(z.string()).optional(),
     frameworks: z.array(z.string()).optional(),
-    mcpServers: z.array(z.string()).optional(),
+    mcpDatabases: z.array(z.string()).optional(),
   }).optional(),
   alwaysApply: z.boolean().optional(), // Form uses camelCase
 });
@@ -52,7 +52,7 @@ function transformFormDataToDbData(formData: RuleFormData, slug: string): RuleIn
  * FIXED: Proper field name handling and type safety
  */
 export async function saveRule(formData: FormData) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
 
   // Get current user
   const { data: { session } } = await supabase.auth.getSession();
@@ -143,7 +143,7 @@ export async function saveRule(formData: FormData) {
  * Delete a rule - ADMIN ONLY
  */
 export async function deleteRule(formData: FormData) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
 
   // Get current user
   const { data: { session } } = await supabase.auth.getSession();
@@ -181,7 +181,7 @@ export async function deleteRule(formData: FormData) {
  * FIXED: Use correct table and field names
  */
 export async function voteForRule(formData: FormData) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
 
   // Get current user
   const { data: { session } } = await supabase.auth.getSession();
@@ -235,7 +235,7 @@ export async function voteForRule(formData: FormData) {
  * Note: Comments table may not exist yet - this is a placeholder
  */
 export async function addComment(formData: FormData) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
 
   // Get current user
   const { data: { session } } = await supabase.auth.getSession();
@@ -292,7 +292,7 @@ export async function addComment(formData: FormData) {
 }
 
 /**
- * Server action to get a rule by ID or slug
+ * Database action to get a rule by ID or slug
  */
 export async function getRule(ruleIdOrSlug: string): Promise<{ 
   success: boolean; 
@@ -333,7 +333,7 @@ export async function getRule(ruleIdOrSlug: string): Promise<{
  * Increment download count for a rule
  */
 export async function incrementDownload(ruleId: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   
   try {
     await supabase.rpc('increment_rule_downloads', { target_rule_id: ruleId });
@@ -349,7 +349,7 @@ export async function incrementDownload(ruleId: string) {
  * FIXED: Use correct database field names
  */
 export async function generateRulePackage(formData: FormData) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   
   try {
     // Parse wizard configuration from form data
@@ -362,7 +362,7 @@ export async function generateRulePackage(formData: FormData) {
       customRequirements: formData.get('customRequirements') as string || null
     };
 
-    // Save wizard configuration using snake_case field names
+    // FloppyDisk wizard configuration using snake_case field names
     const { data: configData, error: configError } = await supabase
       .from('wizard_configurations')
       .insert({
@@ -496,7 +496,7 @@ export async function generateRulePackage(formData: FormData) {
  * FIXED: Use correct database field names
  */
 export async function downloadPackage(packageId: string) {
-  const supabase = await createServerSupabaseClient();
+  const supabase = await createDatabaseSupabaseClient();
   
   try {
     // Get package data using snake_case field names

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/require-admin';
 
 export async function GET(request: NextRequest) {
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const adminCheck = await requireAdmin();
     if (adminCheck) return adminCheck;
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { searchParams } = new URL(request.url);
     
     const search = searchParams.get('search');
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const adminCheck = await requireAdmin();
     if (adminCheck) return adminCheck;
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const body = await request.json();
 
     const {

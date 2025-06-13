@@ -40,7 +40,7 @@ export default function CollectionsPage() {
   const supabase = createBrowserSupabaseClient()
   const [collections, setCollections] = useState<Collection[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setMagnifyingGlassQuery] = useState("")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
 
@@ -200,7 +200,7 @@ export default function CollectionsPage() {
         <CreateCollectionDialog onCollectionCreated={handleCollectionCreated} />
       </motion.div>
 
-      {/* Search bar */}
+      {/* MagnifyingGlass bar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -209,9 +209,9 @@ export default function CollectionsPage() {
       >
         <Icons.search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Search collections..."
+          placeholder="MagnifyingGlass collections..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
           className="pl-10"
         />
       </motion.div>

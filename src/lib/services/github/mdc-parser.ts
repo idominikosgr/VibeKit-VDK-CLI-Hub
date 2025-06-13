@@ -11,7 +11,7 @@ const compatibilitySchema = z.object({
   ides: z.array(z.string()).optional(),
   aiAssistants: z.array(z.string()).optional(),
   frameworks: z.array(z.string()).optional(),
-  mcpServers: z.array(z.string()).optional()
+  mcpDatabases: z.array(z.string()).optional()
 });
 
 // Version constraints schema
@@ -169,7 +169,7 @@ export function parseMdcContent(content: string, path: string, options: MdcParse
       ides: Array.isArray(compatibility.ides) ? compatibility.ides : [],
       aiAssistants: Array.isArray(compatibility.aiAssistants) ? compatibility.aiAssistants : [],
       frameworks: Array.isArray(compatibility.frameworks) ? compatibility.frameworks : [],
-      mcpServers: Array.isArray(compatibility.mcpServers) ? compatibility.mcpServers : []
+      mcpDatabases: Array.isArray(compatibility.mcpDatabases) ? compatibility.mcpDatabases : []
     },
     
     // Version constraints
@@ -230,7 +230,7 @@ export function checkRuleCompatibility(
     ide?: string; 
     aiAssistant?: string; 
     frameworks?: string[];
-    mcpServers?: string[];
+    mcpDatabases?: string[];
   }
 ) {
   const compatibility = rule.compatibility;
@@ -269,15 +269,15 @@ export function checkRuleCompatibility(
   }
   
   // Check MCP server compatibility
-  if (environment.mcpServers && environment.mcpServers.length > 0 && 
-      compatibility.mcpServers && compatibility.mcpServers.length > 0) {
-    const hasCompatibleServer = environment.mcpServers.some(server => 
-      compatibility.mcpServers!.includes(server)
+  if (environment.mcpDatabases && environment.mcpDatabases.length > 0 && 
+      compatibility.mcpDatabases && compatibility.mcpDatabases.length > 0) {
+    const hasCompatibleDatabase = environment.mcpDatabases.some(server => 
+      compatibility.mcpDatabases!.includes(server)
     );
     
-    if (!hasCompatibleServer) {
+    if (!hasCompatibleDatabase) {
       results.compatible = false;
-      results.reasons.push(`Rule is not compatible with MCP servers: ${environment.mcpServers.join(', ')}`);
+      results.reasons.push(`Rule is not compatible with MCP servers: ${environment.mcpDatabases.join(', ')}`);
     }
   }
   

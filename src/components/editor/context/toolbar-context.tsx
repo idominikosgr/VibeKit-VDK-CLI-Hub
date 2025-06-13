@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, JSX } from 'react'
+import React, { createContext, useContext, JSX } from 'react'
 
 import { LexicalEditor } from 'lexical'
 

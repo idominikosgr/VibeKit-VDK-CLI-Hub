@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import matter from 'gray-matter';
-import { createServerSupabaseClient } from '../supabase/server-client';
+import { createDatabaseSupabaseClient } from '../supabase/server-client';
 import { errorLogger } from '../error-handling';
 
 // Constants for rule directory structure
-const RULES_DIR = path.join(process.cwd(), 'codepilotrules-hub', '.ai', 'rules');
+const RULES_DIR = path.join(process.cwd(), 'vibecodingrules-hub', '.ai', 'rules');
 const CATEGORY_DIRS = ['assistants', 'languages', 'stacks', 'tasks', 'technologies', 'tools'];
 
 // File extensions to process
@@ -35,7 +35,7 @@ interface RuleMetadata {
     ides?: string[];
     frameworks?: string[];
     aiAssistants?: string[];
-    mcpServers?: string[];
+    mcpDatabases?: string[];
   };
   tags?: string[];
   examples?: Record<string, any>;
@@ -62,7 +62,7 @@ export async function synchronizeRules(): Promise<SyncStats> {
 
   try {
     console.log('Starting rule synchronization');
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // First ensure all categories exist
     await syncCategories(supabase, stats);
@@ -464,7 +464,7 @@ export async function cleanupOrphanedRules(): Promise<CleanupResult> {
   
   try {
     console.log('Starting orphaned rules cleanup');
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get all rules from the database
     const { data: dbRules, error: fetchError } = await supabase

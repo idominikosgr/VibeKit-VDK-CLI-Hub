@@ -1,11 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import * as React from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@/lib/types';
 import { getCurrentUser, signInWithEmail, signInWithGitHub, signOut, signUpWithEmail, updateUserProfile } from '@/lib/services/auth-service';
 import { toast } from 'sonner';
 import { createBrowserSupabaseClient } from '@/lib/supabase/client';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session, User as SupabaseUser } from '@supabase/supabase-js';
 
 type AuthContextType = {
   user: User | null;
@@ -23,76 +24,154 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    const supabase = createBrowserSupabaseClient();
-    
-    // Check for existing session on mount
+    let mounted = true;
+
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session?.user) {
-          const currentUser = await mapSupabaseUserFromSession(session.user);
+        setIsLoading(true);
+        const currentUser = await getCurrentUser();
+        if (mounted) {
           setUser(currentUser);
-        } else {
-          setUser(null);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-        setUser(null);
+        if (mounted) {
+          setUser(null);
+        }
       } finally {
-        setIsLoading(false);
-        setIsInitialized(true);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     initializeAuth();
-    
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
-      // Only process auth changes after initial setup
-      if (!isInitialized) return;
-      
-      if (session?.user) {
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event: AuthChangeEvent, session: Session | null) => {
         try {
-          const currentUser = await mapSupabaseUserFromSession(session.user);
-          setUser(currentUser);
+          if (!mounted) return;
+
+          if (event === 'SIGNED_IN' && session?.user) {
+            const mappedUser = await mapSupabaseUserSafe(session.user);
+            setUser(mappedUser);
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null);
+          } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+            const mappedUser = await mapSupabaseUserSafe(session.user);
+            setUser(mappedUser);
+          }
         } catch (error) {
-          console.error('Error mapping user from session:', error);
-          setUser(null);
+          console.error('Error handling auth state change:', error);
+          // Don't set user to null on error, keep current state
         }
-      } else {
-        setUser(null);
       }
-    });
+    );
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, [isInitialized]);
+  }, []);
 
-  // Helper function to map user from session
-  const mapSupabaseUserFromSession = async (user: any): Promise<User> => {
-    const supabase = createBrowserSupabaseClient();
-    
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+  // Safe user mapping function that handles errors gracefully
+  const mapSupabaseUserSafe = async (user: SupabaseUser): Promise<User | null> => {
+    try {
+      // Get profile information with error handling
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-    return {
-      id: user.id,
-      email: user.email || '',
-      name: profile?.name || null,
-      github_username: profile?.github_username || null,
-      avatar_url: profile?.avatar_url || null,
-      preferred_language: profile?.preferred_language || null,
-      preferred_theme: profile?.preferred_theme || null,
-      created_at: profile?.created_at || null,
-      updated_at: profile?.updated_at || null
-    };
+      // If profile doesn't exist, create it
+      if (profileError && profileError.code === 'PGRST116') {
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email || '',
+            name: user.user_metadata?.name || null,
+            avatar_url: user.user_metadata?.avatar_url || null,
+            github_username: user.user_metadata?.user_name || null
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          // Return basic user info if profile creation fails
+          return {
+            id: user.id,
+            email: user.email || '',
+            name: user.user_metadata?.name || null,
+            github_username: user.user_metadata?.user_name || null,
+            avatar_url: user.user_metadata?.avatar_url || null,
+            preferred_language: null,
+            preferred_theme: null,
+            created_at: null,
+            updated_at: null
+          };
+        }
+
+        return {
+          id: newProfile.id,
+          email: newProfile.email,
+          name: newProfile.name,
+          github_username: newProfile.github_username,
+          avatar_url: newProfile.avatar_url,
+          preferred_language: newProfile.preferred_language,
+          preferred_theme: newProfile.preferred_theme,
+          created_at: newProfile.created_at,
+          updated_at: newProfile.updated_at
+        };
+      }
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        // Return basic user info if profile fetch fails
+        return {
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.name || null,
+          github_username: user.user_metadata?.user_name || null,
+          avatar_url: user.user_metadata?.avatar_url || null,
+          preferred_language: null,
+          preferred_theme: null,
+          created_at: null,
+          updated_at: null
+        };
+      }
+
+      return {
+        id: user.id,
+        email: user.email || '',
+        name: profile?.name || null,
+        github_username: profile?.github_username || null,
+        avatar_url: profile?.avatar_url || null,
+        preferred_language: profile?.preferred_language || null,
+        preferred_theme: profile?.preferred_theme || null,
+        created_at: profile?.created_at || null,
+        updated_at: profile?.updated_at || null
+      };
+    } catch (error) {
+      console.error('Error mapping user:', error);
+      // Return basic user info if anything fails
+      return {
+        id: user.id,
+        email: user.email || '',
+        name: user.user_metadata?.name || null,
+        github_username: user.user_metadata?.user_name || null,
+        avatar_url: user.user_metadata?.avatar_url || null,
+        preferred_language: null,
+        preferred_theme: null,
+        created_at: null,
+        updated_at: null
+      };
+    }
   };
 
   // Login with email and password - NO loading state management here
@@ -107,6 +186,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Logged in successfully');
       return true;
     } catch (error) {
+      console.error('Login error:', error);
       toast.error('An unexpected error occurred');
       return false;
     }
@@ -124,6 +204,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Registration successful');
       return true;
     } catch (error) {
+      console.error('Registration error:', error);
       toast.error('An unexpected error occurred');
       return false;
     }
@@ -137,6 +218,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         toast.error(error);
       }
     } catch (error) {
+      console.error('GitHub login error:', error);
       toast.error('An unexpected error occurred');
     }
   };
@@ -152,6 +234,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Don't set user here - let auth state change handle it
       toast.success('Logged out successfully');
     } catch (error) {
+      console.error('Logout error:', error);
       toast.error('An unexpected error occurred');
     }
   };
@@ -176,6 +259,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success('Profile updated successfully');
       return true;
     } catch (error) {
+      console.error('Profile update error:', error);
       toast.error('An unexpected error occurred');
       return false;
     }

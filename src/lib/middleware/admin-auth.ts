@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '../supabase/server-client';
+import { createDatabaseSupabaseClient } from '../supabase/server-client';
 import { NextRequest } from 'next/server';
 
 /**
@@ -6,7 +6,7 @@ import { NextRequest } from 'next/server';
  */
 export async function isUserAdmin(email: string): Promise<boolean> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { data } = await supabase
       .from('admins')
       .select('email')
@@ -25,7 +25,7 @@ export async function isUserAdmin(email: string): Promise<boolean> {
  */
 export async function requireAdmin(request: NextRequest): Promise<{ isAdmin: boolean; user?: any; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -57,7 +57,7 @@ export async function requireAdmin(request: NextRequest): Promise<{ isAdmin: boo
  */
 export async function getCurrentUserAdminStatus(): Promise<{ isAdmin: boolean; user?: any; error?: string }> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
@@ -89,7 +89,7 @@ export async function addAdmin(email: string, requestingUserEmail: string): Prom
       return { success: false, error: 'Only admins can add other admins' };
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     const { error } = await supabase
       .from('admins')
@@ -125,7 +125,7 @@ export async function removeAdmin(email: string, requestingUserEmail: string): P
       return { success: false, error: 'Only admins can remove other admins' };
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     const { error } = await supabase
       .from('admins')

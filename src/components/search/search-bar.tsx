@@ -4,20 +4,21 @@ import { useState, useTransition, useEffect } from "react"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
+import { MagnifyingGlassIcon } from "@phosphor-icons/react"
 
-interface SearchBarProps {
+interface MagnifyingGlassBarProps {
   placeholder?: string;
   className?: string;
   defaultValue?: string;
-  onSearch?: (query: string) => void;
+  onMagnifyingGlass?: (query: string) => void;
 }
 
-export function SearchBar({ 
-  placeholder = "Search...", 
+export function MagnifyingGlassBar({ 
+  placeholder = "MagnifyingGlass...", 
   className = "", 
   defaultValue = "",
-  onSearch
-}: SearchBarProps) {
+  onMagnifyingGlass
+}: MagnifyingGlassBarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -34,13 +35,13 @@ export function SearchBar({
     }
   }, [defaultValue]);
 
-  // Update the search query in the URL or call the onSearch handler
-  const handleSearch = (term: string) => {
+  // Update the search query in the URL or call the onMagnifyingGlass handler
+  const handleMagnifyingGlass = (term: string) => {
     setQuery(term);
 
-    // If custom onSearch handler is provided, use it
-    if (onSearch) {
-      onSearch(term);
+    // If custom onMagnifyingGlass handler is provided, use it
+    if (onMagnifyingGlass) {
+      onMagnifyingGlass(term);
       return;
     }
 
@@ -61,8 +62,8 @@ export function SearchBar({
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSearch) {
-      onSearch(query);
+    if (onMagnifyingGlass) {
+      onMagnifyingGlass(query);
     }
   };
 
@@ -72,7 +73,7 @@ export function SearchBar({
         type="text"
         placeholder={placeholder}
         value={query}
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => handleMagnifyingGlass(e.target.value)}
         className="pr-10"
         disabled={isPending}
       />
@@ -80,7 +81,7 @@ export function SearchBar({
         {isPending ? (
           <Icons.loader className="h-4 w-4 animate-spin text-muted-foreground" />
         ) : (
-          <Icons.search className="h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
         )}
       </div>
     </form>

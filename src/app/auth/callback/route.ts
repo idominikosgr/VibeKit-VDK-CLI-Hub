@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { redirect } from 'next/navigation';
 
 // This route handles the OAuth callback from providers like GitHub
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   // Exchange the code for a session
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Exchange the auth code for a session
     const { error } = await supabase.auth.exchangeCodeForSession(code);

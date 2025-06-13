@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '../supabase/server-client';
+import { createDatabaseSupabaseClient } from '../supabase/server-client';
 
 /**
  * Simple admin middleware that returns NextResponse for unauthorized access
@@ -7,7 +7,7 @@ import { createServerSupabaseClient } from '../supabase/server-client';
  */
 export async function requireAdmin(): Promise<NextResponse | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Get the current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

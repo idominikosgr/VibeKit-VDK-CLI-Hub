@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { EnvelopeIcon, LockIcon, UserIcon, EyeIcon, EyeSlashIcon } from '@phosphor-icons/react';
 
 export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
   const [email, setEmail] = useState('');
@@ -54,7 +54,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mx-auto w-16 h-16 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg"
           >
-            <Lock className="w-8 h-8 text-white" />
+            <LockIcon className="w-8 h-8 text-white" />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -80,7 +80,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -104,7 +104,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
                 </motion.a>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -120,7 +120,7 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                 </motion.button>
               </div>
             </div>
@@ -238,7 +238,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mx-auto w-16 h-16 rounded-full bg-linear-to-br from-success to-primary flex items-center justify-center shadow-lg"
           >
-            <User className="w-8 h-8 text-white" />
+            <LockIcon className="w-8 h-8 text-white" />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -264,7 +264,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="name"
                   placeholder="Your full name"
@@ -278,7 +278,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -293,7 +293,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -310,7 +310,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                 </motion.button>
               </div>
               <motion.p 

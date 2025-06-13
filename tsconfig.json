@@ -1,47 +1,145 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    //"forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    /* Language and Environment */
+    "target": "ES2024",
+    "lib": ["DOM", "DOM.Iterable", "ES2022", "WebWorker", "ES2023.Array", "ES2024.Object"],
     "jsx": "preserve",
+    "allowJs": true,
+    "useDefineForClassFields": true,
+
+    /* Modules */
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
+    "resolveJsonModule": true,
+    "resolvePackageJsonExports": true,
+    "resolvePackageJsonImports": true,
+
+    /* JavaScript Support */
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    //"verbatimModuleSyntax": true,
+
+    /* Type Checking - Enhanced for 2025 */
+    "strict": true,
+    //"exactOptionalPropertyTypes": true,
+    //"noFallthroughCasesInSwitch": true,
+    //"noImplicitOverride": true,
+    //"noImplicitReturns": true,
+    //"noPropertyAccessFromIndexSignature": true,
+    //"noUncheckedIndexedAccess": true,
+    //"noUnusedLocals": false,
+    //"noUnusedParameters": false,
+    //"useUnknownInCatchVariables": true,
+    //"allowUnreachableCode": false,
+    //"allowUnusedLabels": false,
+    //"forceConsistentCasingInFileNames": true,
+
+    /* Emit */
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": true,
+    "removeComments": true,
+
+    /* Interop Constraints */
+    "skipLibCheck": true,
+
+    /* Completeness */
+    "skipDefaultLibCheck": true,
+
+    /* Performance & Caching */
     "incremental": true,
+    "assumeChangesOnlyAffectDirectDependencies": true,
+
+    /* Path Mapping - Enhanced for modern project structure */
     "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/public/*": ["./public/*"],
+      "~/*": ["./public/*"]
+    },
+
+    /* Type Definitions - Updated for Next.js 15.3 & React 19 */
+    "types": ["node", "@types/react", "@types/react-dom", "@serwist/next/typings"],
+
+    /* Next.js Plugin */
     "plugins": [
       {
-        "name": "next"
+        "name": "next",
+        "options": {
+          "typescript": {
+            "memoryLimit": 4096
+          }
+        }
       }
-    ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+    ]
+  },
+
+  /* Enhanced Include Patterns */
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    "**/*.cts",
+    ".next/types/**/*.ts",
+    "playwright.config.ts",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "src/**/*",
+    "app/**/*",
+    "pages/**/*",
+    "components/**/*",
+    "lib/**/*",
+    "utils/**/*",
+    "hooks/**/*",
+    "types/**/*",
+    "middleware.ts",
+    "instrumentation.ts",
+    "global.d.ts"
+  ],
+
+  /* Enhanced Exclude Patterns */
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    "dist",
+    "coverage",
+    "public/sw.js",
+    "public/swe-worker-*.js",
+    "public/workbox-*.js",
+    "supabase/functions",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.stories.ts",
+    "**/*.stories.tsx",
+    ".vercel",
+    ".env*",
+    "*.config.js",
+    "docker/**/*",
+    "scripts/**/*"
+  ],
+
+  /* TypeScript 5.x Specific Options */
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "Node"
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "middleware.ts",
-    "next.config.ts",
-    "tailwind.config.ts",
-    "postcss.config.mjs",
-    ".next/types/**/*.ts",
-    "next-env.d.ts",
-    "build/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+
+  /* References for Project Structure */
+  "references": []
 }

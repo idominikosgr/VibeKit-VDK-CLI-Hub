@@ -8,17 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Icons } from '@/components/icons';
 import { 
-  Settings, 
-  Database, 
-  RefreshCw, 
-  Users, 
-  FileText, 
-  BarChart3, 
-  Shield,
-  GitBranch,
-  Download,
-  Eye
-} from 'lucide-react';
+  GearIcon, 
+  DatabaseIcon, 
+  ArrowsClockwiseIcon, 
+  UsersIcon, 
+  FileTextIcon, 
+  ChartBarIcon, 
+  ShieldIcon,
+  GitBranchIcon,
+  DownloadIcon,
+  EyeIcon
+} from "@phosphor-icons/react";
 
 interface AdminStats {
   ruleCount: number;
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
     {
       title: 'Rule Synchronization',
       description: 'Sync rules from GitHub, view sync logs, and manage rule database',
-      icon: RefreshCw,
+      icon: ArrowsClockwiseIcon,
       href: '/admin/sync',
       color: 'from-primary to-primary/80',
       stats: [`${stats.ruleCount} rules`, `${stats.categoryCount} categories`]
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
     {
       title: 'User Management',
       description: 'Manage user accounts, permissions, and admin access',
-      icon: Users,
+      icon: UsersIcon,
       href: '/admin/users',
       color: 'from-secondary to-secondary/80',
       stats: [`${stats.userCount} users`, 'Roles & permissions']
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
     {
       title: 'Analytics & Reports',
       description: 'View usage statistics, download reports, and monitor system health',
-      icon: BarChart3,
+      icon: ChartBarIcon,
       href: '/admin/analytics',
       color: 'from-accent to-accent/80',
       stats: ['Usage metrics', 'Performance data']
@@ -104,15 +104,15 @@ export default function AdminDashboard() {
     {
       title: 'Content Management',
       description: 'Manage rules, categories, and content moderation',
-      icon: FileText,
+      icon: FileTextIcon,
       href: '/admin/content',
       color: 'from-muted-foreground to-muted-foreground/80',
       stats: ['Content review', 'Category management']
     },
     {
-      title: 'System Settings',
+      title: 'System Gear',
       description: 'Configure system settings, API keys, and application behavior',
-      icon: Settings,
+      icon: GearIcon,
       href: '/admin/settings',
       color: 'from-muted to-muted/80',
       stats: ['Configuration', 'Environment']
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
     {
       title: 'Database Management',
       description: 'Database backups, migrations, and direct database access',
-      icon: Database,
+      icon: DatabaseIcon,
       href: '/admin/database',
       color: 'from-destructive to-destructive/80',
       stats: ['Backups', 'Migrations']
@@ -142,13 +142,13 @@ export default function AdminDashboard() {
     return (
       <div className="container py-10">
         <Alert variant="destructive">
-          <Shield className="h-4 w-4" />
+          <ShieldIcon className="h-4 w-4" />
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <div className="mt-6">
           <Button variant="outline" onClick={() => router.push('/')}>
-            Return to Home
+            Return to House
           </Button>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
         <div className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center">
-              <Shield className="w-6 h-6 text-white" />
+              <ShieldIcon className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-primary" />
+                  <FileTextIcon className="w-4 h-4 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.ruleCount}</p>
                     <p className="text-xs text-muted-foreground">Rules</p>
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Database className="w-4 h-4 text-secondary" />
+                  <DatabaseIcon className="w-4 h-4 text-secondary" />
                   <div>
                     <p className="text-2xl font-bold">{stats.categoryCount}</p>
                     <p className="text-xs text-muted-foreground">Categories</p>
@@ -199,7 +199,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-accent" />
+                  <UsersIcon className="w-4 h-4 text-accent" />
                   <div>
                     <p className="text-2xl font-bold">{stats.userCount}</p>
                     <p className="text-xs text-muted-foreground">Users</p>
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 text-muted-foreground" />
+                  <ArrowsClockwiseIcon className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-bold">
                       {stats.lastSyncDate 
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${action.color} flex items-center justify-center shadow-md`}>
-                    <action.icon className="w-5 h-5 text-white" />
+                      <action.icon className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <CardTitle className="text-base">{action.title}</CardTitle>
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
                       size="sm" 
                       className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                     >
-                      <Eye className="w-4 h-4 mr-2" />
+                      <EyeIcon className="w-4 h-4 mr-2" />
                       Access
                     </Button>
                   </Link>
@@ -283,18 +283,18 @@ export default function AdminDashboard() {
             <div className="flex flex-wrap gap-3">
               <Link href="/admin/sync">
                 <Button variant="outline" size="sm">
-                  <RefreshCw className="w-4 h-4 mr-2" />
+                  <ArrowsClockwiseIcon className="w-4 h-4 mr-2" />
                   Sync Rules
                 </Button>
               </Link>
               <Link href="/setup">
                 <Button variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
+                  <DownloadIcon className="w-4 h-4 mr-2" />
                   Test Setup Wizard
                 </Button>
               </Link>
               <Button variant="outline" size="sm" onClick={checkAuthAndLoadStats}>
-                <BarChart3 className="w-4 h-4 mr-2" />
+                <ChartBarIcon className="w-4 h-4 mr-2" />
                 Refresh Stats
               </Button>
             </div>

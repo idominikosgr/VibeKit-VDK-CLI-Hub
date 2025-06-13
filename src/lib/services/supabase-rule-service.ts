@@ -1,5 +1,5 @@
 // Supabase-specific implementation of rule service - FIXED SCHEMA ALIGNMENT
-import { createServerSupabaseClient } from '../supabase/server-client';
+import { createDatabaseSupabaseClient } from '../supabase/server-client';
 import { Database } from '../supabase/database.types';
 import { Rule, RuleCategory, PaginatedResult } from '../types';
 import { ApiError } from '../error-handling';
@@ -102,7 +102,7 @@ function handleDatabaseError(error: any, operation: string): ApiError {
  */
 export async function getRuleCategories(): Promise<RuleCategory[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Get categories without join to prevent serialization issues
     const { data, error } = await supabase
@@ -144,7 +144,7 @@ export async function getRuleCategories(): Promise<RuleCategory[]> {
  */
 export async function getCategory(category_idOrSlug: string): Promise<RuleCategory | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // First try to find by slug (most common case) - Remove join to prevent serialization issues
     let { data, error } = await supabase
@@ -201,7 +201,7 @@ export async function getRulesByCategory(
   searchQuery?: string
 ): Promise<PaginatedResult<Rule>> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // First, resolve the category
     const category = await getCategory(category_idOrSlug);
@@ -275,7 +275,7 @@ export async function getRulesByCategory(
  */
 export async function getRule(ruleIdOrSlug: string): Promise<Rule | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // First try to find by slug (most common case)
     let { data: rule, error } = await supabase
@@ -320,7 +320,7 @@ export async function getRule(ruleIdOrSlug: string): Promise<Rule | null> {
  */
 export async function findRuleByIdentifier(identifier: string): Promise<Rule | null> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Try multiple ways to find the rule - first by slug - FIXED: Remove join
     let { data: rule, error } = await supabase
@@ -379,7 +379,7 @@ export async function getAllRules(
   pageSize: number = 20
 ): Promise<PaginatedResult<Rule>> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     
     // Build count query
     const { count: totalCount, error: countError } = await supabase
@@ -433,7 +433,7 @@ export async function getAllRules(
 }
 
 /**
- * Search for rules across all categories
+ * MagnifyingGlass for rules across all categories
  */
 export async function searchRules(
   query: string,
@@ -446,7 +446,7 @@ export async function searchRules(
       return getAllRules(page, pageSize);
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const safeQuery = query.trim().replace(/[%_]/g, '');
 
     // Build count query
@@ -513,7 +513,7 @@ export async function searchRules(
  */
 export async function incrementRuleDownloads(ruleId: string): Promise<void> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { error } = await supabase.rpc('increment_rule_downloads', {
       target_rule_id: ruleId
     });
@@ -533,7 +533,7 @@ export async function incrementRuleDownloads(ruleId: string): Promise<void> {
  */
 export async function voteForRule(ruleId: string, userId: string): Promise<void> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { error } = await supabase.rpc('vote_for_rule', {
       target_rule_id: ruleId
     });
@@ -553,7 +553,7 @@ export async function voteForRule(ruleId: string, userId: string): Promise<void>
  */
 export async function removeRuleVote(ruleId: string, userId: string): Promise<void> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { error } = await supabase.rpc('remove_rule_vote', {
       target_rule_id: ruleId
     });
@@ -572,7 +572,7 @@ export async function removeRuleVote(ruleId: string, userId: string): Promise<vo
  */
 export async function getPopularRules(limit: number = 10): Promise<Rule[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { data, error } = await supabase.rpc('get_popular_rules', {
       limit_count: limit
     });
@@ -593,7 +593,7 @@ export async function getPopularRules(limit: number = 10): Promise<Rule[]> {
  */
 export async function getRulesByCategorySlug(categorySlug: string): Promise<Rule[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { data, error } = await supabase.rpc('get_rules_by_category', {
       category_slug: categorySlug
     });
@@ -610,7 +610,7 @@ export async function getRulesByCategorySlug(categorySlug: string): Promise<Rule
 }
 
 /**
- * Search rules using the stored procedure
+ * MagnifyingGlass rules using the stored procedure
  */
 export async function searchRulesWithFunction(
   searchQuery: string,
@@ -618,7 +618,7 @@ export async function searchRulesWithFunction(
   tags?: string[]
 ): Promise<Rule[]> {
   try {
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const { data, error } = await supabase.rpc('search_rules', {
       search_query: searchQuery,
       category_slug: categorySlug || undefined,

@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutGrid, List } from "lucide-react"
+import { GridFourIcon, ListIcon  } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -20,7 +20,7 @@ export function ViewToggle({ view, onViewChange, className }: ViewToggleProps) {
         className="h-7 px-2"
         aria-label="Card view"
       >
-        <LayoutGrid className="h-4 w-4" />
+        <GridFourIcon className="h-4 w-4" />
       </Button>
       <Button
         variant={view === "details" ? "default" : "ghost"}
@@ -29,7 +29,7 @@ export function ViewToggle({ view, onViewChange, className }: ViewToggleProps) {
         className="h-7 px-2"
         aria-label="Detail view"
       >
-        <List className="h-4 w-4" />
+        <ListIcon className="h-4 w-4" />
       </Button>
     </div>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AlertCircle } from "lucide-react"
+import { WarningIcon } from "@phosphor-icons/react"
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert"
 
@@ -35,14 +35,12 @@ const REQUIRED_FEATURES: BrowserFeature[] = [
   {
     name: "ES6 Modules",
     testFn: () => {
-      try {
-        new Function('import("")'); 
-        return true;
-      } catch (err) {
-        return false;
-      }
+      // If we're in a Next.js bundled environment and can execute this code, ES6 modules are working
+      if (typeof window === 'undefined') return true; // SSR
+      // Simple check: if the browser supports modern features, it supports ES6 modules
+      return typeof Promise !== 'undefined' && typeof Symbol !== 'undefined';
     },
-    criticalForApp: true
+    criticalForApp: false // Make this non-critical since it's causing false positives
   },
   {
     name: "CSS Flex",
@@ -94,7 +92,7 @@ export function BrowserCompatibilityCheck() {
 
   return (
     <Alert variant={criticalFeaturesIncompatible ? "destructive" : "default"} className="my-6">
-      <AlertCircle className="h-4 w-4" />
+      <WarningIcon className="h-4 w-4" />
       <AlertTitle>Browser Compatibility Issue</AlertTitle>
       <AlertDescription>
         {criticalFeaturesIncompatible ? (

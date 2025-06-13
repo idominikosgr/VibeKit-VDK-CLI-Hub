@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Rule } from '@/lib/types';
 import { Icons } from '@/components/icons';
+import { ThumbsUpIcon } from '@phosphor-icons/react';
 
 export interface RulePreviewProps {
   rule: Rule;
@@ -48,7 +49,7 @@ export function RulePreview({ rule, showCategory = false }: RulePreviewProps) {
             <CardTitle className="line-clamp-2">{rule.title}</CardTitle>
             {votes > 0 && (
               <div className="flex items-center gap-1 text-sm">
-                <Icons.thumbsUp className="h-3.5 w-3.5 text-success" />
+                <ThumbsUpIcon className="h-3.5 w-3.5 text-success" />
                 <span>{votes}</span>
               </div>
             )}

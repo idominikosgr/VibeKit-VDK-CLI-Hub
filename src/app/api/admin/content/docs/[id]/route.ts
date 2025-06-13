@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase/server-client';
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client';
 import { requireAdmin } from '@/lib/middleware/require-admin';
 
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
     if (adminCheck) return adminCheck;
 
     const { id } = await params;
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     const { data: page, error } = await supabase
       .from('documentation_pages')
@@ -64,7 +64,7 @@ export async function PUT(
     if (adminCheck) return adminCheck;
 
     const { id } = await params;
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
     const body = await request.json();
 
     const {
@@ -176,7 +176,7 @@ export async function DELETE(
     if (adminCheck) return adminCheck;
 
     const { id } = await params;
-    const supabase = await createServerSupabaseClient();
+    const supabase = await createDatabaseSupabaseClient();
 
     // Check if page has children
     const { data: children, error: childrenError } = await supabase

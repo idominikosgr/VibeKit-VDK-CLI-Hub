@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient } from '@/lib/supabase/server-client'
+import { createDatabaseSupabaseClient } from '@/lib/supabase/server-client'
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient()
+    const supabase = await createDatabaseSupabaseClient()
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q')
 
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ pages: [] })
     }
 
-    // Search in title and content
+    // MagnifyingGlass in title and content
     const { data: pages, error } = await supabase
       .from('document_pages')
       .select('*')

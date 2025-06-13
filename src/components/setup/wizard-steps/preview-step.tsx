@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { WizardStepProps } from './types'
-import { Download, Package, FileText, Terminal } from 'lucide-react'
+import { DownloadIcon, PackageIcon, FileTextIcon, TerminalIcon } from "@phosphor-icons/react"
 import { generateRulePackage } from '@/lib/actions/rule-actions'
 import { toast } from 'sonner'
 
@@ -68,11 +68,11 @@ export function PreviewStep({
   const getOutputFormatIcon = () => {
     switch (data.environmentDetails.outputFormat) {
       case 'bash':
-        return <Terminal className="h-5 w-5" />
+        return <TerminalIcon className="h-5 w-5" />
       case 'config':
-        return <FileText className="h-5 w-5" />
+        return <FileTextIcon className="h-5 w-5" />
       default:
-        return <Package className="h-5 w-5" />
+        return <PackageIcon className="h-5 w-5" />
     }
   }
 
@@ -170,10 +170,10 @@ export function PreviewStep({
             </CardContent>
           </Card>
 
-          {/* Environment Settings */}
+          {/* Environment Gear */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Environment Settings</CardTitle>
+              <CardTitle className="text-base">Environment Gear</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -246,7 +246,7 @@ export function PreviewStep({
                       </>
                     ) : (
                       <>
-                        <Package className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
+                        <PackageIcon className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
                         <span className="relative z-10 drop-shadow-sm">Generate Rules Package</span>
                       </>
                     )}
@@ -288,7 +288,7 @@ export function PreviewStep({
                     }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-500/25 via-emerald-500/20 to-teal-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <Download className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
+                    <DownloadIcon className="h-4 w-4 mr-2 relative z-10 drop-shadow-sm" />
                     <span className="relative z-10 drop-shadow-sm">Download Package</span>
                   </Button>
                 </>

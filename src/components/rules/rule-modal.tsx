@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Clipboard, Download, ThumbsUp, Calendar, Tag } from 'lucide-react';
+import { ClipboardTextIcon, DownloadIcon, ThumbsUpIcon, CalendarIcon, TagIcon } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icons } from '@/components/icons';
 import { Rule } from '@/lib/types';
@@ -182,7 +182,7 @@ export function RuleModal({ rule, open, onOpenChange }: RuleModalProps) {
   const hasCompatibility = hasCompatibilityData(rule.compatibility);
 
   // Handle copying rule content to clipboard
-  const copyToClipboard = async () => {
+  const copyToClipboardText = async () => {
     try {
       await navigator.clipboard.writeText(safeRule.content);
       toast.success('Rule content copied to clipboard');
@@ -417,25 +417,25 @@ ${safeRule.content}`;
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Last Updated:</span>
                   <span>{formattedDate}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
-                  <Download className="h-4 w-4 text-muted-foreground" />
+                  <DownloadIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Downloads:</span>
                   <span>{safeRule.downloads}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
-                  <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                  <ThumbsUpIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Votes:</span>
                   <span>{voteCount}</span>
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm">
-                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <TagIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium text-muted-foreground">Version:</span>
                   <span>{safeRule.version}</span>
                 </div>
@@ -464,10 +464,10 @@ ${safeRule.content}`;
                 <Button 
                   variant="outline" 
                   className="w-full justify-start" 
-                  onClick={copyToClipboard}
+                  onClick={copyToClipboardText}
                 >
-                  <Clipboard className="h-4 w-4 mr-2" />
-                  Copy to Clipboard
+                  <ClipboardTextIcon className="h-4 w-4 mr-2" />
+                  Copy to ClipboardText
                 </Button>
                 <Button 
                   variant="outline" 
@@ -475,7 +475,7 @@ ${safeRule.content}`;
                   onClick={downloadRule}
                   disabled={downloading}
                 >
-                  <Download className="h-4 w-4 mr-2" />
+                  <DownloadIcon className="h-4 w-4 mr-2" />
                   {downloading ? 'Downloading...' : 'Download Rule'}
                 </Button>
                 <Button 
@@ -487,7 +487,7 @@ ${safeRule.content}`;
                   {isVoting ? (
                     <Icons.loader className="h-4 w-4 mr-2 animate-spin" />
                   ) : (
-                    <ThumbsUp className="h-4 w-4 mr-2" />
+                    <ThumbsUpIcon className="h-4 w-4 mr-2" />
                   )}
                   {isVoting ? "Processing..." : hasVoted ? "Remove Vote" : "Vote for this Rule"}
                 </Button>

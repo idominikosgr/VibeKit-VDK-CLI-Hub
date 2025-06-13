@@ -196,7 +196,7 @@ function ChartTooltipContent({
                 formatter(item.value, item.name, item, index, item.payload)
               ) : (
                 <>
-                  {itemConfig?.icon ? (
+                  {itemConfig?.icon && typeof itemConfig.icon === 'function' ? (
                     <itemConfig.icon />
                   ) : (
                     !hideIndicator && (
@@ -286,7 +286,7 @@ function ChartLegendContent({
               "[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3"
             )}
           >
-            {itemConfig?.icon && !hideIcon ? (
+            {itemConfig?.icon && !hideIcon && typeof itemConfig.icon === 'function' ? (
               <itemConfig.icon />
             ) : (
               <div

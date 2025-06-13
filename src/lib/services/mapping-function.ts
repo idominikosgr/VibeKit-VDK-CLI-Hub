@@ -10,7 +10,7 @@ interface RuleCompatibility {
   ides?: string[];
   aiAssistants?: string[];
   frameworks?: string[];
-  mcpServers?: string[];
+  mcpDatabases?: string[];
 }
 
 /**

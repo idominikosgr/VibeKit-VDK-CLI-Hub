@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { uploadAvatar, removeAvatar, generateAvatarFromInitials, AvatarUploadResult } from '@/lib/services/avatar-service';
-import { Upload, Camera, Trash2, RefreshCw, User, Sparkles } from 'lucide-react';
+import { UploadIcon, CameraIcon, TrashIcon, ArrowsClockwiseIcon, UserIcon, SparkleIcon } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AvatarUploadProps {
@@ -166,7 +166,7 @@ export function AvatarUpload({
                   animate={{ opacity: 1 }}
                   className="absolute inset-0 bg-background/80 rounded-full flex items-center justify-center"
                 >
-                  <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+                  <ArrowsClockwiseIcon className="w-6 h-6 animate-spin text-primary" />
                 </motion.div>
               )}
             </div>
@@ -184,7 +184,7 @@ export function AvatarUpload({
           {/* Upload Section */}
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center gap-2">
-              <Camera className="w-4 h-4" />
+              <CameraIcon className="w-4 h-4" />
               Upload Photo
             </Label>
             
@@ -210,7 +210,7 @@ export function AvatarUpload({
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-2"
                   >
-                    <Upload className="w-8 h-8 mx-auto text-primary" />
+                    <UploadIcon className="w-8 h-8 mx-auto text-primary" />
                     <p className="text-sm font-medium text-primary">Drop image here</p>
                   </motion.div>
                 ) : (
@@ -221,7 +221,7 @@ export function AvatarUpload({
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-2"
                   >
-                    <Upload className="w-8 h-8 mx-auto text-muted-foreground" />
+                    <UploadIcon className="w-8 h-8 mx-auto text-muted-foreground" />
                     <p className="text-sm font-medium">Click to upload or drag image here</p>
                     <p className="text-xs text-muted-foreground">
                       JPEG, PNG, WebP, or GIF (max 2MB)
@@ -251,7 +251,7 @@ export function AvatarUpload({
               disabled={isUploading}
               className="w-full h-12 border-2 hover:bg-primary/5 dark:hover:bg-primary/10"
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <SparkleIcon className="w-4 h-4 mr-2" />
               Generate New Avatar
             </Button>
 
@@ -262,7 +262,7 @@ export function AvatarUpload({
                 disabled={isUploading}
                 className="w-full h-12 border-2 border-destructive/50 text-destructive hover:bg-destructive/5 dark:hover:bg-destructive/10"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
+                <TrashIcon className="w-4 h-4 mr-2" />
                 Remove Avatar
               </Button>
             )}

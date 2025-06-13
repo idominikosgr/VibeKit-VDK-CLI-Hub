@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ChevronRight, Download, File, Folder } from "lucide-react"
+import { CaretRightIcon, DownloadIcon, FileIcon, FolderIcon } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -28,7 +28,7 @@ type SetupFormValues = {
     aitools: boolean
   }
   installationMethod: string
-  mcpServers: string[]
+  mcpDatabases: string[]
   versionConstraints?: {
     minVersion?: string
     maxVersion?: string
@@ -107,7 +107,7 @@ export function SetupPreview({ config }: { config: SetupFormValues | null }) {
         category_id = 'tasks';
       }
 
-      console.log(`Searching for rule with query: ${searchQuery}, category: ${category_id}`);
+      console.log(`MagnifyingGlassing for rule with query: ${searchQuery}, category: ${category_id}`);
 
       // Try multiple approaches to find a suitable rule
       let rule;
@@ -357,12 +357,12 @@ ${rule.content}`;
                       <div className="flex items-center">
                         {item.type === "folder" ? (
                           <>
-                            <Folder className="h-4 w-4 mr-2 text-primary" />
+                            <FolderIcon className="h-4 w-4 mr-2 text-primary" />
                             <span className="font-medium">{item.name}/</span>
                           </>
                         ) : (
                           <>
-                            <File className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <FileIcon className="h-4 w-4 mr-2 text-muted-foreground" />
                             <span>{item.name}</span>
                           </>
                         )}
@@ -379,7 +379,7 @@ ${rule.content}`;
             </Card>
           ) : (
             <div className="flex flex-col items-center justify-center p-8 text-center">
-              <File className="h-16 w-16 text-muted-foreground/50 mb-4" />
+              <FileIcon className="h-16 w-16 text-muted-foreground/50 mb-4" />
               <h3 className="mb-2 text-xl font-medium">No Configuration Found</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 Complete the configuration to preview files
@@ -433,7 +433,7 @@ ${rule.content}`;
                   <>Downloading...</>
                 ) : (
                   <>
-                    <Download className="mr-2 h-4 w-4" />
+                    <DownloadIcon className="mr-2 h-4 w-4" />
                     Download Package
                   </>
                 )}

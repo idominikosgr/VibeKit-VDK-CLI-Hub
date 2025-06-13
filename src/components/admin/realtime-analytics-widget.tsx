@@ -5,21 +5,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Icons } from '@/components/icons';
 import { useRealtimeAnalytics } from '@/lib/hooks/use-realtime-analytics';
-import { useRealtimeVoteActivity } from '@/lib/hooks/use-realtime-votes';
+import { useRealtimeVotePulse } from '@/lib/hooks/use-realtime-votes';
 import { 
-  Activity, 
-  Download, 
-  ThumbsUp, 
-  UserPlus, 
-  Wifi, 
-  WifiOff,
-  TrendingUp
-} from 'lucide-react';
+  PulseIcon, 
+  DownloadIcon, 
+  ThumbsUpIcon, 
+  UserPlusIcon, 
+
+  TrendUpIcon,
+  UsersIcon,
+  ChartBarIcon,
+  WifiHighIcon,
+  WifiXIcon,
+  ClockIcon,
+  CpuIcon,
+  DatabaseIcon,
+  CheckCircleIcon,
+  WarningIcon,
+  ArrowsClockwiseIcon,
+  CircleNotchIcon,
+  LightningIcon,
+  GlobeIcon
+} from "@phosphor-icons/react";
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function RealtimeAnalyticsWidget() {
   const { analytics, isConnected: analyticsConnected, setAnalytics } = useRealtimeAnalytics();
-  const { recentVotes, isConnected: votesConnected } = useRealtimeVoteActivity();
+  const { recentVotes, isConnected: votesConnected } = useRealtimeVotePulse();
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   // Load initial data
@@ -33,7 +45,7 @@ export function RealtimeAnalyticsWidget() {
             totalRules: data.overview.totalRules,
             totalUsers: data.overview.totalUsers,
             totalDownloads: data.overview.totalDownloads,
-            recentActivity: []
+            recentPulse: []
           });
           setInitialDataLoaded(true);
         }
@@ -47,20 +59,20 @@ export function RealtimeAnalyticsWidget() {
 
   const isConnected = analyticsConnected && votesConnected;
 
-  const getActivityIcon = (type: string) => {
+  const getPulseIcon = (type: string) => {
     switch (type) {
       case 'download':
-        return <Download className="w-3 h-3" />;
+        return <DownloadIcon className="w-3 h-3" />;
       case 'vote':
-        return <ThumbsUp className="w-3 h-3" />;
+        return <ThumbsUpIcon className="w-3 h-3" />;
       case 'user_signup':
-        return <UserPlus className="w-3 h-3" />;
+        return <UserPlusIcon className="w-3 h-3" />;
       default:
-        return <Activity className="w-3 h-3" />;
+        return <PulseIcon className="w-3 h-3" />;
     }
   };
 
-  const getActivityColor = (type: string) => {
+  const getPulseColor = (type: string) => {
     switch (type) {
       case 'download':
         return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
@@ -93,14 +105,14 @@ export function RealtimeAnalyticsWidget() {
             <div className="flex items-center gap-2">
               {isConnected ? (
                 <>
-                  <Wifi className="w-4 h-4 text-green-500" />
+                  <WifiHighIcon className="w-4 h-4 text-green-500" />
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                     Live
                   </Badge>
                 </>
               ) : (
                 <>
-                  <WifiOff className="w-4 h-4 text-red-500" />
+                  <WifiXIcon className="w-4 h-4 text-red-500" />
                   <Badge variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
                     Offline
                   </Badge>
@@ -152,19 +164,19 @@ export function RealtimeAnalyticsWidget() {
         </CardContent>
       </Card>
 
-      {/* Recent Activity Feed */}
+      {/* Recent Pulse Feed */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Live Activity Feed
+            <TrendUpIcon className="w-4 h-4" />
+            Live Pulse Feed
           </CardTitle>
           <CardDescription>Real-time user interactions</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             <AnimatePresence mode="popLayout">
-              {analytics.recentActivity.length === 0 && recentVotes.length === 0 ? (
+              {analytics.recentPulse.length === 0 && recentVotes.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">
                   No recent activity...
                 </p>
@@ -180,8 +192,8 @@ export function RealtimeAnalyticsWidget() {
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                       className="flex items-center gap-3 p-2 rounded-lg bg-muted/50"
                     >
-                      <div className={`p-1.5 rounded-full ${getActivityColor('vote')}`}>
-                        {getActivityIcon('vote')}
+                      <div className={`p-1.5 rounded-full ${getPulseColor('vote')}`}>
+                        {getPulseIcon('vote')}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">
@@ -198,7 +210,7 @@ export function RealtimeAnalyticsWidget() {
                   ))}
                   
                   {/* Show other activity from general analytics hook */}
-                  {analytics.recentActivity.slice(0, 5).map((activity, index) => (
+                  {analytics.recentPulse.slice(0, 5).map((activity, index) => (
                     <motion.div
                       key={`activity-${activity.ruleId}-${activity.timestamp}-${index}`}
                       initial={{ opacity: 0, x: -20, scale: 0.95 }}
@@ -207,8 +219,8 @@ export function RealtimeAnalyticsWidget() {
                       transition={{ duration: 0.3, delay: index * 0.05 }}
                       className="flex items-center gap-3 p-2 rounded-lg bg-muted/50"
                     >
-                      <div className={`p-1.5 rounded-full ${getActivityColor(activity.type)}`}>
-                        {getActivityIcon(activity.type)}
+                      <div className={`p-1.5 rounded-full ${getPulseColor(activity.type)}`}>
+                        {getPulseIcon(activity.type)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium capitalize">
