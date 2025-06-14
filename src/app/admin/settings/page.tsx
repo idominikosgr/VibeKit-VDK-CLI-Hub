@@ -226,7 +226,7 @@ export default function SystemGearPage() {
                 ) : (
                   <FloppyDiskIcon className="h-4 w-4 mr-2" />
                 )}
-                FloppyDisk Changes
+                Save Changes
               </Button>
             </div>
           </div>

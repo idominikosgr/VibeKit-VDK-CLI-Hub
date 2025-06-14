@@ -362,7 +362,7 @@ export async function generateRulePackage(formData: FormData) {
       customRequirements: formData.get('customRequirements') as string || null
     };
 
-    // FloppyDisk wizard configuration using snake_case field names
+    // Save wizard configuration using snake_case field names
     const { data: configData, error: configError } = await supabase
       .from('wizard_configurations')
       .insert({

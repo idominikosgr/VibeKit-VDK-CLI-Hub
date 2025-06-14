@@ -9,7 +9,7 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 
 - **📚 Rule Catalog**: Browse comprehensive collection of AI development rules by category
 - **🔍 Advanced Search**: Search rules by title, content, tags, and compatibility
-- **⚙️ Setup Wizard**: Interactive configuration for project-specific rule packages  
+- **⚙️ Rule Generator**: Interactive configuration for project-specific rule packages  
 - **👤 User Management**: Authentication, profiles, and personal rule collections
 - **📦 Package Generation**: Download customized rule packages for your development stack
 - **🔄 GitHub Integration**: Automatic synchronization with rule repositories
@@ -63,7 +63,7 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 │   ├── collections/           # Collection management
 │   ├── rules/                 # Rule-specific components
 │   ├── search/                # Search functionality
-│   ├── setup/                 # Setup wizard components
+│   ├── setup/                 # Rule Generator components
 │   └── ui/                    # Reusable UI components (shadcn/ui)
 ├── lib/                       # Utilities and services
 │   ├── actions/               # Server actions

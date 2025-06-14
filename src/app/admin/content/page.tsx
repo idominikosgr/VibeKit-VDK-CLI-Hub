@@ -286,7 +286,7 @@ export default function ContentManagementPage() {
                   <div className="relative flex-1">
                     <MagnifyingGlassIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="MagnifyingGlass rules..."
+                      placeholder="Search rules..."
                       value={searchTerm}
                       onChange={(e) => setMagnifyingGlassTerm(e.target.value)}
                       className="pl-8"
@@ -415,7 +415,7 @@ export default function ContentManagementPage() {
                           <div className="flex items-center gap-1 pt-2">
                             <Button variant="outline" size="sm">
                               <PencilSimpleIcon className="h-3 w-3 mr-1" />
-                              PencilSimple
+                              Edit
                             </Button>
                             <Button variant="outline" size="sm">
                               <TrashIcon className="h-3 w-3 mr-1" />

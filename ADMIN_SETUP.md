@@ -1,4 +1,4 @@
-# Admin Dashboard & Setup Wizard Guide
+# Admin Dashboard & Rule Generator Guide
 
 ## 🔑 Admin Dashboard Access
 
@@ -51,9 +51,9 @@ INSERT INTO public.admins (email) VALUES ('your-email@example.com');
 - 📝 **Sync Logs**: Paginated history of all sync operations
 - 🧹 **Cleanup Options**: Remove orphaned rules during sync
 
-## 🧙‍♂️ Setup Wizard Testing
+## 🧙‍♂️ Rule Generator Testing
 
-### Accessing the Setup Wizard
+### Accessing the Rule Generator
 1. Navigate to `/setup`
 2. Complete the multi-step wizard:
    - **Project Info**: Name and description
@@ -72,7 +72,7 @@ INSERT INTO public.admins (email) VALUES ('your-email@example.com');
 
 #### Testing Package Generation
 
-##### Via Setup Wizard UI
+##### Via Rule Generator UI
 1. Go to `/setup`
 2. Complete all steps
 3. Click "Generate Package" in the final step
@@ -94,7 +94,7 @@ curl -X POST http://localhost:3000/api/setup/generate \
   }'
 ```
 
-### Setup Wizard Features
+### Rule Generator Features
 
 #### Smart Rule Matching
 - Rules are matched based on your technology stack
@@ -132,7 +132,7 @@ GITHUB_REPO_NAME=ai.rules
 3. Protected routes check admin status
 4. Middleware handles unauthorized access
 
-### Setup Wizard Flow
+### Rule Generator Flow
 1. Multi-step form collection
 2. Rule matching algorithm
 3. Package generation engine
@@ -145,7 +145,7 @@ GITHUB_REPO_NAME=ai.rules
 - [ ] Add admin users using script
 - [ ] Test admin dashboard access
 - [ ] Verify rule sync functionality
-- [ ] Test setup wizard generation
+- [ ] Test Rule Generator generation
 
 ### Regular Maintenance
 - [ ] Monitor sync logs for errors
@@ -174,9 +174,9 @@ GITHUB_REPO_NAME=ai.rules
    - Click "Rule Synchronization"
    - Click "Sync Now"
 
-4. **Test Setup Wizard**:
+4. **Test Rule Generator**:
    - Go to `/setup`
    - Complete wizard steps
    - Generate a test package
 
-That's it! You now have full access to the admin functions and setup wizard. 🎉 
+That's it! You now have full access to the admin functions and Rule Generator. 🎉 

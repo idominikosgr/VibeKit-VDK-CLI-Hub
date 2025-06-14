@@ -28,7 +28,7 @@ export default function TermsPage() {
         <ul>
           <li>Access to a comprehensive catalog of coding rules</li>
           <li>Tools for creating and managing custom rule collections</li>
-          <li>Setup wizards for AI coding assistants</li>
+          <li>Rule Generators for AI coding assistants</li>
           <li>Community features for sharing and discovering rules</li>
         </ul>
       </LegalSection>

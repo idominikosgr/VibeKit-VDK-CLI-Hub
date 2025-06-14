@@ -347,7 +347,7 @@ export default function AnalyticsPage() {
           <TabsList>
             <TabsTrigger value="rules">Rule Analytics</TabsTrigger>
             <TabsTrigger value="users">User Pulse</TabsTrigger>
-            <TabsTrigger value="wizard">Setup Wizard</TabsTrigger>
+            <TabsTrigger value="wizard">Rule Generator</TabsTrigger>
             <TabsTrigger value="sync">Sync Performance</TabsTrigger>
           </TabsList>
 
@@ -576,7 +576,7 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Popular Tech Stacks</CardTitle>
-                  <CardDescription>Most selected technologies in setup wizard</CardDescription>
+                  <CardDescription>Most selected technologies in Rule Generator</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ChartContainer
@@ -667,7 +667,7 @@ export default function AnalyticsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Setup Wizard Summary</CardTitle>
+                <CardTitle>Rule Generator Summary</CardTitle>
                 <CardDescription>Overall wizard usage statistics</CardDescription>
               </CardHeader>
               <CardContent>

@@ -343,7 +343,7 @@ export default function UserManagementPage() {
                 <div className="relative">
                   <MagnifyingGlassIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="MagnifyingGlass users..."
+                    placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setMagnifyingGlassTerm(e.target.value)}
                     className="pl-8 w-64"

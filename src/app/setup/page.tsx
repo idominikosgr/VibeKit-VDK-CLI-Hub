@@ -18,12 +18,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24
-    }
+    y: 0
   }
 };
 
@@ -94,7 +89,7 @@ export default function SetupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                Setup Wizard
+                Rule Generator
               </motion.h1>
               
               <motion.p 

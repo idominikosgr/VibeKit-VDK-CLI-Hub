@@ -15,8 +15,7 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 24 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }
+    y: 0
   }
 }
 
@@ -308,7 +307,7 @@ const VibeFeatureCard = ({
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: 0.6, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       onMouseMove={handleMouseMove}
@@ -1052,7 +1051,7 @@ export default function MainLandingPage() {
                     <CardTitle>Multi-Platform Support</CardTitle>
                     <CardDescription>
                       Works seamlessly with Cursor, VS Code, WebStorm, GitHub Copilot, Claude, and any AI assistant. 
-                      Interactive setup wizard automatically configures rules for your specific technology stack.
+                      Interactive Rule Generator automatically configures rules for your specific technology stack.
                     </CardDescription>
                   </CardHeader>
                 </Card>

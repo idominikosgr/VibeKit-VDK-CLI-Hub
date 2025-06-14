@@ -26,12 +26,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24
-    }
+    y: 0
   }
 }
 
@@ -200,7 +195,7 @@ export default function CollectionsPage() {
         <CreateCollectionDialog onCollectionCreated={handleCollectionCreated} />
       </motion.div>
 
-      {/* MagnifyingGlass bar */}
+      {/* Search bar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -209,7 +204,7 @@ export default function CollectionsPage() {
       >
         <Icons.search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="MagnifyingGlass collections..."
+          placeholder="Search collections..."
           value={searchQuery}
           onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
           className="pl-10"

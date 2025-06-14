@@ -28,12 +28,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24
-    }
+    y: 0
   }
 }
 
@@ -323,7 +318,7 @@ export default function ProfilePage() {
                       <Link href="/setup">
                         <div className="flex flex-col items-center gap-2">
                           <Icons.settings className="h-6 w-6" />
-                          <span>Setup Wizard</span>
+                          <span>Rule Generator</span>
                         </div>
                       </Link>
                     </Button>
@@ -371,12 +366,12 @@ export default function ProfilePage() {
                       <Icons.download className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-medium mb-2">No packages yet</h3>
                       <p className="text-muted-foreground mb-4">
-                        Generate your first package using the setup wizard
+                        Generate your first package using the Rule Generator
                       </p>
                       <Button asChild>
                         <Link href="/setup">
                           <Icons.settings className="mr-2 h-4 w-4" />
-                          Start Setup Wizard
+                          Start Rule Generator
                         </Link>
                       </Button>
                     </div>

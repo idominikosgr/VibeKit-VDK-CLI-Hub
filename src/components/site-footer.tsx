@@ -92,7 +92,7 @@ export function SiteFooter() {
                     className="text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center gap-2"
                   >
                     <Icons.settings className="h-3 w-3" />
-                    Setup Wizard
+                    Rule Generator
                   </Link>
                 </motion.div>
               </li>
@@ -186,29 +186,7 @@ export function SiteFooter() {
             &copy; {new Date().getFullYear()} Vibe Coding Rules. All rights reserved.
           </p>
           <p className="leading-relaxed">
-            Original DevRules by{" "}
-            <motion.span whileHover={{ scale: 1.05 }} className="inline-block">
-              <a 
-                href="https://github.com/sethrose" 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-primary hover:underline font-medium"
-              >
-                Seth Rose
-              </a>
-            </motion.span>
-            . Vibe Coding Rules Enhancements by{" "}
-            <motion.span whileHover={{ scale: 1.05 }} className="inline-block">
-              <a 
-                href="https://github.com/idominikosgr" 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-primary hover:underline font-medium"
-              >
-                Dominikos Pritis
-              </a>
-            </motion.span>
-            .
+            Built with ❤️ for the developer community
           </p>
         </motion.div>
       </div>

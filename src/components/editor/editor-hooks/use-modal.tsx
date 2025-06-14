@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-export function usePencilSimpleorModal(): [
+export function usePencilSimpleModal(): [
   JSX.Element | null,
   (title: string, showModal: (onClose: () => void) => JSX.Element) => void,
 ] {

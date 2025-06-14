@@ -30,7 +30,7 @@ export interface Breadcrumb {
   icon?: string
 }
 
-// MagnifyingGlass result
+// Search result
 export interface MagnifyingGlassResult {
   id: string
   title: string

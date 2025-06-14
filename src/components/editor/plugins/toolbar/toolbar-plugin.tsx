@@ -8,7 +8,7 @@ import { COMMAND_PRIORITY_CRITICAL, SELECTION_CHANGE_COMMAND } from 'lexical'
 
 import { ToolbarContext } from '@/components/editor/context/toolbar-context'
 
-import { usePencilSimpleorModal } from '@/components/editor/editor-hooks/use-modal'
+import { usePencilSimpleModal } from '@/components/editor/editor-hooks/use-modal'
 
 export function ToolbarPlugin({
   children,
@@ -19,18 +19,18 @@ export function ToolbarPlugin({
 }) {
   const [editor] = useLexicalComposerContext()
 
-  const [activeEditor, setActivePencilSimpleor] = useState(editor)
+  const [activeEditor, setActivePencilSimple] = useState(editor)
   const [blockType, setBlockType] = useState<string>('paragraph')
 
-  const [modal, showModal] = usePencilSimpleorModal()
+  const [modal, showModal] = usePencilSimpleModal()
 
   const $updateToolbar = () => {}
 
   useEffect(() => {
     return activeEditor.registerCommand(
       SELECTION_CHANGE_COMMAND,
-      (_payload, newPencilSimpleor) => {
-        setActivePencilSimpleor(newPencilSimpleor)
+      (_payload, newPencilSimple) => {
+        setActivePencilSimple(newPencilSimple)
         return false
       },
       COMMAND_PRIORITY_CRITICAL

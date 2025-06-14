@@ -22,7 +22,7 @@
     "isolatedModules": true,
     //"verbatimModuleSyntax": true,
 
-    /* Type Checking - Enhanced for 2025 */
+    /* Type Checking */
     "strict": true,
     //"exactOptionalPropertyTypes": true,
     //"noFallthroughCasesInSwitch": true,
@@ -53,7 +53,7 @@
     "incremental": true,
     "assumeChangesOnlyAffectDirectDependencies": true,
 
-    /* Path Mapping - Enhanced for modern project structure */
+    /* Path Mapping */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -68,7 +68,7 @@
       "~/*": ["./public/*"]
     },
 
-    /* Type Definitions - Updated for Next.js 15.3 & React 19 */
+    /* Type Definitions */
     "types": ["node", "@types/react", "@types/react-dom", "@serwist/next/typings"],
 
     /* Next.js Plugin */
@@ -84,7 +84,7 @@
     ]
   },
 
-  /* Enhanced Include Patterns */
+  /*  Include Patterns */
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -108,7 +108,7 @@
     "global.d.ts"
   ],
 
-  /* Enhanced Exclude Patterns */
+  /*  Exclude Patterns */
   "exclude": [
     "node_modules",
     ".next",

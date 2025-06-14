@@ -41,8 +41,8 @@ export function RuleList({ initialRules, onMagnifyingGlass, className }: RuleLis
       
       setRules(results);
     } catch (error) {
-      console.error('MagnifyingGlass failed:', error);
-      setError(error instanceof Error ? error.message : 'MagnifyingGlass failed. Please try again.');
+      console.error('Search failed:', error);
+      setError(error instanceof Error ? error.message : 'Search failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -97,14 +97,14 @@ export function RuleList({ initialRules, onMagnifyingGlass, className }: RuleLis
 
   return (
     <div className={className}>
-      {/* MagnifyingGlass and filters */}
+      {/* Search and filters */}
       <div className="mb-6 space-y-4">
         <form onSubmit={handleMagnifyingGlass} className="flex gap-2">
           <div className="relative flex-1">
             <MagnifyingGlassIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="MagnifyingGlass rules..."
+              placeholder="Search rules..."
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setMagnifyingGlassQuery(e.target.value)}

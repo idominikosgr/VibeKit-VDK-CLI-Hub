@@ -68,11 +68,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             <p className="mt-2 text-lg text-muted-foreground">{category.description}</p>
           </div>
 
-          {/* MagnifyingGlass and filter */}
+          {/* Search and filter */}
           <div className="flex flex-col sm:flex-row justify-between gap-4">
             <div className="w-full max-w-md">
               <MagnifyingGlassBar 
-                placeholder="MagnifyingGlass rules..." 
+                placeholder="Search rules..." 
                 defaultValue={searchQuery}
               />
             </div>

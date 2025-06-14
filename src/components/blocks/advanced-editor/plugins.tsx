@@ -152,7 +152,7 @@ export function Plugins({
         </ToolbarPlugin>
       )}
 
-      {/* PencilSimpleor content */}
+      {/* Editor content */}
       <div className="relative">
         <RichTextPlugin
           contentEditable={

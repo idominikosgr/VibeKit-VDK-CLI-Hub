@@ -62,7 +62,7 @@ export function GlobalMagnifyingGlass({ shortcutKey = "k" }: GlobalMagnifyingGla
           clearTimeout(timeoutId)
           
           if (!response.ok) {
-            throw new Error(`MagnifyingGlass failed with status: ${response.status}`)
+            throw new Error(`Search failed with status: ${response.status}`)
           }
           
           const searchResults: PaginatedResult<Rule> = await response.json()

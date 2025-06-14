@@ -128,7 +128,7 @@ export function RulesCatalogClient() {
           <Link href="/setup">
             <Button className="hover:scale-105 transition-transform duration-200">
               <Icons.settings className="mr-2 h-4 w-4" />
-              Setup Wizard
+              Rule Generator
             </Button>
           </Link>
         </div>
@@ -160,7 +160,7 @@ export function RulesCatalogClient() {
           <div className="flex items-center gap-4">
             <div className="w-full max-w-sm">
               <MagnifyingGlassBar
-                placeholder={tab === "rules" ? "MagnifyingGlass rules..." : "MagnifyingGlass categories..."}
+                placeholder={tab === "rules" ? "Search rules..." : "Search categories..."}
               />
             </div>
             <ViewToggle
@@ -281,7 +281,7 @@ export function RulesCatalogClient() {
                   <Button variant="outline" asChild>
                     <Link href="/setup">
                       <Icons.settings className="mr-2 h-4 w-4" />
-                      Setup Wizard
+                      Rule Generator
                     </Link>
                   </Button>
                 </motion.div>

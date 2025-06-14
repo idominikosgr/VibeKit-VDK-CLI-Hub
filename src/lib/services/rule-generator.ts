@@ -120,7 +120,7 @@ export class RuleGenerationEngine {
    */
   async generatePackage(config: WizardConfigurationInput): Promise<GeneratedPackageOutput> {
     try {
-      // 1. FloppyDisk wizard configuration
+      // 1. Save wizard configuration
       const configId = await this.saveWizardConfiguration(config);
 
       // 2. Get compatible rules based on configuration
@@ -148,7 +148,7 @@ export class RuleGenerationEngine {
   }
 
   /**
-   * FloppyDisk wizard configuration to database
+   * Save wizard configuration to database
    * FIXED: Use correct database field names (snake_case) with proper type mapping
    */
   private async saveWizardConfiguration(config: WizardConfigurationInput): Promise<string> {
@@ -555,7 +555,7 @@ ${rule.content}
 
 ## VS Code Setup
 
-1. FloppyDisk this file in \`.vscode/ai-rules/\`
+1. Save this file in \`.vscode/ai-rules/\`
 2. Reference in your AI prompts or workspace settings
 3. Use with VS Code AI extensions for consistent code generation`;
       

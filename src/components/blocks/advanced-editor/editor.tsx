@@ -16,11 +16,11 @@ import { nodes } from './nodes'
 import { Plugins } from './plugins'
 
 const editorConfig: InitialConfigType = {
-  namespace: 'ShadcnPencilSimpleor',
+  namespace: 'ShadcnPencilSimple',
   theme: editorTheme,
   nodes,
   onError: (error: Error) => {
-    console.error('PencilSimpleor error:', error)
+    console.error('Editor error:', error)
   },
 }
 
@@ -69,7 +69,7 @@ function AutoFloppyDiskPlugin({
   return null
 }
 
-export function PencilSimpleor({
+export function PencilSimple({
   editorState,
   editorSerializedState,
   onChange,

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(serializedResults);
   } catch (error) {
-    console.error('MagnifyingGlass API error:', error);
+    console.error('Search API error:', error);
     return NextResponse.json(
       { error: 'Failed to search rules' },
       { status: 500 }

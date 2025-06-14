@@ -79,7 +79,7 @@ async function getRealAnalyticsData(supabase: any, period: string, days: number,
       .order('created_at', { ascending: false })
       .limit(4);
 
-    // 4. Setup wizard statistics
+    // 4. Rule Generator statistics
     const { data: wizardConfigs } = await supabase
       .from('wizard_configurations')
       .select('stack_choices, output_format, created_at')

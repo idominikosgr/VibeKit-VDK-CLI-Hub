@@ -433,7 +433,7 @@ export async function getAllRules(
 }
 
 /**
- * MagnifyingGlass for rules across all categories
+ * Search for rules across all categories
  */
 export async function searchRules(
   query: string,
@@ -610,7 +610,7 @@ export async function getRulesByCategorySlug(categorySlug: string): Promise<Rule
 }
 
 /**
- * MagnifyingGlass rules using the stored procedure
+ * Search rules using the stored procedure
  */
 export async function searchRulesWithFunction(
   searchQuery: string,

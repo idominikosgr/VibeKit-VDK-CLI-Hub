@@ -143,7 +143,7 @@ export default function ContributePage() {
         <h3>For Rule Contributions</h3>
         <ol>
           <li>Create an account and explore existing rules</li>
-          <li>Use our setup wizard to understand rule formats</li>
+          <li>Use our Rule Generator to understand rule formats</li>
           <li>Start by creating rules for technologies you know well</li>
           <li>Test your rules with your AI assistant before sharing</li>
         </ol>

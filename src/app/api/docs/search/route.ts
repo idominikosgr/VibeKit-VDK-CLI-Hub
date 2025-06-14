@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ pages: [] })
     }
 
-    // MagnifyingGlass in title and content
+    // Search in title and content
     const { data: pages, error } = await supabase
       .from('document_pages')
       .select('*')

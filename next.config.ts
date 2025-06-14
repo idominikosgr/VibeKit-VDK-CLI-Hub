@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
     position: 'bottom-right',
   },
 
-  // Stable features (migrated from experimental)
+  // Stable features 
   bundlePagesRouterDependencies: true,
   serverExternalPackages: [
     'aws-sdk',
@@ -90,19 +90,19 @@ const nextConfig: NextConfig = {
 
   // Experimental features
   experimental: {
-    // React Compiler (now stable with React 19)
+    // React Compiler 
     reactCompiler: {
       compilationMode: 'annotation',
     },
 
-    // Enhanced caching (replaces your manual optimizations)
+    // Enhanced caching 
     staleTimes: {
       dynamic: isDev ? 0 : 30,
       static: isDev ? 30 : 180,
     },
 
     // CSS optimization
-    cssChunking: 'strict',
+    //cssChunking: 'strict',
 
     // Server Actions security
     serverActions: {
@@ -135,11 +135,10 @@ const nextConfig: NextConfig = {
     //dynamicIO: true,
 
     // Cache directive support - Enable "use cache" directive
-    // Temporarily disabled due to createContext build conflicts
     useCache: true,
 
     // Inline CSS - Render <style> tags inline in HTML for imported CSS (app-router, production only)
-    inlineCss: true,
+    //inlineCss: true,
 
     // Server Components HMR Cache - Allows previously fetched data to be re-used when editing server components
     // serverComponentsHmrCache: true, // Default: true in config
@@ -147,7 +146,7 @@ const nextConfig: NextConfig = {
     // === AUTH & SECURITY ===
 
     // Authorization APIs - Enable forbidden() and unauthorized() functions (Next.js 15.1+)
-    // authInterrupts: true,
+    authInterrupts: true,
 
     // === UI & TRANSITIONS ===
 
@@ -179,7 +178,7 @@ const nextConfig: NextConfig = {
     // === REACT & OPTIMIZATION ===
 
     // React optimizations
-    optimizeServerReact: true, // Default: true - Optimize server React
+    //optimizeServerReact: true, // Default: true - Optimize server React
     //useEarlyImport: true, // Use early import optimization
 
     // === ROUTING & NAVIGATION ===
@@ -218,7 +217,7 @@ const nextConfig: NextConfig = {
     // jsxImportSource: 'theme-ui', // Set in tsconfig.json instead
   },
 
-  // Image configuration (unchanged)
+  // Image configuration
   images: {
     remotePatterns: [
       {
@@ -273,7 +272,7 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Headers configuration - updated for React 19
+  // Headers configuration
   async headers() {
     const securityHeaders = [
       {
@@ -328,7 +327,7 @@ const nextConfig: NextConfig = {
         ]
       : [];
 
-    // Updated CSP for React 19
+    // Updated CSP 
     const csp = isDev
       ? [
           "default-src 'self'",
@@ -434,10 +433,9 @@ const nextConfig: NextConfig = {
     },
   }),
 
-  // 🎯 REMOVED: Entire webpack function - Turbopack handles everything!
 };
 
-// Service worker configuration (unchanged)
+// Service worker configuration
 const withSerwist = withSerwistInit({
   swSrc: 'src/app/sw.ts',
   swDest: 'public/sw.js',

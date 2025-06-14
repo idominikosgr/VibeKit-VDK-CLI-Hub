@@ -45,7 +45,7 @@ compatibleWith: ["Memory-MCP", "Sequential-Thinking-Advanced", "AI-Workflow-Inte
      Tags: [session_handoff, context]
      Content: In this session we: 1) Enhanced Swift and SwiftUI rule files with modern patterns, 
      2) Added PySide6 asyncio integration, 3) Created new technology files for GraphQL, Docker/Kubernetes, 
-     Tauri, and SwiftData. Next session will focus on creating an interactive setup wizard and adding version indicators.
+     Tauri, and SwiftData. Next session will focus on creating an interactive Rule Generator and adding version indicators.
      ```
 
 ## Memory Creation Guidelines

@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         <ul>
           <li>Provide and maintain our service</li>
           <li>Authenticate your account</li>
-          <li>FloppyDisk and sync your rules and collections</li>
+          <li>Save and sync your rules and collections</li>
           <li>Improve our platform through anonymous analytics</li>
           <li>Communicate important service updates</li>
         </ul>

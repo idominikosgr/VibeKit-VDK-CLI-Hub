@@ -79,7 +79,7 @@ export interface RuleCategory {
   count?: number;
 }
 
-// MagnifyingGlass result type (application-level)
+// Search result type (application-level)
 export interface MagnifyingGlassResult {
   id: string;
   title: string;

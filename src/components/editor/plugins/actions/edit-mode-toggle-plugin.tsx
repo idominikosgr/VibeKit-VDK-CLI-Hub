@@ -38,7 +38,7 @@ export function EditModeTogglePlugin() {
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        {isEditable ? 'View Only Mode' : 'PencilSimple Mode'}
+        {isEditable ? 'View Only Mode' : 'Edit Mode'}
       </TooltipContent>
     </Tooltip>
   )

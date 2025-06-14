@@ -95,7 +95,7 @@ export function SiteHeader() {
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <Icons.settings className="mr-2 h-4 w-4 relative drop-shadow-sm" />
-                    <span className="relative drop-shadow-sm">Setup Wizard</span>
+                    <span className="relative drop-shadow-sm">Rule Generator</span>
                   </Link>
                 </motion.div>
               </div>

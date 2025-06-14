@@ -1,17 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { PlusIcon, MagnifyingGlassIcon, StarIcon, DotsThreeIcon, FileTextIcon, FolderIcon, CircleNotchIcon, SignInIcon, UserPlusIcon, TrashIcon } from "@phosphor-icons/react"
+import { useState, useEffect, useRef } from 'react'
+import { PlusIcon, MagnifyingGlassIcon, StarIcon, DotsThreeIcon, FileTextIcon, FolderIcon, CircleNotchIcon, SignInIcon, UserPlusIcon, TrashIcon, CheckIcon, ClockIcon } from "@phosphor-icons/react"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { AdvancedPencilSimpleor } from '@/components/blocks/advanced-editor'
+import { AdvancedPencilSimple } from '@/components/blocks/advanced-editor'
 import { DocumentPage, DocumentPageWithChildren, CreatePageRequest } from '@/types/documentation'
 import { SerializedEditorState } from 'lexical'
 import { documentationService } from '@/lib/services/documentation'
 import { toast } from 'sonner'
 import { useAuth } from '@/components/auth/auth-provider'
 import Link from 'next/link'
+
+type SaveStatus = 'saved' | 'saving' | 'unsaved' | 'error'
 
 interface SidebarItemProps {
   page: DocumentPageWithChildren
@@ -157,6 +159,8 @@ export default function DocsEditPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved')
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { user } = useAuth()
 
   // Load pages function
@@ -181,6 +185,24 @@ export default function DocsEditPage() {
   // Load pages on mount
   useEffect(() => {
     loadPages()
+  }, [])
+
+  // Reset save status when page changes
+  useEffect(() => {
+    setSaveStatus('saved')
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+      saveTimeoutRef.current = null
+    }
+  }, [selectedPage?.id])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
   }, [])
 
   const handleCreatePage = async (parentId?: string) => {
@@ -255,15 +277,38 @@ export default function DocsEditPage() {
   const handleContentChange = async (content: SerializedEditorState) => {
     if (!selectedPage) return
 
-    try {
-      await documentationService.updatePageContent(selectedPage.id, content)
-      
-      // Update local state
-      setSelectedPage(prev => prev ? { ...prev, content } : null)
-    } catch (error) {
-      console.error('Failed to save content:', error)
-      toast.error('Failed to save content')
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
     }
+
+    // Set unsaved status and show saving after a short delay
+    setSaveStatus('unsaved')
+    
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        setSaveStatus('saving')
+        await documentationService.updatePageContent(selectedPage.id, content)
+        
+        // Update local state
+        setSelectedPage(prev => prev ? { ...prev, content } : null)
+        setSaveStatus('saved')
+        
+        // Auto-hide "saved" status after 2 seconds
+        setTimeout(() => {
+          setSaveStatus('saved')
+        }, 2000)
+      } catch (error) {
+        console.error('Failed to save content:', error)
+        setSaveStatus('error')
+        toast.error('Failed to save content')
+        
+        // Reset to unsaved after error
+        setTimeout(() => {
+          setSaveStatus('unsaved')
+        }, 3000)
+      }
+    }, 1000) // Debounce for 1 second
   }
 
   const handleTitleChange = async (title: string) => {
@@ -438,6 +483,35 @@ export default function DocsEditPage() {
                       <div className="w-1.5 h-1.5 rounded-full bg-primary/60"></div>
                       Last edited {new Date(selectedPage.updated_at).toLocaleDateString()}
                     </span>
+                    
+                    {/* Save Status Indicator */}
+                    <div className="flex items-center gap-2">
+                      {saveStatus === 'saving' && (
+                        <>
+                          <CircleNotchIcon className="w-3 h-3 animate-spin text-primary" />
+                          <span className="text-primary">Saving...</span>
+                        </>
+                      )}
+                      {saveStatus === 'saved' && (
+                        <>
+                          <CheckIcon className="w-3 h-3 text-green-500" />
+                          <span className="text-green-500">Saved</span>
+                        </>
+                      )}
+                      {saveStatus === 'unsaved' && (
+                        <>
+                          <ClockIcon className="w-3 h-3 text-yellow-500" />
+                          <span className="text-yellow-500">Unsaved changes</span>
+                        </>
+                      )}
+                      {saveStatus === 'error' && (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                          <span className="text-red-500">Save failed</span>
+                        </>
+                      )}
+                    </div>
+
                     {user && (
                       <Button 
                         size="sm" 
@@ -456,7 +530,7 @@ export default function DocsEditPage() {
               {/* Editor */}
               <div className="flex-1 overflow-auto">
                 <div className="max-w-4xl mx-auto px-8 py-8">
-                  <AdvancedPencilSimpleor
+                  <AdvancedPencilSimple
                     editorSerializedState={selectedPage.content as SerializedEditorState}
                     onSerializedChange={handleContentChange}
                     placeholder="Start writing your documentation..."

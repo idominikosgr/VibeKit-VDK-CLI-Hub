@@ -47,7 +47,7 @@ export async function fetchAllRules(page: number = 1, limit: number = 50): Promi
 }
 
 /**
- * MagnifyingGlass rules with pagination
+ * Search rules with pagination
  */
 export async function fetchMagnifyingGlassRules(query: string, page: number = 1, limit: number = 50): Promise<PaginatedResult<Rule>> {
   try {

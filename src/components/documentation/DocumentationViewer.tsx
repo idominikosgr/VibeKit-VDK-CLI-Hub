@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { SerializedEditorState } from 'lexical'
 import { BookmarkIcon, ClockIcon, EyeIcon } from '@phosphor-icons/react'
-import { AdvancedPencilSimpleor } from '@/components/blocks/advanced-editor'
+import { AdvancedPencilSimple } from '@/components/blocks/advanced-editor'
 
 // Parse page content helper function
 function parsePageContent(content: any) {
@@ -117,7 +117,7 @@ export function DocumentationViewer({ page }: DocumentationViewerProps) {
 
       {/* Content */}
       <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <AdvancedPencilSimpleor
+        <AdvancedPencilSimple
           editorSerializedState={parsedContent}
           onSerializedChange={() => {}} // No-op for read-only
           placeholder=""

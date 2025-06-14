@@ -37,7 +37,7 @@ export const siteConfig: SiteConfig = {
       href: "/hub",
     },
     {
-      title: "Setup Wizard",
+      title: "Rule Generator",
       href: "/setup",
     },
     {

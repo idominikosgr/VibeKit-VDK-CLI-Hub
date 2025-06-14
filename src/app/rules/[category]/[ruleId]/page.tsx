@@ -31,12 +31,7 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24
-    }
+    y: 0
   }
 };
 
@@ -44,12 +39,7 @@ const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 24
-    }
+    scale: 1
   }
 };
 

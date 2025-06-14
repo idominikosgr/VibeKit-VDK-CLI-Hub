@@ -12,11 +12,26 @@ import { cn } from '@/lib/utils'
 
 // Enhanced animation variants
 const fadeInUp = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 24 },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }
+    y: 0
+  }
+}
+
+const fadeInLeft = {
+  hidden: { opacity: 0, x: -24 },
+  visible: { 
+    opacity: 1, 
+    x: 0
+  }
+}
+
+const fadeInRight = {
+  hidden: { opacity: 0, x: 24 },
+  visible: { 
+    opacity: 1, 
+    x: 0
   }
 }
 
@@ -24,8 +39,7 @@ const slideInLeft = {
   hidden: { opacity: 0, x: -50 },
   visible: { 
     opacity: 1, 
-    x: 0,
-    transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }
+    x: 0
   }
 }
 
@@ -33,8 +47,7 @@ const slideInRight = {
   hidden: { opacity: 0, x: 50 },
   visible: { 
     opacity: 1, 
-    x: 0,
-    transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }
+    x: 0
   }
 }
 

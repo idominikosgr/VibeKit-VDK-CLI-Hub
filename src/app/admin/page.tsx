@@ -290,7 +290,7 @@ export default function AdminDashboard() {
               <Link href="/setup">
                 <Button variant="outline" size="sm">
                   <DownloadIcon className="w-4 h-4 mr-2" />
-                  Test Setup Wizard
+                  Test Rule Generator
                 </Button>
               </Link>
               <Button variant="outline" size="sm" onClick={checkAuthAndLoadStats}>

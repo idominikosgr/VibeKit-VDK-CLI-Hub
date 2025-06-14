@@ -59,7 +59,7 @@ export default function House() {
           <Link href="/setup">
             <Button variant="outline" size="lg" className="hover:scale-105 transition-transform duration-200">
               <Icons.settings className="mr-2 h-4 w-4" />
-              Setup Wizard
+              Rule Generator
             </Button>
           </Link>
         </motion.div>
@@ -145,7 +145,7 @@ export default function House() {
                 >
                   <Icons.settings className="h-5 w-5 text-primary" />
                 </motion.div>
-                <CardTitle className="group-hover:text-primary transition-colors duration-300">Setup Wizard</CardTitle>
+                <CardTitle className="group-hover:text-primary transition-colors duration-300">Rule Generator</CardTitle>
                 <CardDescription>
                   Interactive setup for project-specific configuration and rule selection.
                 </CardDescription>
@@ -250,7 +250,7 @@ export default function House() {
                   </li>
                   <li className="flex items-center gap-2">
                     <Icons.check className="h-4 w-4 text-primary" />
-                    Interactive setup wizard
+                    Interactive Rule Generator
                   </li>
                   <li className="flex items-center gap-2">
                     <Icons.check className="h-4 w-4 text-primary" />
@@ -261,7 +261,7 @@ export default function House() {
               <CardFooter>
                 <Link href="/setup" className="w-full">
                   <Button className="w-full hover:scale-105 transition-transform duration-200">
-                    Start Setup Wizard
+                    Start Rule Generator
                   </Button>
                 </Link>
               </CardFooter>
@@ -350,16 +350,33 @@ export default function House() {
           
           <motion.div variants={fadeInUp} whileHover="hover" className="group">
             <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
-              <CardHeader>
+              <CardHeader className="text-center">
                 <motion.div 
-                  className="rounded-md bg-linear-to-br from-primary/10 to-primary/5 p-2 w-10 h-10 flex items-center justify-center mb-2 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+                  className="rounded-full bg-primary/10 p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-all duration-300"
                   variants={cardHover}
                 >
-                  <Icons.aitools className="h-5 w-5 text-primary" />
+                  <span className="text-2xl font-bold text-primary">2</span>
                 </motion.div>
-                <CardTitle className="group-hover:text-primary transition-colors duration-300">Universal AI Integration</CardTitle>
+                <CardTitle className="group-hover:text-primary transition-colors duration-300">Setup Your Workspace</CardTitle>
                 <CardDescription>
-                  Seamlessly works with Claude, GitHub Copilot, Cursor, Windsurf, VS Code, and any AI coding assistant.
+                  Use our Rule Generator to configure rules for your specific tech stack, frameworks, and development preferences.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} whileHover="hover" className="group">
+            <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 border-border/50 hover:border-primary/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="text-center">
+                <motion.div 
+                  className="rounded-full bg-primary/10 p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-all duration-300"
+                  variants={cardHover}
+                >
+                  <span className="text-2xl font-bold text-primary">3</span>
+                </motion.div>
+                <CardTitle className="group-hover:text-primary transition-colors duration-300">Start Coding Smarter</CardTitle>
+                <CardDescription>
+                  Download your personalized rule package and integrate with any AI coding assistant for context-aware development.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -481,7 +498,7 @@ export default function House() {
             <Link href="/setup">
               <Button size="lg" className="mt-4">
                 <Icons.settings className="mr-2 h-4 w-4" />
-                Start Setup Wizard
+                Start Rule Generator
               </Button>
             </Link>
                             <Link href="/hub">
