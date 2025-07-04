@@ -5,7 +5,7 @@ import { createDatabaseSupabaseClient } from '../supabase/server-client';
 import { errorLogger } from '../error-handling';
 
 // Constants for rule directory structure
-const RULES_DIR = path.join(process.cwd(), 'vibecodingrules-hub', '.ai', 'rules');
+const RULES_DIR = path.join(process.cwd(), 'VibeKit-VDK-Hub', '.ai', 'rules');
 const CATEGORY_DIRS = ['assistants', 'languages', 'stacks', 'tasks', 'technologies', 'tools'];
 
 // File extensions to process

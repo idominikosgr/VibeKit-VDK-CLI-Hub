@@ -1,4 +1,4 @@
--- Vibe Coding Rules Hub: Initial Schema Migration
+-- VibeKit VDK Hub: Initial Schema Migration
 -- Generated: 2025-01-20T00:00:00.000Z
 -- Based on: supabase-complete.sql
 

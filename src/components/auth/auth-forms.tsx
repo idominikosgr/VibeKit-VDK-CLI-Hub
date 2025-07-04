@@ -1,18 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useAuth } from './auth-provider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { EnvelopeIcon, LockIcon, UserIcon, EyeIcon, EyeSlashIcon } from '@phosphor-icons/react';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useAuth } from "./auth-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import {
+  EnvelopeIcon,
+  LockIcon,
+  UserIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@phosphor-icons/react";
 
 export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { login, loginWithGitHub } = useAuth();
@@ -78,7 +91,9 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.4, duration: 0.5 }}
           >
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
               <div className="relative">
                 <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -94,9 +109,11 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                <motion.a 
-                  href="/auth/forgot-password" 
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
+                <motion.a
+                  href="/auth/forgot-password"
                   className="text-xs text-primary hover:text-primary/80 transition-colors"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -120,25 +137,26 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {showPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
                 </motion.button>
               </div>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="submit"
+                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Signing in...' : 'Sign in'}
+                {isSubmitting ? "Signing in..." : "Sign in"}
               </Button>
             </motion.div>
           </motion.form>
 
-          <motion.div 
+          <motion.div
             className="relative my-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -148,7 +166,9 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
               <span className="w-full border-t border-gradient-to-r from-transparent via-border to-transparent" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-4 text-muted-foreground font-medium">Or continue with</span>
+              <span className="bg-background px-4 text-muted-foreground font-medium">
+                Or continue with
+              </span>
             </div>
           </motion.div>
 
@@ -172,15 +192,15 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
           </motion.div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <motion.p 
+          <motion.p
             className="text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            Don&apos;t have an account?{' '}
-            <motion.a 
-              href="/auth/register" 
+            Don&apos;t have an account?{" "}
+            <motion.a
+              href="/auth/register"
               className="text-primary hover:text-primary/80 font-medium transition-colors"
               whileHover={{ scale: 1.05 }}
             >
@@ -194,9 +214,9 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 }
 
 export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, loginWithGitHub } = useAuth();
@@ -246,7 +266,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.3 }}
           >
             <CardTitle className="text-2xl font-bold text-center text-primary">
-              Join Vibe Coding Rules Hub
+              Join VibeKit VDK Hub
             </CardTitle>
             <CardDescription className="text-center text-base mt-2">
               Create your account to share and discover development rules
@@ -262,7 +282,9 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
             transition={{ delay: 0.4, duration: 0.5 }}
           >
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-medium">
+                Full Name
+              </Label>
               <div className="relative">
                 <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -276,7 +298,9 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
               <div className="relative">
                 <EnvelopeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -291,7 +315,9 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
               <div className="relative">
                 <LockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -310,10 +336,14 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {showPassword ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeIcon className="h-4 w-4" />
+                  )}
                 </motion.button>
               </div>
-              <motion.p 
+              <motion.p
                 className="text-xs text-muted-foreground"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -322,21 +352,18 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
                 Must be at least 8 characters with numbers and symbols
               </motion.p>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300" 
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="submit"
+                className="w-full h-12 bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Creating account...' : 'Create account'}
+                {isSubmitting ? "Creating account..." : "Create account"}
               </Button>
             </motion.div>
           </motion.form>
 
-          <motion.div 
+          <motion.div
             className="relative my-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -346,7 +373,9 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-4 text-muted-foreground font-medium">Or continue with</span>
+              <span className="bg-background px-4 text-muted-foreground font-medium">
+                Or continue with
+              </span>
             </div>
           </motion.div>
 
@@ -370,15 +399,15 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
           </motion.div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <motion.p 
+          <motion.p
             className="text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
           >
-            Already have an account?{' '}
-            <motion.a 
-              href="/auth/login" 
+            Already have an account?{" "}
+            <motion.a
+              href="/auth/login"
               className="text-primary hover:text-primary/80 font-medium transition-colors"
               whileHover={{ scale: 1.05 }}
             >

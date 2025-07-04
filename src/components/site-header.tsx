@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
-import { siteConfig } from "@/config/site"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { siteConfig } from "@/config/site";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Icons } from "@/components/icons"
-import { MainNav } from "@/components/main-nav"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { GlobalMagnifyingGlass } from "./search/global-search"
-import { cn } from "@/lib/utils"
-import { useAuth } from "./auth/auth-provider"
-import { useAdmin } from "@/hooks/use-admin"
+} from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Icons } from "@/components/icons";
+import { MainNav } from "@/components/main-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { GlobalMagnifyingGlass } from "./search/global-search";
+import { cn } from "@/lib/utils";
+import { useAuth } from "./auth/auth-provider";
+import { useAdmin } from "@/hooks/use-admin";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from "./ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+  DropdownMenuSeparator,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function SiteHeader() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <motion.header 
+    <motion.header
       className="sticky top-0 z-40 w-full border-b border-primary/20 dark:border-purple-800/30 bg-gradient-to-r from-white/70 via-primary/5 to-purple-50/50 dark:from-gray-950/80 dark:via-purple-950/20 dark:to-gray-950/80 backdrop-blur-xl"
       style={{
         boxShadow: `
           0 8px 32px rgba(139, 92, 246, 0.1),
           0 0 0 1px rgba(139, 92, 246, 0.1),
           inset 0 1px 2px rgba(255, 255, 255, 0.1)
-        `
+        `,
       }}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -49,20 +49,23 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center max-w-(--breakpoint-2xl) mx-auto px-4 sm:px-6 lg:px-8">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
+            <Button
+              variant="ghost"
+              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+            >
               <Icons.menu className="h-6 w-6" />
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent 
-            side="left" 
+          <SheetContent
+            side="left"
             className="pr-0 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border-r border-white/20 dark:border-gray-800/30"
             style={{
               boxShadow: `
                 8px 0 32px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(255, 255, 255, 0.1),
                 inset -1px 0 2px rgba(255, 255, 255, 0.1)
-              `
+              `,
             }}
           >
             <SheetTitle>
@@ -78,9 +81,12 @@ export function SiteHeader() {
               <GlobalMagnifyingGlass />
               <div className="hidden sm:flex gap-2">
                 <AdminCTA />
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   <Link
-                    href="/setup"
+                    href="/generate"
                     className={cn(
                       buttonVariants({ variant: "outline", size: "sm" }),
                       "relative overflow-hidden bg-primary/10 dark:bg-purple-900/30 backdrop-blur-md border border-primary/30 dark:border-purple-700/40 hover:bg-primary/20 dark:hover:bg-purple-800/40 transition-all duration-300 hover:border-primary/50 dark:hover:border-purple-600/60 hover:shadow-lg group"
@@ -90,12 +96,14 @@ export function SiteHeader() {
                         0 4px 12px rgba(139, 92, 246, 0.15),
                         0 0 0 1px rgba(139, 92, 246, 0.1),
                         inset 0 1px 2px rgba(255, 255, 255, 0.1)
-                      `
+                      `,
                     }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <Icons.settings className="mr-2 h-4 w-4 relative drop-shadow-sm" />
-                    <span className="relative drop-shadow-sm">Rule Generator</span>
+                    <span className="relative drop-shadow-sm">
+                      VibeKit Generator
+                    </span>
                   </Link>
                 </motion.div>
               </div>
@@ -114,7 +122,7 @@ export function SiteHeader() {
                 <div
                   className={buttonVariants({
                     variant: "ghost",
-                    size: "icon"
+                    size: "icon",
                   })}
                 >
                   <Icons.github className="h-5 w-5" />
@@ -127,7 +135,7 @@ export function SiteHeader() {
         </div>
       </div>
     </motion.header>
-  )
+  );
 }
 
 function AuthMenuButton() {
@@ -138,8 +146,8 @@ function AuthMenuButton() {
   if (!user && !isLoading) {
     return (
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-        <Link 
-          href="/auth/login" 
+        <Link
+          href="/auth/login"
           className={cn(
             buttonVariants({ variant: "outline", size: "sm" }),
             "relative overflow-hidden bg-primary/10 dark:bg-purple-900/30 backdrop-blur-md border border-primary/30 dark:border-purple-700/40 hover:bg-primary/20 dark:hover:bg-purple-800/40 transition-all duration-300 hover:border-primary/50 dark:hover:border-purple-600/60 hover:shadow-lg group"
@@ -149,7 +157,7 @@ function AuthMenuButton() {
               0 4px 12px rgba(139, 92, 246, 0.15),
               0 0 0 1px rgba(139, 92, 246, 0.1),
               inset 0 1px 2px rgba(255, 255, 255, 0.1)
-            `
+            `,
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary/15 via-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -170,11 +178,11 @@ function AuthMenuButton() {
 
   // Show user menu if logged in
   const getInitials = (name?: string) => {
-    if (!name) return 'U';
+    if (!name) return "U";
     return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
@@ -183,10 +191,19 @@ function AuthMenuButton() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="relative h-8 w-8 rounded-full"
+          >
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user?.avatar_url || undefined} alt={user?.name || 'User'} />
-              <AvatarFallback>{getInitials(user?.name || undefined)}</AvatarFallback>
+              <AvatarImage
+                src={user?.avatar_url || undefined}
+                alt={user?.name || "User"}
+              />
+              <AvatarFallback>
+                {getInitials(user?.name || undefined)}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </motion.div>
@@ -195,7 +212,9 @@ function AuthMenuButton() {
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user?.name && <p className="font-medium">{user.name}</p>}
-            {user?.email && <p className="text-sm text-muted-foreground">{user.email}</p>}
+            {user?.email && (
+              <p className="text-sm text-muted-foreground">{user.email}</p>
+            )}
           </div>
         </div>
         <DropdownMenuSeparator />
@@ -239,7 +258,7 @@ function AuthMenuButton() {
 }
 
 function MobileNav() {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const { user, isLoading } = useAuth();
   const { isAdmin } = useAdmin();
 
@@ -256,24 +275,24 @@ function MobileNav() {
         Rules
       </Link>
       <Link
-                          href="/hub"
+        href="/hub"
         className={cn(
           "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                      pathname?.startsWith("/hub") && "bg-accent"
+          pathname?.startsWith("/hub") && "bg-accent"
         )}
       >
         <Icons.brain className="mr-2 h-4 w-4" />
-        Framework
+        VDK Toolkit
       </Link>
       <Link
-        href="/setup"
+        href="/generate"
         className={cn(
           "flex items-center rounded-md px-2 py-1 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          pathname?.startsWith("/setup") && "bg-accent"
+          pathname?.startsWith("/generate") && "bg-accent"
         )}
       >
         <Icons.settings className="mr-2 h-4 w-4" />
-        Setup
+        Generator
       </Link>
       <Link
         href="/docs"
@@ -322,7 +341,7 @@ function MobileNav() {
         </>
       )}
     </div>
-  )
+  );
 }
 
 function AdminCTA() {
@@ -337,7 +356,9 @@ function AdminCTA() {
   // Show a placeholder while loading to prevent layout shift
   if (isLoading) {
     return (
-      <div className="w-20 h-8"> {/* Placeholder with approximate button dimensions */}
+      <div className="w-20 h-8">
+        {" "}
+        {/* Placeholder with approximate button dimensions */}
       </div>
     );
   }
@@ -360,7 +381,7 @@ function AdminCTA() {
             0 8px 16px rgba(139, 92, 246, 0.3),
             0 0 0 1px rgba(139, 92, 246, 0.2),
             inset 0 1px 2px rgba(255, 255, 255, 0.2)
-          `
+          `,
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-purple-500/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

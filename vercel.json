@@ -56,7 +56,7 @@
   "build": {
     "env": {
       "NEXT_PUBLIC_APP_VERSION": "1.0.0",
-      "NEXT_PUBLIC_SITE_URL": "https://hub.vibecodingrules.rocks"
+      "NEXT_PUBLIC_SITE_URL": "https://vdk.tools"
     }
   },
   "github": {

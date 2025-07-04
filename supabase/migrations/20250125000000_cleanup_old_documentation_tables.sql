@@ -1,4 +1,4 @@
--- Vibe Coding Rules Hub: Cleanup Old Documentation Tables
+-- VibeKit VDK Hub: Cleanup Old Documentation Tables
 -- Generated: 2025-01-25T00:00:00.000Z
 -- Description: Removes the old document_pages table and related objects that were replaced by the newer documentation_pages system
 

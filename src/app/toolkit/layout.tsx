@@ -1,23 +1,23 @@
 import { Metadata } from "next";
 
-const title = "VibeKit VDK Hub - Intelligent AI-Assisted Development";
+const title = "VibeKit VDK CLI - Project-Aware AI Intelligence";
 const description =
-  "Revolutionize your AI coding experience with our comprehensive toolkit. Get intelligent, context-aware coding rules that understand your project stack, enhance AI assistant performance, and boost development productivity.";
+  "Advanced Command-line toolkit that analyzes your codebase and deploys project-aware rules to any AI coding assistant - VDK is the world's first Vibe Development Kit.";
 
 export const metadata: Metadata = {
   title,
   description,
   keywords: [
-    "AI coding assistant",
-    "intelligent development",
-    "context-aware rules",
-    "VibeKit VDK",
-    "productivity toolkit",
-    "AI-assisted programming",
-    "development automation",
-    "coding productivity",
-    "intelligent IDE",
+    "VibeKit VDK CLI",
+    "CLI tool",
     "project-aware AI",
+    "automated AI setup",
+    "intelligent coding assistant",
+    "AI context generation",
+    "development automation",
+    "AI-assisted programming",
+    "context-aware rules",
+    "systematic AI intelligence",
   ],
   openGraph: {
     title,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         )}&description=${encodeURIComponent(description)}`,
         width: 1200,
         height: 630,
-        alt: "VibeKit VDK Hub - Intelligent AI-Assisted Development",
+        alt: "VibeKit VDK CLI - Project-Aware AI Intelligence",
       },
     ],
   },
@@ -45,11 +45,11 @@ export const metadata: Metadata = {
     ],
   },
   alternates: {
-    canonical: "/hub",
+    canonical: "/toolkit",
   },
 };
 
-export default function MainLayout({
+export default function FrameworkLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-// GitHub API client for syncing rules from the Vibe Coding Rules repository - FIXED SCHEMA ALIGNMENT
+// GitHub API client for syncing rules from the VDK Rules repository - FIXED SCHEMA ALIGNMENT
 import { Octokit } from 'octokit';
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../../supabase/database.types';
@@ -13,7 +13,7 @@ type DbCategory = Database['public']['Tables']['categories']['Row'];
 // Environment variables
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'idominikosgr';
-const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'ai.rules';
+const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'VibeKit-VDK-AI-rules';
 
 // Initialize Octokit
 const octokit = new Octokit({

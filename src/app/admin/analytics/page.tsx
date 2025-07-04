@@ -418,7 +418,14 @@ export default function AnalyticsPage() {
                       <XAxis dataKey="date" />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <ChartLegend content={<ChartLegendContent />} />
+                      <ChartLegend 
+                        content={(props) => (
+                          <ChartLegendContent 
+                            payload={props.payload} 
+                            verticalAlign={props.verticalAlign}
+                          />
+                        )} 
+                      />
                       <Area
                         type="monotone"
                         dataKey="downloads"
@@ -542,7 +549,14 @@ export default function AnalyticsPage() {
                     <XAxis dataKey="date" />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
+                    <ChartLegend 
+                      content={(props) => (
+                        <ChartLegendContent 
+                          payload={props.payload} 
+                          verticalAlign={props.verticalAlign}
+                        />
+                      )} 
+                    />
                     <Line
                       type="monotone"
                       dataKey="daily"
@@ -759,7 +773,14 @@ export default function AnalyticsPage() {
                     <YAxis yAxisId="left" />
                     <YAxis yAxisId="right" orientation="right" />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartLegend content={<ChartLegendContent />} />
+                    <ChartLegend 
+                      content={(props) => (
+                        <ChartLegendContent 
+                          payload={props.payload} 
+                          verticalAlign={props.verticalAlign}
+                        />
+                      )} 
+                    />
                     <Area
                       yAxisId="left"
                       type="monotone"

@@ -1,4 +1,4 @@
-name: Vibe Coding Rules Hub CI/CD
+name: VibeKit VDK Hub CI/CD
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -48,8 +48,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -94,8 +94,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2

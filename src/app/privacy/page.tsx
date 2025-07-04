@@ -3,8 +3,8 @@ import { LegalPageLayout } from "@/components/legal/legal-page-layout"
 import { LegalSection } from "@/components/legal/legal-section"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Vibe Coding Rules Hub",
-  description: "Privacy policy for Vibe Coding Rules Hub - how we collect, use, and protect your data.",
+  title: "Privacy Policy | VibeKit VDK Hub",
+  description: "Privacy policy for VibeKit VDK Hub - how we collect, use, and protect your data.",
 }
 
 export default function PrivacyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPage() {
     >
       <LegalSection title="Information We Collect" icon="databases" highlight>
         <p>
-          Vibe Coding Rules Hub is committed to protecting your privacy. We collect minimal information necessary to provide our services:
+          VibeKit VDK Hub is committed to protecting your privacy. We collect minimal information necessary to provide our services:
         </p>
         <ul>
           <li><strong>Authentication Data:</strong> When you sign up, we collect your email address and basic profile information from your chosen authentication provider (Google, GitHub, etc.).</li>

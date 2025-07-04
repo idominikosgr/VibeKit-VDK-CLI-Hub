@@ -1,27 +1,28 @@
 export type SiteConfig = {
-  name: string
-  description: string
-  url: string
-  ogImage: string
+  name: string;
+  description: string;
+  url: string;
+  ogImage: string;
   links: {
-    github: string
-    twitter: string
-  }
+    github: string;
+    twitter: string;
+  };
   nav: {
-    title: string
-    href: string
-    disabled?: boolean
-  }[]
-}
+    title: string;
+    href: string;
+    disabled?: boolean;
+  }[];
+};
 
 export const siteConfig: SiteConfig = {
-  name: "Vibe Coding Rules Hub",
-  description: "A comprehensive hub for AI-assisted development rules and guidelines.",
-  url: "https://hub.vibecodingrules.rocks",
+  name: "VibeKit VDK Hub",
+  description:
+    "Web platform for browsing, customizing, and generating VDK rules",
+  url: "https://vdk.tools",
   ogImage: "/og.jpg",
   links: {
-    github: "https://github.com/idominikosgr/Vibe-Coding-Rules-hub",
-    twitter: "https://twitter.com/vibecodingrules"
+    github: "https://github.com/idominikosgr/VibeKit-VDK-Hub",
+    twitter: "https://twitter.com/YourNewHandle",
   },
   nav: [
     {
@@ -29,20 +30,20 @@ export const siteConfig: SiteConfig = {
       href: "/rules",
     },
     {
-      title: "Framework",
-      href: "/framework",
+      title: "Toolkit",
+      href: "/toolkit",
     },
     {
       title: "Hub",
       href: "/hub",
     },
     {
-      title: "Rule Generator",
-      href: "/setup",
+      title: "Generate",
+      href: "/generate",
     },
     {
-      title: "Documentation",
-      href: "/docs"
+      title: "Docs",
+      href: "/docs",
     },
   ],
-}
+};

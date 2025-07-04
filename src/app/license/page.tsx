@@ -3,21 +3,21 @@ import { LegalPageLayout } from "@/components/legal/legal-page-layout"
 import { LegalSection } from "@/components/legal/legal-section"
 
 export const metadata: Metadata = {
-  title: "License | Vibe Coding Rules Hub",
-  description: "MIT License for Vibe Coding Rules Hub - open source licensing information.",
+  title: "License | VibeKit VDK Hub",
+  description: "MIT License for VibeKit VDK Hub - open source licensing information.",
 }
 
 export default function LicensePage() {
   return (
     <LegalPageLayout
       title="MIT License"
-      description="Vibe Coding Rules Hub is open source software released under the MIT License, promoting collaboration and innovation."
+      description="VibeKit VDK Hub is open source software released under the MIT License, promoting collaboration and innovation."
       icon="check"
       lastUpdated={new Date().toLocaleDateString()}
     >
       <LegalSection title="License Grant" icon="check" highlight>
         <p>
-          Vibe Coding Rules Hub is released under the MIT License
+          VibeKit VDK Hub is released under the MIT License
         </p>
 
         <div className="bg-muted/50 p-6 rounded-lg font-mono text-sm leading-relaxed">
@@ -53,7 +53,7 @@ export default function LicensePage() {
 
       <LegalSection title="About Open Source" icon="github">
         <p>
-          Vibe Coding Rules Hub is built on the foundation of open source software and contributes back to the community. The MIT License is a permissive free software license that allows you to:
+          VibeKit VDK Hub is built on the foundation of open source software and contributes back to the community. The MIT License is a permissive free software license that allows you to:
         </p>
         <ul>
           <li>Use the software for any purpose</li>
@@ -81,13 +81,13 @@ export default function LicensePage() {
 
       <LegalSection title="Contributing" icon="userPlus" highlight>
         <p>
-          By contributing to Vibe Coding Rules Hub, you agree that your contributions will be licensed under the same MIT License that covers the project.
+          By contributing to VibeKit VDK Hub, you agree that your contributions will be licensed under the same MIT License that covers the project.
         </p>
       </LegalSection>
 
       <LegalSection title="Acknowledgments" icon="heart">
         <p>
-          Special thanks to Seth Rose for the original DevRules project that inspired Vibe Coding Rules Hub, and to the entire open source community for the tools and libraries that make this project possible.
+          Special thanks to Seth Rose for the original DevRules project that inspired VibeKit VDK Hub, and to the entire open source community for the tools and libraries that make this project possible.
         </p>
       </LegalSection>
     </LegalPageLayout>

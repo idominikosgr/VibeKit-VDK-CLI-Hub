@@ -1,37 +1,39 @@
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge';
-export const alt = 'Vibe Coding Rules - A collection of coding rules for Vibe Coding';
+export const runtime = "edge";
+export const alt =
+  "VIbeKit VDK - World's first VDK for optimized agentic development";
 export const size = {
   width: 1200,
   height: 600,
 };
-export const contentType = 'image/png';
+export const contentType = "image/png";
 
 export default async function TwitterImage() {
   // Default image for the homepage/main app
-  const title = 'Vibe Coding Rules - A collection of coding rules for Vibe Coding';
-  const subtitle = 'A collection of coding rules for Vibe Coding';
+  const title =
+    "VIbeKit VDK - World's first VDK for optimized agentic development";
+  const subtitle = "A collection of coding rules for Vibe Coding";
 
   try {
     return new ImageResponse(
       (
         <div
           style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            position: 'relative',
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            position: "relative",
           }}
         >
           {/* Background Pattern */}
           <div
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: 0,
               left: 0,
               right: 0,
@@ -45,26 +47,26 @@ export default async function TwitterImage() {
           {/* Content Container */}
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              padding: '60px',
-              background: 'rgba(255, 255, 255, 0.95)',
-              borderRadius: '20px',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-              maxWidth: '900px',
-              margin: '0 auto',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: "60px",
+              background: "rgba(255, 255, 255, 0.95)",
+              borderRadius: "20px",
+              boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+              maxWidth: "900px",
+              margin: "0 auto",
             }}
           >
             {/* Icon */}
             <div
               style={{
-                fontSize: '80px',
-                marginRight: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                color: '#667eea',
+                fontSize: "80px",
+                marginRight: "40px",
+                display: "flex",
+                alignItems: "center",
+                color: "#667eea",
               }}
             >
               ⚡
@@ -73,34 +75,34 @@ export default async function TwitterImage() {
             {/* Text Content */}
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                textAlign: 'left',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                textAlign: "left",
               }}
             >
               {/* Brand */}
               <div
                 style={{
-                  fontSize: '24px',
-                  fontWeight: 'bold',
-                  color: '#667eea',
-                  marginBottom: '10px',
-                  letterSpacing: '-0.025em',
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#667eea",
+                  marginBottom: "10px",
+                  letterSpacing: "-0.025em",
                 }}
               >
-                Vibe Coding Rules
+                VIbeKit VDK
               </div>
 
               {/* Title */}
               <h1
                 style={{
-                  fontSize: '48px',
-                  fontWeight: 'bold',
-                  color: '#1a202c',
-                  lineHeight: '1.2',
-                  marginBottom: '15px',
-                  maxWidth: '600px',
+                  fontSize: "48px",
+                  fontWeight: "bold",
+                  color: "#1a202c",
+                  lineHeight: "1.2",
+                  marginBottom: "15px",
+                  maxWidth: "600px",
                 }}
               >
                 {title}
@@ -109,10 +111,10 @@ export default async function TwitterImage() {
               {/* Subtitle */}
               <p
                 style={{
-                  fontSize: '20px',
-                  color: '#4a5568',
-                  lineHeight: '1.4',
-                  maxWidth: '500px',
+                  fontSize: "20px",
+                  color: "#4a5568",
+                  lineHeight: "1.4",
+                  maxWidth: "500px",
                 }}
               >
                 {subtitle}
@@ -123,17 +125,17 @@ export default async function TwitterImage() {
           {/* Twitter Badge */}
           <div
             style={{
-              position: 'absolute',
-              top: '30px',
-              right: '30px',
-              background: 'rgba(255, 255, 255, 0.9)',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              color: '#1da1f2',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
+              position: "absolute",
+              top: "30px",
+              right: "30px",
+              background: "rgba(255, 255, 255, 0.9)",
+              padding: "8px 16px",
+              borderRadius: "20px",
+              fontSize: "14px",
+              color: "#1da1f2",
+              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
             }}
           >
             🐦 Twitter
@@ -145,25 +147,25 @@ export default async function TwitterImage() {
       }
     );
   } catch (error) {
-    console.error('Error generating Twitter image:', error);
+    console.error("Error generating Twitter image:", error);
 
     // Fallback simple image
     return new ImageResponse(
       (
         <div
           style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '48px',
-            fontWeight: 'bold',
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: "48px",
+            fontWeight: "bold",
           }}
         >
-          Vibe Coding Rules
+          VIbeKit VDK
         </div>
       ),
       { ...size }

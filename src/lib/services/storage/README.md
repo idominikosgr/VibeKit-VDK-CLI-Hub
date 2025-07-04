@@ -1,6 +1,6 @@
 # Storage Service Documentation
 
-This directory contains the storage abstraction layer for handling file uploads and downloads in the Vibe Coding Rules Hub application.
+This directory contains the storage abstraction layer for handling file uploads and downloads in the VibeKit VDK Hub application.
 
 ## Architecture
 
@@ -19,7 +19,7 @@ StorageService (abstraction)
 
 1. **Apply Database Migrations**:
    ```bash
-   cd vibecodingrules-hub
+   cd VibeKit-VDK-Hub
    supabase db reset
    ```
 

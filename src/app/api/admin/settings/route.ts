@@ -7,7 +7,7 @@ const defaultGear = {
   github: {
     token: process.env.GITHUB_TOKEN || '',
     repoOwner: process.env.GITHUB_REPO_OWNER || 'idominikosgr',
-    repoName: process.env.GITHUB_REPO_NAME || 'ai.rules',
+    repoName: process.env.GITHUB_REPO_NAME || 'VibeKit-VDK-AI-rules',
     syncInterval: 24,
     autoSync: true
   },

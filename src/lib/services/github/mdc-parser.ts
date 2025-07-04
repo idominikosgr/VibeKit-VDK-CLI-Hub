@@ -1,4 +1,4 @@
-// MDC Parser for Vibe Coding Rules
+// MDC Parser for VDK Rules
 // Parses .mdc files to extract content, metadata, and compatibility info
 
 import matter from 'gray-matter';

@@ -43,21 +43,21 @@ import {
   TargetIcon,
   FileCodeIcon,
   PackageIcon,
-  TerminalIcon
-} from "@phosphor-icons/react"
-import Image from "next/image"
-import { IconProps } from "@phosphor-icons/react"
+  TerminalIcon,
+} from "@phosphor-icons/react";
+import Image from "next/image";
+import { IconProps } from "@phosphor-icons/react";
 
-export type Icon = React.ComponentType<IconProps>
+export type Icon = React.ComponentType<IconProps>;
 
 export const Icons = {
   logo: (props: IconProps) => {
     const { className } = props;
-    
+
     return (
       <Image
         src="/images/logo.png"
-        alt="Vibe Coding Rules Hub"
+        alt="VibeKit VDK Hub"
         width={24}
         height={24}
         className={className}
@@ -115,4 +115,4 @@ export const Icons = {
   aitools: BrainIcon,
   stacks: StackIcon,
   heart: HeartIcon,
-}
+};

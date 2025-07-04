@@ -1,11 +1,11 @@
 #!/usr/bin/env tsx
 
 /**
- * AI.rules Repository Sync Script
+ * VibeKit VDK AI Rules Repository Sync Script
  * 
  * This script uses the existing GitHub sync service to sync rules 
- * from the external AI.rules repository:
- * https://github.com/idominikosgr/AI.rules
+ * from the external VibeKit VDK AI Rules repository:
+ * https://github.com/idominikosgr/VibeKit-VDK-AI-rules
  * 
  * Usage:
  *   npm run sync-ai-rules
@@ -20,9 +20,9 @@ const isForce = process.argv.includes('--force');
 
 async function main() {
   try {
-    console.log('🚀 Starting AI.rules Repository Sync');
+    console.log('🚀 Starting VibeKit VDK AI Rules Repository Sync');
     console.log('====================================');
-    console.log(`Repository: https://github.com/idominikosgr/AI.rules`);
+    console.log(`Repository: https://github.com/idominikosgr/VibeKit-VDK-AI-rules`);
     console.log(`Mode: ${isDryRun ? 'DRY RUN' : 'LIVE'}`);
     console.log(`Force: ${isForce ? 'YES' : 'NO'}`);
     console.log('');

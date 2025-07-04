@@ -170,3 +170,10 @@ package-lock.json
 # Generated files
 generated/
 auto-generated/
+pnpm-lock.yaml
+src/app/6754dcbd36eab700016bd4cbac6ef36450c3e83f
+supabase/migrations/20250120000000_initial_schema.sql
+supabase/migrations/20250123000000_create_documentation_system.sql
+supabase/migrations/20250125000000_cleanup_old_documentation_tables.sql
+supabase/seed.sql
+vercel.json

@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
           {
             loader: '@svgr/webpack',
             options: {
-              prettier: false,
+              prettier: true,
               svgo: true,
               svgoConfig: {
                 plugins: [
@@ -109,7 +109,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
       allowedOrigins: isDev
         ? ['localhost:3000', 'localhost:3001']
-        : ['*.vercel.app', '*.vibecodingrules.rocks'],
+        : ['*.vercel.app', '*.vdk.tools'],
     },
 
     // Performance optimizations
@@ -128,7 +128,7 @@ const nextConfig: NextConfig = {
     // Note: Some features require next@canary, not stable releases
     // Temporarily disabled due to createContext build conflicts
     //ppr: 'incremental', // Enable PPR incrementally per route
-    ppr: true, // Enable PPR for entire app (after incremental adoption)
+    ppr: 'incremental', // Enable PPR for entire app (after incremental adoption)
 
     // Dynamic IO - Exclude IO from prerenders unless explicitly cached
     // Also enables experimental Partial Prerendering and react@experimental for app directory
@@ -152,7 +152,7 @@ const nextConfig: NextConfig = {
 
     // React View Transitions API - Animate between views/components (Next.js 15.2+)
     // Highly experimental, may change in future releases
-    viewTransition: true,
+    //viewTransition: true,
 
     // === BUILD & BUNDLING ===
 

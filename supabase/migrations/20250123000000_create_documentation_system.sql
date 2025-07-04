@@ -1,4 +1,4 @@
--- Vibe Coding Rules Hub: Documentation System Migration
+-- VibeKit VDK Hub: Documentation System Migration
 -- Generated: 2025-01-23T00:00:00.000Z
 -- Description: Creates a comprehensive documentation system with Notion-like features
 

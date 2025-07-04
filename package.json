@@ -1,7 +1,7 @@
 {
-  "name": "vibecodingrules-hub",
+  "name": "VibeKit-VDK-Hub",
   "version": "1.0.0",
-  "description": "A hub for Vibe Coding Rules - AI-assisted development rules and guidelines",
+  "description": "Web platform for browsing, customizing, and generating VDK rules",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -21,12 +21,16 @@
     "import-rules": "npx ts-node scripts/import-rules.ts",
     "test-rules-fetch": "tsx scripts/test-rules-fetch.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idominikosgr/VibeKit-VDK-Hub.git"
+  },
+  "homepage": "https://vdk.tools",
   "keywords": [
-    "vibecoding",
-    "rules",
-    "ai",
-    "development",
-    "guidelines"
+    "web-platform",
+    "ai-rules",
+    "developer-tools",
+    "vibe-coding"
   ],
   "author": "Dominikos Pritis",
   "license": "MIT",
@@ -45,8 +49,8 @@
     "@lexical/selection": "^0.32.1",
     "@lexical/table": "^0.32.1",
     "@lexical/utils": "^0.32.1",
-    "@next/bundle-analyzer": "15.4.0-canary.82",
-    "@next/third-parties": "15.4.0-canary.82",
+    "@next/bundle-analyzer": "15.4.0-canary.113",
+    "@next/third-parties": "15.4.0-canary.113",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -77,13 +81,13 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@radix-ui/react-visually-hidden": "^1.2.3",
     "@serwist/next": "^9.0.15",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.50.0",
+    "@supabase/ssr": "0.7.0-rc.2",
+    "@supabase/supabase-js": "^2.50.3",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tsconfig/next": "^2.0.3",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^24.0.1",
+    "@types/node": "^24.0.10",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/react-syntax-highlighter": "^15.5.13",
@@ -96,11 +100,11 @@
     "cmdk": "^1.1.1",
     "cssnano": "^7.0.7",
     "date-fns": "^4.1.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.1",
     "embla-carousel-react": "^8.6.0",
-    "eslint": "^9.29.0",
-    "eslint-config-next": "15.4.0-canary.82",
-    "framer-motion": "^12.18.1",
+    "eslint": "^9.30.1",
+    "eslint-config-next": "15.4.0-canary.113",
+    "framer-motion": "^12.23.0",
     "glob": "^11.0.3",
     "gray-matter": "^4.0.3",
     "input-otp": "^1.4.2",
@@ -108,43 +112,42 @@
     "jszip": "^3.10.1",
     "lexical": "^0.32.1",
     "lowlight": "^3.3.0",
-    "next": "15.4.0-canary.82",
+    "next": "15.4.0-canary.113",
     "next-themes": "^0.4.6",
     "octokit": "^5.0.3",
     "p-limit": "^6.2.0",
-    "postcss": "^8.5.5",
-    "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-preset-env": "^10.2.3",
+    "postcss": "^8.5.6",
+    "postcss-preset-env": "^10.2.4",
     "prism-react-renderer": "^2.4.1",
     "react-day-picker": "9.7.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.57.0",
+    "react-hook-form": "^7.59.0",
     "react-markdown": "^10.1.0",
-    "react-resizable-panels": "^3.0.2",
+    "react-resizable-panels": "^3.0.3",
     "react-syntax-highlighter": "^15.6.1",
-    "recharts": "^2.15.3",
+    "recharts": "^3.0.2",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "serwist": "^9.0.15",
-    "shadcn": "^2.6.3",
-    "sonner": "^2.0.5",
+    "shadcn": "^2.7.0",
+    "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.10",
+    "tailwindcss": "^4.1.11",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "web-vitals": "^5.0.3",
-    "zod": "^3.25.64"
+    "zod": "^3.25.72"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@typescript/native-preview": "7.0.0-dev.20250701.1",
     "tsx": "^4.20.3",
-    "tw-animate-css": "^1.3.4",
-    "typescript": "^5.8.3"
+    "tw-animate-css": "^1.3.5"
   },
   "engines": {
     "node": ">=22.x",
-    "pnpm": ">=10.12.1"
+    "pnpm": ">=10.12.4"
   },
   "browserslist": {
     "production": [
@@ -244,7 +247,7 @@
     "!src/**/*.test.{js,jsx,ts,tsx}",
     "!src/**/index.{js,jsx,ts,tsx}"
   ],
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.12.4",
   "turbo": {
     "baseBranch": "origin/main",
     "pipeline": {

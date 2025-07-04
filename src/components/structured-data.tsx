@@ -1,22 +1,22 @@
-import Script from 'next/script'
+import Script from "next/script";
 
 export interface WebsiteStructuredDataProps {
-  name: string
-  description: string
-  url: string
-  logo?: string
-  sameAs?: string[]
+  name: string;
+  description: string;
+  url: string;
+  logo?: string;
+  sameAs?: string[];
 }
 
 export interface ArticleStructuredDataProps {
-  headline: string
-  description: string
-  url: string
-  datePublished: string
-  dateModified?: string
-  author?: string
-  category?: string
-  keywords?: string[]
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified?: string;
+  author?: string;
+  category?: string;
+  keywords?: string[];
 }
 
 export function WebsiteStructuredData({
@@ -27,27 +27,27 @@ export function WebsiteStructuredData({
   sameAs = [],
 }: WebsiteStructuredDataProps) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
+    "@context": "https://schema.org",
+    "@type": "WebSite",
     name,
     description,
     url,
     potentialAction: {
-      '@type': 'MagnifyingGlassAction',
+      "@type": "MagnifyingGlassAction",
       target: {
-        '@type': 'EntryPoint',
+        "@type": "EntryPoint",
         urlTemplate: `${url}/rules/search?q={search_term_string}`,
       },
-      'query-input': 'required name=search_term_string',
+      "query-input": "required name=search_term_string",
     },
     publisher: {
-      '@type': 'Organization',
-      name: 'VibeCodingRules',
+      "@type": "Organization",
+      name: "VibeKit VDK",
       url,
       logo: logo || `${url}/images/logo.png`,
       sameAs,
     },
-  }
+  };
 
   return (
     <Script
@@ -55,21 +55,21 @@ export function WebsiteStructuredData({
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
-  )
+  );
 }
 
 export interface SoftwareApplicationStructuredDataProps {
-  name: string
-  description: string
-  url: string
-  downloadUrl?: string
-  applicationCategory: string
-  operatingSystem?: string[]
-  softwareVersion?: string
+  name: string;
+  description: string;
+  url: string;
+  downloadUrl?: string;
+  applicationCategory: string;
+  operatingSystem?: string[];
+  softwareVersion?: string;
   offers?: {
-    price: string
-    priceCurrency: string
-  }
+    price: string;
+    priceCurrency: string;
+  };
 }
 
 export function SoftwareApplicationStructuredData({
@@ -78,13 +78,13 @@ export function SoftwareApplicationStructuredData({
   url,
   downloadUrl,
   applicationCategory,
-  operatingSystem = ['Windows', 'macOS', 'Linux'],
+  operatingSystem = ["Windows", "macOS", "Linux"],
   softwareVersion,
   offers,
 }: SoftwareApplicationStructuredDataProps) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
     name,
     description,
     url,
@@ -93,11 +93,11 @@ export function SoftwareApplicationStructuredData({
     operatingSystem,
     softwareVersion,
     offers: offers && {
-      '@type': 'Offer',
+      "@type": "Offer",
       price: offers.price,
       priceCurrency: offers.priceCurrency,
     },
-  }
+  };
 
   return (
     <Script
@@ -105,21 +105,21 @@ export function SoftwareApplicationStructuredData({
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
-  )
+  );
 }
 
 export interface RuleStructuredDataProps {
-  title: string
-  description: string
-  url: string
-  dateModified?: string
-  datePublished?: string
+  title: string;
+  description: string;
+  url: string;
+  dateModified?: string;
+  datePublished?: string;
   author?: {
-    name: string
-    url?: string
-  }
-  category: string
-  tags?: string[]
+    name: string;
+    url?: string;
+  };
+  category: string;
+  tags?: string[];
 }
 
 export function RuleStructuredData({
@@ -133,29 +133,29 @@ export function RuleStructuredData({
   tags = [],
 }: RuleStructuredDataProps) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'TechArticle',
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
     headline: title,
     description,
     url,
     dateModified,
     datePublished,
     author: author && {
-      '@type': 'Person',
+      "@type": "Person",
       name: author.name,
       url: author.url,
     },
     about: {
-      '@type': 'Thing',
+      "@type": "Thing",
       name: category,
     },
-    keywords: tags.join(', '),
+    keywords: tags.join(", "),
     publisher: {
-      '@type': 'Organization',
-      name: 'VibeCodingRules Hub',
-      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://hub.vibecodingrules.rocks',
+      "@type": "Organization",
+      name: "VibeKit VDK Hub",
+      url: process.env.NEXT_PUBLIC_SITE_URL || "https://vdk.tools",
     },
-  }
+  };
 
   return (
     <Script
@@ -163,27 +163,29 @@ export function RuleStructuredData({
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
-  )
+  );
 }
 
 export interface BreadcrumbStructuredDataProps {
   items: Array<{
-    name: string
-    url: string
-  }>
+    name: string;
+    url: string;
+  }>;
 }
 
-export function BreadcrumbStructuredData({ items }: BreadcrumbStructuredDataProps) {
+export function BreadcrumbStructuredData({
+  items,
+}: BreadcrumbStructuredDataProps) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: index + 1,
       name: item.name,
       item: item.url,
     })),
-  }
+  };
 
   return (
     <Script
@@ -191,5 +193,5 @@ export function BreadcrumbStructuredData({ items }: BreadcrumbStructuredDataProp
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
     />
-  )
-} 
+  );
+}

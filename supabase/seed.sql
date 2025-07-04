@@ -1,4 +1,4 @@
--- Vibe Coding Rules Hub: Seed Data
+-- VibeKit VDK Hub: Seed Data
 -- Generated: 2025-01-20T00:00:00.000Z
 
 ---------------------------------------

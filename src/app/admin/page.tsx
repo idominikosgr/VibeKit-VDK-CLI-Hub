@@ -1,23 +1,29 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Icons } from '@/components/icons';
-import { 
-  GearIcon, 
-  DatabaseIcon, 
-  ArrowsClockwiseIcon, 
-  UsersIcon, 
-  FileTextIcon, 
-  ChartBarIcon, 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Icons } from "@/components/icons";
+import {
+  GearIcon,
+  DatabaseIcon,
+  ArrowsClockwiseIcon,
+  UsersIcon,
+  FileTextIcon,
+  ChartBarIcon,
   ShieldIcon,
   GitBranchIcon,
   DownloadIcon,
-  EyeIcon
+  EyeIcon,
 } from "@phosphor-icons/react";
 
 interface AdminStats {
@@ -35,7 +41,7 @@ export default function AdminDashboard() {
     ruleCount: 0,
     categoryCount: 0,
     userCount: 0,
-    lastSyncDate: null
+    lastSyncDate: null,
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -47,30 +53,32 @@ export default function AdminDashboard() {
   const checkAuthAndLoadStats = async () => {
     try {
       // Check if user has admin access
-      const authResponse = await fetch('/api/admin/sync');
+      const authResponse = await fetch("/api/admin/sync");
       if (authResponse.status === 403) {
-        setError('Unauthorized: Admin access required');
+        setError("Unauthorized: Admin access required");
         setIsLoading(false);
         return;
       }
-      
+
       if (!authResponse.ok) {
-        throw new Error('Failed to verify admin access');
+        throw new Error("Failed to verify admin access");
       }
 
       setIsAuthorized(true);
-      
+
       // Load dashboard stats
       const data = await authResponse.json();
       setStats({
         ruleCount: data.stats?.ruleCount || 0,
         categoryCount: data.stats?.categoryCount || 0,
         userCount: data.stats?.userCount || 0,
-        lastSyncDate: data.lastSync?.created_at || null
+        lastSyncDate: data.lastSync?.created_at || null,
       });
     } catch (err) {
-      console.error('Error loading admin dashboard:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load admin dashboard');
+      console.error("Error loading admin dashboard:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to load admin dashboard"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -78,53 +86,56 @@ export default function AdminDashboard() {
 
   const adminActions = [
     {
-      title: 'Rule Synchronization',
-      description: 'Sync rules from GitHub, view sync logs, and manage rule database',
+      title: "Rule Synchronization",
+      description:
+        "Sync rules from GitHub, view sync logs, and manage rule database",
       icon: ArrowsClockwiseIcon,
-      href: '/admin/sync',
-      color: 'from-primary to-primary/80',
-      stats: [`${stats.ruleCount} rules`, `${stats.categoryCount} categories`]
+      href: "/admin/sync",
+      color: "from-primary to-primary/80",
+      stats: [`${stats.ruleCount} rules`, `${stats.categoryCount} categories`],
     },
     {
-      title: 'User Management',
-      description: 'Manage user accounts, permissions, and admin access',
+      title: "User Management",
+      description: "Manage user accounts, permissions, and admin access",
       icon: UsersIcon,
-      href: '/admin/users',
-      color: 'from-secondary to-secondary/80',
-      stats: [`${stats.userCount} users`, 'Roles & permissions']
+      href: "/admin/users",
+      color: "from-secondary to-secondary/80",
+      stats: [`${stats.userCount} users`, "Roles & permissions"],
     },
     {
-      title: 'Analytics & Reports',
-      description: 'View usage statistics, download reports, and monitor system health',
+      title: "Analytics & Reports",
+      description:
+        "View usage statistics, download reports, and monitor system health",
       icon: ChartBarIcon,
-      href: '/admin/analytics',
-      color: 'from-accent to-accent/80',
-      stats: ['Usage metrics', 'Performance data']
+      href: "/admin/analytics",
+      color: "from-accent to-accent/80",
+      stats: ["Usage metrics", "Performance data"],
     },
     {
-      title: 'Content Management',
-      description: 'Manage rules, categories, and content moderation',
+      title: "Content Management",
+      description: "Manage rules, categories, and content moderation",
       icon: FileTextIcon,
-      href: '/admin/content',
-      color: 'from-muted-foreground to-muted-foreground/80',
-      stats: ['Content review', 'Category management']
+      href: "/admin/content",
+      color: "from-muted-foreground to-muted-foreground/80",
+      stats: ["Content review", "Category management"],
     },
     {
-      title: 'System Gear',
-      description: 'Configure system settings, API keys, and application behavior',
+      title: "System Gear",
+      description:
+        "Configure system settings, API keys, and application behavior",
       icon: GearIcon,
-      href: '/admin/settings',
-      color: 'from-muted to-muted/80',
-      stats: ['Configuration', 'Environment']
+      href: "/admin/settings",
+      color: "from-muted to-muted/80",
+      stats: ["Configuration", "Environment"],
     },
     {
-      title: 'Database Management',
-      description: 'Database backups, migrations, and direct database access',
+      title: "Database Management",
+      description: "Database backups, migrations, and direct database access",
       icon: DatabaseIcon,
-      href: '/admin/database',
-      color: 'from-destructive to-destructive/80',
-      stats: ['Backups', 'Migrations']
-    }
+      href: "/admin/database",
+      color: "from-destructive to-destructive/80",
+      stats: ["Backups", "Migrations"],
+    },
   ];
 
   if (isLoading) {
@@ -147,7 +158,7 @@ export default function AdminDashboard() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <div className="mt-6">
-          <Button variant="outline" onClick={() => router.push('/')}>
+          <Button variant="outline" onClick={() => router.push("/")}>
             Return to House
           </Button>
         </div>
@@ -167,7 +178,7 @@ export default function AdminDashboard() {
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage your Vibe Coding Rules Hub instance
+                Manage your VibeKit VDK Hub instance
               </p>
             </div>
           </div>
@@ -213,10 +224,9 @@ export default function AdminDashboard() {
                   <ArrowsClockwiseIcon className="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-bold">
-                      {stats.lastSyncDate 
+                      {stats.lastSyncDate
                         ? new Date(stats.lastSyncDate).toLocaleDateString()
-                        : 'Never'
-                      }
+                        : "Never"}
                     </p>
                     <p className="text-xs text-muted-foreground">Last Sync</p>
                   </div>
@@ -229,11 +239,16 @@ export default function AdminDashboard() {
         {/* Admin Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminActions.map((action) => (
-            <Card key={action.title} className="group hover:shadow-lg transition-all duration-300">
+            <Card
+              key={action.title}
+              className="group hover:shadow-lg transition-all duration-300"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg bg-linear-to-br ${action.color} flex items-center justify-center shadow-md`}>
-                      <action.icon className="w-5 h-5 text-white" />
+                  <div
+                    className={`w-10 h-10 rounded-lg bg-linear-to-br ${action.color} flex items-center justify-center shadow-md`}
+                  >
+                    <action.icon className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <CardTitle className="text-base">{action.title}</CardTitle>
@@ -246,7 +261,7 @@ export default function AdminDashboard() {
                 </CardDescription>
                 <div className="flex flex-wrap gap-1">
                   {action.stats.map((stat, index) => (
-                    <span 
+                    <span
                       key={index}
                       className="text-xs bg-muted px-2 py-1 rounded-md"
                     >
@@ -256,9 +271,9 @@ export default function AdminDashboard() {
                 </div>
                 <div className="pt-2">
                   <Link href={action.href}>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
                     >
                       <EyeIcon className="w-4 h-4 mr-2" />
@@ -275,9 +290,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common administrative tasks
-            </CardDescription>
+            <CardDescription>Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
@@ -287,13 +300,17 @@ export default function AdminDashboard() {
                   Sync Rules
                 </Button>
               </Link>
-              <Link href="/setup">
+              <Link href="/generate">
                 <Button variant="outline" size="sm">
                   <DownloadIcon className="w-4 h-4 mr-2" />
-                  Test Rule Generator
+                  Generate Rules Test
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={checkAuthAndLoadStats}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={checkAuthAndLoadStats}
+              >
                 <ChartBarIcon className="w-4 h-4 mr-2" />
                 Refresh Stats
               </Button>
@@ -303,4 +320,4 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-} 
+}

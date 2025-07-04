@@ -1,55 +1,61 @@
-"use client"
+"use client";
 
-import Link from 'next/link'
-import React from 'react'
-import { motion, useScroll, useTransform, useInView } from 'framer-motion'
-import { useRef, useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Icons } from '@/components/icons'
-import { cn } from '@/lib/utils'
+import Link from "next/link";
+import React from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 // Enhanced animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 24 },
-  visible: { 
-    opacity: 1, 
-    y: 0
-  }
-}
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+};
 
 const fadeInLeft = {
   hidden: { opacity: 0, x: -24 },
-  visible: { 
-    opacity: 1, 
-    x: 0
-  }
-}
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const fadeInRight = {
   hidden: { opacity: 0, x: 24 },
-  visible: { 
-    opacity: 1, 
-    x: 0
-  }
-}
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const slideInLeft = {
   hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
-    x: 0
-  }
-}
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const slideInRight = {
   hidden: { opacity: 0, x: 50 },
-  visible: { 
-    opacity: 1, 
-    x: 0
-  }
-}
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -57,55 +63,55 @@ const staggerContainer = {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-}
+      delayChildren: 0.2,
+    },
+  },
+};
 
 // Animated terminal demo
 const TerminalDemo = () => {
-  const [step, setStep] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true)
-  
+  const [step, setStep] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+
   const terminalSteps = [
     {
-      command: "curl -fsSL https://cli.vibecodingrules.rocks | sh",
+      command: "curl -fsSL https://cli.vdk.tools | sh",
       output: [
-        "🚀 Installing VibeCodingRules Framework...",
-        "✅ Framework installed successfully!",
-        "📡 Ready to analyze your projects"
-      ]
+        "🚀 Installing VibeKit VDK...",
+        "✅ VDK Toolkit installed successfully!",
+        "📡 Ready to analyze your projects",
+      ],
     },
     {
-      command: "vibecodingrules analyze",
+      command: "vdk analyze",
       output: [
         "🔍 Analyzing project architecture...",
         "📊 Detected: React + TypeScript + Next.js + Tailwind",
         "🎯 Found 847 files across 23 directories",
         "🧠 Identifying patterns and conventions...",
-        "⚡ Analysis complete!"
-      ]
+        "⚡ Analysis complete!",
+      ],
     },
     {
-      command: "vibecodingrules generate",
+      command: "vdk generate",
       output: [
-        "🔥 Generating intelligent rule framework...",
+        "🔥 Generating intelligent rule toolkit...",
         "📦 Creating .ai/rules/ directory structure",
         "🎨 Applying project-specific customizations",
         "🧬 Processing 51+ specialized rules",
         "✨ Generated 23 context-aware rules",
-        "🚀 Your AI assistant is now project-aware!"
-      ]
-    }
-  ]
+        "🚀 Your AI assistant is now project-aware!",
+      ],
+    },
+  ];
 
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
     const interval = setInterval(() => {
-      setStep((prev) => (prev + 1) % terminalSteps.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [isPlaying, terminalSteps.length])
+      setStep((prev) => (prev + 1) % terminalSteps.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPlaying, terminalSteps.length]);
 
   return (
     <div className="relative bg-gray-900 dark:bg-gray-950 rounded-2xl p-6 shadow-2xl border border-gray-800 overflow-hidden">
@@ -114,22 +120,26 @@ const TerminalDemo = () => {
         <div className="w-3 h-3 rounded-full bg-red-500"></div>
         <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
         <div className="w-3 h-3 rounded-full bg-green-500"></div>
-        <span className="ml-4 text-gray-400 text-sm font-mono">VibeCodingRules Framework</span>
+        <span className="ml-4 text-gray-400 text-sm font-mono">
+          VibeKit VDK
+        </span>
         <Button
           variant="ghost"
           size="sm"
           className="ml-auto text-gray-400 hover:text-white"
           onClick={() => setIsPlaying(!isPlaying)}
         >
-          {isPlaying ? <Icons.spinner className="h-4 w-4" /> : <Icons.chevronRight className="h-4 w-4" />}
+          {isPlaying ? (
+            <Icons.spinner className="h-4 w-4" />
+          ) : (
+            <Icons.chevronRight className="h-4 w-4" />
+          )}
         </Button>
       </div>
-      
+
       {/* Terminal content */}
       <div className="font-mono text-sm space-y-3 min-h-[200px]">
-        <div className="text-green-400">
-          $ {terminalSteps[step].command}
-        </div>
+        <div className="text-green-400">$ {terminalSteps[step].command}</div>
         {terminalSteps[step].output.map((line, i) => (
           <motion.div
             key={`${step}-${i}`}
@@ -142,7 +152,7 @@ const TerminalDemo = () => {
           </motion.div>
         ))}
       </div>
-      
+
       {/* Progress indicator */}
       <div className="flex gap-2 mt-6">
         {terminalSteps.map((_, i) => (
@@ -156,18 +166,23 @@ const TerminalDemo = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 // IDE support showcase
-const IDESupportCard = ({ ide, description, icon, features }: {
-  ide: string
-  description: string
-  icon: React.ReactNode
-  features: string[]
+const IDESupportCard = ({
+  ide,
+  description,
+  icon,
+  features,
+}: {
+  ide: string;
+  description: string;
+  icon: React.ReactNode;
+  features: string[];
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
-  
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <motion.div
       className="relative group"
@@ -195,7 +210,9 @@ const IDESupportCard = ({ ide, description, icon, features }: {
                 key={i}
                 className="flex items-center gap-2 text-sm"
                 initial={{ opacity: 0, x: -10 }}
-                animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0.7, x: 0 }}
+                animate={
+                  isHovered ? { opacity: 1, x: 0 } : { opacity: 0.7, x: 0 }
+                }
                 transition={{ delay: i * 0.1 }}
               >
                 <Icons.check className="h-4 w-4 text-success flex-shrink-0" />
@@ -206,45 +223,51 @@ const IDESupportCard = ({ ide, description, icon, features }: {
         </CardContent>
       </Card>
     </motion.div>
-  )
-}
+  );
+};
 
 // Animated stats counter
-const AnimatedStat = ({ value, label, prefix = "", suffix = "", delay = 0 }: {
-  value: number
-  label: string
-  prefix?: string
-  suffix?: string
-  delay?: number
+const AnimatedStat = ({
+  value,
+  label,
+  prefix = "",
+  suffix = "",
+  delay = 0,
+}: {
+  value: number;
+  label: string;
+  prefix?: string;
+  suffix?: string;
+  delay?: number;
 }) => {
-  const [count, setCount] = useState(0)
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
-    if (!isInView) return
-    
+    if (!isInView) return;
+
     const timer = setTimeout(() => {
-      const duration = 2000
-      const steps = 60
-      const increment = value / steps
-      let current = 0
-      
+      const duration = 2000;
+      const steps = 60;
+      const increment = value / steps;
+      let current = 0;
+
       const counter = setInterval(() => {
-        current += increment
+        current += increment;
         if (current >= value) {
-          setCount(value)
-          clearInterval(counter)
+          setCount(value);
+          clearInterval(counter);
         } else {
-          setCount(Math.floor(current))
+          setCount(Math.floor(current));
         }
-      }, duration / steps)
-      
-      return () => clearInterval(counter)
-    }, delay)
-    
-    return () => clearTimeout(timer)
-  }, [isInView, value, delay])
+      }, duration / steps);
+
+      return () => clearInterval(counter);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [isInView, value, delay]);
 
   return (
     <motion.div
@@ -255,29 +278,31 @@ const AnimatedStat = ({ value, label, prefix = "", suffix = "", delay = 0 }: {
       transition={{ duration: 0.6, delay }}
     >
       <div className="text-4xl font-bold text-primary mb-2">
-        {prefix}{count.toLocaleString()}{suffix}
+        {prefix}
+        {count.toLocaleString()}
+        {suffix}
       </div>
       <div className="text-muted-foreground">{label}</div>
     </motion.div>
-  )
-}
+  );
+};
 
 export default function FrameworkPage() {
-  const { scrollYProgress } = useScroll()
-  const yTransform = useTransform(scrollYProgress, [0, 1], [0, -50])
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const { scrollYProgress } = useScroll();
+  const yTransform = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-primary/5 to-background">
       {/* Hero Section */}
       <section className="relative py-32 px-6 overflow-hidden">
-        <motion.div 
+        <motion.div
           className="absolute inset-0 bg-gradient-to-r from-primary/10 via-purple-500/5 to-pink-500/10"
           style={{ y: yTransform, opacity: opacityTransform }}
         />
-        
+
         <div className="max-w-7xl mx-auto relative">
-          <motion.div 
+          <motion.div
             className="text-center mb-16"
             initial="hidden"
             animate="visible"
@@ -286,11 +311,11 @@ export default function FrameworkPage() {
             <motion.div variants={fadeInUp} className="mb-8">
               <Badge variant="outline" className="mb-6 px-6 py-3 text-lg">
                 <Icons.terminal className="mr-3 h-5 w-5" />
-                The AI Context Framework
+                The AI Context Toolkit
               </Badge>
             </motion.div>
-            
-            <motion.h1 
+
+            <motion.h1
               variants={fadeInUp}
               className="text-6xl md:text-8xl font-black tracking-tight mb-8 bg-gradient-to-r from-foreground via-primary to-purple-600 bg-clip-text text-transparent"
             >
@@ -299,48 +324,59 @@ export default function FrameworkPage() {
               Just Got
               <span className="text-primary"> Project-Aware</span>
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
               variants={fadeInUp}
               className="text-2xl md:text-3xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-12"
             >
-              <span className="text-primary font-semibold">Stop repeating yourself to your AI assistant.</span> One command 
-              deploys intelligent, context-aware rules that transform any AI tool into a 
-              <span className="text-primary font-semibold"> project-aware coding expert</span>.
+              <span className="text-primary font-semibold">
+                Stop repeating yourself to your AI assistant.
+              </span>{" "}
+              One command deploys intelligent, context-aware rules that
+              transform any AI tool into a
+              <span className="text-primary font-semibold">
+                {" "}
+                project-aware coding expert
+              </span>
+              .
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               variants={fadeInUp}
               className="flex flex-wrap items-center justify-center gap-6"
             >
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="group relative text-xl px-12 py-8 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 backdrop-blur-sm border border-white/20 overflow-hidden"
                 style={{
                   boxShadow: `
                     0 25px 50px -12px rgba(0, 0, 0, 0.25),
                     0 0 0 1px rgba(255, 255, 255, 0.1),
                     inset 0 1px 3px rgba(255, 255, 255, 0.2)
-                  `
+                  `,
                 }}
                 asChild
               >
-                <a href="https://github.com/idominikosgr/Vibe-Coding-Rules" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com/idominikosgr/VibeKit-VDK-CLI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <Icons.download className="mr-4 h-6 w-6 relative drop-shadow-sm" />
-                  <span className="relative drop-shadow-sm">Get Framework</span>
+                  <span className="relative drop-shadow-sm">Get Toolkit</span>
                 </a>
               </Button>
-              
-              <Button 
-                variant="outline" 
-                size="lg" 
+
+              <Button
+                variant="outline"
+                size="lg"
                 className="text-xl px-12 py-8 hover:scale-105 transition-transform duration-300 bg-background/50 backdrop-blur-sm border-primary/30"
                 asChild
               >
-                <Link href="/setup">
+                <Link href="/generate">
                   <Icons.brain className="mr-4 h-6 w-6" />
-                  Try Web Version
+                  Try VibeKit Generator
                 </Link>
               </Button>
             </motion.div>
@@ -353,7 +389,7 @@ export default function FrameworkPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <motion.div 
+            <motion.div
               variants={slideInLeft}
               initial="hidden"
               whileInView="visible"
@@ -367,25 +403,31 @@ export default function FrameworkPage() {
               <h2 className="text-5xl md:text-6xl font-black tracking-tight">
                 From Generic AI to
                 <span className="text-primary"> Project Genius</span>
-                <br />in Seconds
+                <br />
+                in Seconds
               </h2>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                The VibeCodingRules framework analyzes your project structure, identifies your coding patterns, 
-                and automatically generates intelligent context that makes your AI assistant understand your codebase 
-                like a senior developer who's been on your team for months.
+                The VDK analyzes your project structure, identifies your coding
+                patterns, and automatically generates intelligent context that
+                makes your AI assistant understand your codebase like a senior
+                developer who's been on your team for months.
               </p>
               <div className="flex gap-6">
-                <Button 
+                <Button
                   className="hover:scale-105 transition-transform text-lg px-8 py-4"
                   asChild
                 >
-                  <a href="https://github.com/idominikosgr/Vibe-Coding-Rules" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://github.com/idominikosgr/VibeKit-VDK-CLI"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Icons.github className="mr-2 h-5 w-5" />
                     View on GitHub
                   </a>
                 </Button>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="hover:scale-105 transition-transform text-lg px-8 py-4"
                   asChild
                 >
@@ -396,8 +438,8 @@ export default function FrameworkPage() {
                 </Button>
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               variants={slideInRight}
               initial="hidden"
               whileInView="visible"
@@ -412,7 +454,7 @@ export default function FrameworkPage() {
       {/* IDE Support Section */}
       <section className="py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <motion.div
             className="text-center mb-20"
             initial="hidden"
             whileInView="visible"
@@ -428,12 +470,12 @@ export default function FrameworkPage() {
               <span className="text-primary"> AI Tool You Love</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Deploy once, benefit everywhere. The framework generates compatible rule sets 
-              for all major IDEs and AI assistants.
+              Deploy once, benefit everywhere. The toolkit generates compatible
+              rule sets for all major IDEs and AI assistants.
             </p>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             initial="hidden"
             whileInView="visible"
@@ -447,12 +489,12 @@ export default function FrameworkPage() {
                 icon={<Icons.code className="h-6 w-6 text-primary" />}
                 features={[
                   "Auto-detects rule files",
-                  "Context-aware suggestions", 
-                  "Zero configuration needed"
+                  "Context-aware suggestions",
+                  "Zero configuration needed",
                 ]}
               />
             </motion.div>
-            
+
             <motion.div variants={fadeInUp}>
               <IDESupportCard
                 ide="VS Code"
@@ -461,11 +503,11 @@ export default function FrameworkPage() {
                 features={[
                   "Multi-extension support",
                   "Workspace integration",
-                  "Custom rule deployment"
+                  "Custom rule deployment",
                 ]}
               />
             </motion.div>
-            
+
             <motion.div variants={fadeInUp}>
               <IDESupportCard
                 ide="JetBrains"
@@ -474,7 +516,7 @@ export default function FrameworkPage() {
                 features={[
                   "AI Assistant integration",
                   "Project-aware context",
-                  "Language-specific rules"
+                  "Language-specific rules",
                 ]}
               />
             </motion.div>
@@ -486,7 +528,7 @@ export default function FrameworkPage() {
       <section className="py-32 px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/20 to-transparent" />
         <div className="max-w-7xl mx-auto relative">
-          <motion.div 
+          <motion.div
             className="text-center mb-20"
             initial="hidden"
             whileInView="visible"
@@ -499,8 +541,8 @@ export default function FrameworkPage() {
               <span className="text-primary">Not Random Suggestions.</span>
             </h2>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="grid lg:grid-cols-3 gap-10"
             initial="hidden"
             whileInView="visible"
@@ -511,33 +553,38 @@ export default function FrameworkPage() {
               <Card className="h-full bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 border-emerald-200 dark:border-emerald-800/30">
                 <CardHeader>
                   <Icons.search className="h-12 w-12 text-emerald-600 mb-4" />
-                  <CardTitle className="text-2xl">Intelligent Analysis</CardTitle>
+                  <CardTitle className="text-2xl">
+                    Intelligent Analysis
+                  </CardTitle>
                   <CardDescription className="text-lg">
-                    Analyzes your entire codebase to understand patterns, conventions, and architecture decisions.
+                    Analyzes your entire codebase to understand patterns,
+                    conventions, and architecture decisions.
                   </CardDescription>
                 </CardHeader>
               </Card>
             </motion.div>
-            
+
             <motion.div variants={fadeInUp}>
               <Card className="h-full bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-blue-200 dark:border-blue-800/30">
                 <CardHeader>
                   <Icons.brain className="h-12 w-12 text-blue-600 mb-4" />
                   <CardTitle className="text-2xl">Context Generation</CardTitle>
                   <CardDescription className="text-lg">
-                    Generates project-specific rules that teach your AI about your unique coding style and requirements.
+                    Generates project-specific rules that teach your AI about
+                    your unique coding style and requirements.
                   </CardDescription>
                 </CardHeader>
               </Card>
             </motion.div>
-            
+
             <motion.div variants={fadeInUp}>
               <Card className="h-full bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800/30">
                 <CardHeader>
                   <Icons.performance className="h-12 w-12 text-purple-600 mb-4" />
                   <CardTitle className="text-2xl">Instant Deployment</CardTitle>
                   <CardDescription className="text-lg">
-                    Deploys rules to the right format for your IDE and AI tools, working immediately without configuration.
+                    Deploys rules to the right format for your IDE and AI tools,
+                    working immediately without configuration.
                   </CardDescription>
                 </CardHeader>
               </Card>
@@ -549,7 +596,7 @@ export default function FrameworkPage() {
       {/* Stats Section */}
       <section className="py-32 px-6 relative">
         <div className="max-w-5xl mx-auto">
-          <motion.div 
+          <motion.div
             className="grid md:grid-cols-4 gap-12"
             initial="hidden"
             whileInView="visible"
@@ -566,7 +613,12 @@ export default function FrameworkPage() {
               <AnimatedStat value={847} label="Files Analyzed" delay={400} />
             </motion.div>
             <motion.div variants={fadeInUp}>
-              <AnimatedStat value={98} label="Accuracy Score" suffix="%" delay={600} />
+              <AnimatedStat
+                value={98}
+                label="Accuracy Score"
+                suffix="%"
+                delay={600}
+              />
             </motion.div>
           </motion.div>
         </div>
@@ -582,7 +634,7 @@ export default function FrameworkPage() {
             viewport={{ once: true, amount: 0.3 }}
             variants={staggerContainer}
           >
-            <motion.h2 
+            <motion.h2
               variants={fadeInUp}
               className="text-5xl md:text-6xl font-black tracking-tight mb-8"
             >
@@ -590,45 +642,47 @@ export default function FrameworkPage() {
               <br />
               <span className="text-primary">Project Superpowers?</span>
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               variants={fadeInUp}
               className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto"
             >
-              Transform your AI assistant from generic helper to project-aware genius with one command.
+              Transform your AI assistant from generic helper to project-aware
+              genius with one command.
             </motion.p>
-            
-            <motion.div 
-              variants={fadeInUp}
-              className="space-y-6"
-            >
+
+            <motion.div variants={fadeInUp} className="space-y-6">
               <div className="bg-gray-900 dark:bg-gray-950 rounded-xl p-6 font-mono text-left max-w-2xl mx-auto">
                 <div className="text-green-400 text-lg">
-                  $ curl -fsSL https://cli.vibecodingrules.rocks | sh
+                  $ curl -fsSL https://cli.vdk.tools | sh
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="text-xl px-12 py-6 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
                   asChild
                 >
-                  <a href="https://github.com/idominikosgr/Vibe-Coding-Rules" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://github.com/idominikosgr/VibeKit-VDK-CLI"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Icons.download className="mr-3 h-5 w-5" />
-                    Install Framework
+                    Install Toolkit
                   </a>
                 </Button>
-                
-                <Button 
-                  variant="outline" 
-                  size="lg" 
+
+                <Button
+                  variant="outline"
+                  size="lg"
                   className="text-xl px-12 py-6 hover:scale-105 transition-transform duration-300"
                   asChild
                 >
-                  <Link href="/setup">
+                  <Link href="/generate">
                     <Icons.brain className="mr-3 h-5 w-5" />
-                    Try Web Version
+                    Try VibeKit Generator
                   </Link>
                 </Button>
               </div>
@@ -637,5 +691,5 @@ export default function FrameworkPage() {
         </div>
       </section>
     </div>
-  )
-} 
+  );
+}

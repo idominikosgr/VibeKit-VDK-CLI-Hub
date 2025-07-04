@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Vibe Coding Rules Hub - Beautification Setup Script
-echo "🎨 Setting up Vibe Coding Rules Hub beautification features..."
+# VibeKit VDK Hub - Beautification Setup Script
+echo "🎨 Setting up VibeKit VDK Hub beautification features..."
 
 # Check if we're in the right directory
 if [ ! -f "package.json" ]; then
@@ -30,8 +30,8 @@ echo "📝 Creating environment variables file..."
 if [ ! -f ".env.local" ]; then
     cat > .env.local << EOL
 # Site Configuration
-NEXT_PUBLIC_SITE_URL=https://hub.vibecoderules.rocks
-NEXT_PUBLIC_SITE_NAME="Vibe Coding Rules Hub"
+NEXT_PUBLIC_SITE_URL=https://vdk.tools
+NEXT_PUBLIC_SITE_NAME="VibeKit VDK Hub"
 
 # Analytics & SEO
 GOOGLE_SITE_VERIFICATION=
@@ -39,7 +39,7 @@ NEXT_PUBLIC_VERCEL_ENV=development
 
 # GitHub Integration (for rule synchronization)
 GITHUB_REPO_OWNER=idominikosgr
-GITHUB_REPO_NAME=AI.rules
+GITHUB_REPO_NAME=VibeKit-VDK-AI-rules
 
 # Development
 NODE_ENV=development

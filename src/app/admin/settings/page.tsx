@@ -323,7 +323,7 @@ export default function SystemGearPage() {
                       id="repo-name"
                       value={settings.github.repoName}
                       onChange={(e) => updateSetting('github', 'repoName', e.target.value)}
-                      placeholder="ai.rules"
+                      placeholder="VibeKit-VDK-AI-rules"
                     />
                   </div>
                   <div className="space-y-2">

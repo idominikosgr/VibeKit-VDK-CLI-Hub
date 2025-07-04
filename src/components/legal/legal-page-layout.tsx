@@ -1,40 +1,40 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { ReactNode } from "react"
-import { Icons } from "@/components/icons"
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
+import { Icons } from "@/components/icons";
 
 interface LegalPageLayoutProps {
-  title: string
-  description: string
-  icon?: keyof typeof Icons
-  lastUpdated?: string
-  children: ReactNode
+  title: string;
+  description: string;
+  icon?: keyof typeof Icons;
+  lastUpdated?: string;
+  children: ReactNode;
 }
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-}
+  visible: { opacity: 1, y: 0 },
+};
 
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
+      staggerChildren: 0.1,
+    },
+  },
+};
 
-export function LegalPageLayout({ 
-  title, 
-  description, 
-  icon = "documentation", 
+export function LegalPageLayout({
+  title,
+  description,
+  icon = "documentation",
   lastUpdated,
-  children 
+  children,
 }: LegalPageLayoutProps) {
-  const IconComponent = Icons[icon]
+  const IconComponent = Icons[icon];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -59,7 +59,7 @@ export function LegalPageLayout({
             </div>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent"
             variants={fadeInUp}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -67,7 +67,7 @@ export function LegalPageLayout({
             {title}
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
             variants={fadeInUp}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -104,9 +104,7 @@ export function LegalPageLayout({
           {/* Content card */}
           <div className="relative bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 shadow-xl">
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <div className="space-y-8">
-                {children}
-              </div>
+              <div className="space-y-8">{children}</div>
             </div>
           </div>
         </motion.div>
@@ -121,12 +119,12 @@ export function LegalPageLayout({
         >
           <div className="inline-flex items-center gap-4 px-6 py-3 bg-muted/30 rounded-full text-sm text-muted-foreground border">
             <Icons.logo className="w-4 h-4" />
-            <span>Vibe Coding Rules Hub</span>
+            <span>VibeKit VDK Hub</span>
             <span>•</span>
             <span>Building better AI-assisted development</span>
           </div>
         </motion.div>
       </div>
     </div>
-  )
-} 
+  );
+}

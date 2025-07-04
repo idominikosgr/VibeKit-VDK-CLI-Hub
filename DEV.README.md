@@ -1,7 +1,6 @@
-
 # README.md
 
-# Vibe Coding Rules Hub
+# VibeKit VDK Hub
 
 A comprehensive platform for browsing, searching, and managing AI-assisted development rules and guidelines. Built with modern web technologies to provide developers with curated rules for various programming languages, frameworks, and development tasks.
 
@@ -9,7 +8,7 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 
 - **📚 Rule Catalog**: Browse comprehensive collection of AI development rules by category
 - **🔍 Advanced Search**: Search rules by title, content, tags, and compatibility
-- **⚙️ Rule Generator**: Interactive configuration for project-specific rule packages  
+- **⚙️ Rule Generator**: Interactive configuration for project-specific rule packages
 - **👤 User Management**: Authentication, profiles, and personal rule collections
 - **📦 Package Generation**: Download customized rule packages for your development stack
 - **🔄 GitHub Integration**: Automatic synchronization with rule repositories
@@ -19,20 +18,23 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 ## 🛠 Technology Stack
 
 ### Frontend
-- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
-- **UI Library**: [React 19](https://react.dev/) 
+
+- **Toolkit**: [Next.js 15](https://nextjs.org/) with App Router
+- **UI Library**: [React 19](https://react.dev/)
 - **Components**: [shadcn/ui](https://ui.shadcn.com/) with [Radix UI](https://www.radix-ui.com/) primitives
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **State Management**: React Context API + [React Hook Form](https://react-hook-form.com/)
 - **Type Safety**: [TypeScript 5.8](https://www.typescriptlang.org/)
 
 ### Backend & Database
+
 - **Backend**: [Supabase](https://supabase.io/) (PostgreSQL, Authentication, Storage)
 - **ORM**: Supabase Client with generated TypeScript types
 - **Authentication**: Supabase Auth with GitHub OAuth support
 - **File Processing**: Gray Matter for frontmatter parsing
 
 ### Development & Build Tools
+
 - **Package Manager**: [pnpm](https://pnpm.io/)
 - **Build Tool**: Next.js with custom webpack configuration
 - **Testing**: [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/)
@@ -92,22 +94,26 @@ A comprehensive platform for browsing, searching, and managing AI-assisted devel
 ## ⚡ Quick Start
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/idominikosgr/Vibe-Coding-Rules.git
-cd Vibe Coding Rules Hub-hub
+cd VibeKit VDK Hub-hub
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 3. Environment Setup
+
 ```bash
 cp .env.template .env.local
 ```
 
 Edit `.env.local` with your configuration:
+
 ```env
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
@@ -127,7 +133,9 @@ API_SECRET_KEY=your_api_secret_key
 ```
 
 ### 4. Database Setup
+
 The application uses Supabase with the following key tables:
+
 - `categories` - Rule categories and hierarchies
 - `rules` - Individual rule definitions
 - `profiles` - User profile information
@@ -135,6 +143,7 @@ The application uses Supabase with the following key tables:
 - `sync_logs` - Synchronization operation history
 
 ### 5. Development Server
+
 ```bash
 pnpm dev
 ```
@@ -144,6 +153,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ## 📋 Available Scripts
 
 ### Development
+
 ```bash
 pnpm dev              # Start development server
 pnpm build            # Build for production
@@ -152,6 +162,7 @@ pnpm lint             # Run ESLint
 ```
 
 ### Database & Sync Operations
+
 ```bash
 pnpm sync-rules       # Sync rules from filesystem to database
 pnpm import-rules     # Import rules with progress tracking
@@ -159,6 +170,7 @@ pnpm quick-sync       # Quick synchronization utility
 ```
 
 ### Maintenance
+
 ```bash
 pnpm test            # Run test suite
 pnpm test:watch      # Run tests in watch mode
@@ -168,14 +180,14 @@ pnpm test:watch      # Run tests in watch mode
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | ✅ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
-| `NEXT_SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | ✅ |
-| `GITHUB_TOKEN` | GitHub personal access token | ❌ |
-| `GITHUB_WEBHOOK_SECRET` | GitHub webhook secret | ❌ |
-| `API_SECRET_KEY` | API endpoint protection key | ❌ |
+| Variable                         | Description                  | Required |
+| -------------------------------- | ---------------------------- | -------- |
+| `NEXT_PUBLIC_SUPABASE_URL`       | Supabase project URL         | ✅       |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Supabase anonymous key       | ✅       |
+| `NEXT_SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key    | ✅       |
+| `GITHUB_TOKEN`                   | GitHub personal access token | ❌       |
+| `GITHUB_WEBHOOK_SECRET`          | GitHub webhook secret        | ❌       |
+| `API_SECRET_KEY`                 | API endpoint protection key  | ❌       |
 
 ### Supabase Setup
 
@@ -188,6 +200,7 @@ pnpm test:watch      # Run tests in watch mode
 ### GitHub Integration (Optional)
 
 For automatic rule synchronization:
+
 1. Create a GitHub personal access token with repo permissions
 2. Set up webhook endpoint: `https://your-domain.com/api/webhooks/github`
 3. Configure webhook to trigger on push events to main branch
@@ -195,11 +208,12 @@ For automatic rule synchronization:
 ## 🧪 Testing
 
 ### Running Tests
+
 ```bash
 # Run all tests
 pnpm test
 
-# Run tests in watch mode  
+# Run tests in watch mode
 pnpm test:watch
 
 # Run tests with coverage
@@ -207,6 +221,7 @@ pnpm test:coverage
 ```
 
 ### Testing Strategy
+
 - **Unit Tests**: Component logic and utility functions
 - **Integration Tests**: API endpoints and database operations
 - **E2E Tests**: Critical user workflows (planned)
@@ -214,17 +229,20 @@ pnpm test:coverage
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Connect your GitHub repository to Vercel
 2. Configure environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
 ### Manual Deployment
+
 ```bash
 pnpm build
 pnpm start
 ```
 
 ### Docker Deployment
+
 ```dockerfile
 # Dockerfile example
 FROM node:18-alpine
@@ -242,16 +260,19 @@ CMD ["npm", "start"]
 ### Core Endpoints
 
 #### Rules Management
+
 - `GET /api/rules` - List rules with filtering and pagination
 - `GET /api/rules/[category]` - Get rules by category
 - `GET /api/rules/[category]/[ruleId]` - Get specific rule
 - `POST /api/rules/r` - Rule lookup and redirect
 
 #### Authentication
+
 - `GET /api/auth/callback` - OAuth callback handler
 - `POST /api/auth/logout` - User logout
 
 #### Admin Operations
+
 - `POST /api/admin/sync` - Trigger rule synchronization
 - `GET /api/admin/sync-logs` - View synchronization history
 - `POST /api/webhooks/github` - GitHub webhook handler
@@ -259,6 +280,7 @@ CMD ["npm", "start"]
 ### Response Formats
 
 #### Success Response
+
 ```json
 {
   "data": {...},
@@ -272,6 +294,7 @@ CMD ["npm", "start"]
 ```
 
 #### Error Response
+
 ```json
 {
   "error": "Error message",
@@ -283,18 +306,21 @@ CMD ["npm", "start"]
 ## 🛡 Security Considerations
 
 ### Authentication & Authorization
+
 - Supabase Auth with Row Level Security (RLS)
 - GitHub OAuth integration
 - Admin role-based access control
 - API endpoint protection with secret keys
 
 ### Data Protection
+
 - Input validation with Zod schemas
 - SQL injection protection via Supabase ORM
 - XSS protection through React's built-in sanitization
 - Secure cookie handling for sessions
 
 ### API Security
+
 - Rate limiting on public endpoints (planned)
 - CORS configuration for API routes
 - Webhook signature verification
@@ -303,6 +329,7 @@ CMD ["npm", "start"]
 ## 🤝 Contributing
 
 ### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Make your changes following the coding standards
@@ -313,6 +340,7 @@ CMD ["npm", "start"]
 8. Open a Pull Request
 
 ### Coding Standards
+
 - Follow TypeScript strict mode requirements
 - Use Prettier for code formatting
 - Follow ESLint rules
@@ -321,6 +349,7 @@ CMD ["npm", "start"]
 - Use semantic commit messages
 
 ### Code Review Process
+
 - All changes require PR approval
 - Automated tests must pass
 - No TypeScript errors or ESLint warnings
@@ -331,6 +360,7 @@ CMD ["npm", "start"]
 ### Common Issues
 
 #### Supabase Connection Issues
+
 ```bash
 # Check environment variables
 echo $NEXT_PUBLIC_SUPABASE_URL
@@ -341,6 +371,7 @@ echo $NEXT_PUBLIC_SUPABASE_ANON_KEY
 ```
 
 #### Build Failures
+
 ```bash
 # Clear Next.js cache
 rm -rf .next
@@ -351,18 +382,21 @@ pnpm install
 ```
 
 #### Authentication Problems
+
 - Verify Supabase auth configuration
 - Check GitHub OAuth app settings
 - Ensure callback URLs are correctly configured
 - Review browser console for auth errors
 
 #### Rule Sync Issues
+
 - Check GitHub token permissions
 - Verify webhook endpoint configuration
 - Review sync logs in admin dashboard
 - Ensure rule files follow correct MDC format
 
 ### Performance Issues
+
 - Monitor database query performance in Supabase dashboard
 - Use React DevTools Profiler for client-side performance
 - Check bundle size with Next.js analyzer
@@ -371,14 +405,16 @@ pnpm install
 ## 📊 Monitoring & Analytics
 
 ### Application Monitoring
+
 - Supabase built-in analytics
 - Next.js built-in analytics
 - Error tracking with Supabase functions
 - Performance monitoring via Web Vitals
 
 ### Key Metrics
+
 - Page load times
-- API response times  
+- API response times
 - Database query performance
 - User engagement metrics
 - Rule download statistics
@@ -405,6 +441,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by the Vibe Coding Rules Hub team**
+**Built with ❤️ by the VibeKit VDK Hub team**
 
 ---

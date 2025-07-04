@@ -1,52 +1,54 @@
-import React from 'react';
-import { Metadata } from 'next'
-import { getRule } from '@/lib/services/supabase-rule-service'
-import { notFound } from 'next/navigation'
-import { RuleStructuredData } from '@/components/structured-data'
+import React from "react";
+import { Metadata } from "next";
+import { getRule } from "@/lib/services/supabase-rule-service";
+import { notFound } from "next/navigation";
+import { RuleStructuredData } from "@/components/structured-data";
 
 // Define type for rule detail page props
 type RuleDetailLayoutProps = {
   params: Promise<{
-    category: string
-    ruleId: string
-  }>
-  children: React.ReactNode
-}
+    category: string;
+    ruleId: string;
+  }>;
+  children: React.ReactNode;
+};
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ category: string; ruleId: string }>
+  params: Promise<{ category: string; ruleId: string }>;
 }): Promise<Metadata> {
   try {
-    const { category, ruleId } = await params
-    const rule = await getRule(ruleId)
+    const { category, ruleId } = await params;
+    const rule = await getRule(ruleId);
 
     if (!rule) {
       return {
-        title: 'Rule Not Found',
-        description: 'The requested coding rule could not be found.',
-      }
+        title: "Rule Not Found",
+        description: "The requested coding rule could not be found.",
+      };
     }
 
-    const title = `${rule.title} | VibeCodingRules`
-    const description = rule.description || `Learn about ${rule.title} - a comprehensive coding rule for better development practices.`
-    const canonicalUrl = `https://hub.vibecodingrules.rocks/rules/${category}/${ruleId}`
+    const title = `${rule.title} | VibeKit VDK`;
+    const description =
+      rule.description ||
+      `Learn about ${rule.title} - a comprehensive coding rule for better development practices.`;
+    const canonicalUrl = `https://vdk.tools/rules/${category}/${ruleId}`;
 
     return {
       title,
       description,
       keywords: [
         rule.title,
-        'coding rules',
-        'development best practices',
-        'AI assistant',
+        "coding rules",
+        "development best practices",
+        "AI assistant",
         rule.categoryName || category,
         ...(rule.tags || []),
       ],
-      authors: [{ name: 'VibeCodingRules Team' }],
-      creator: 'VibeCodingRules',
-      publisher: 'VibeCodingRules Hub',
+      authors: [{ name: "VibeKit VDK Team" }],
+      creator: "VibeKit VDK",
+      publisher: "VibeKit VDK",
       formatDetection: {
         email: false,
         address: false,
@@ -55,31 +57,31 @@ export async function generateMetadata({
       openGraph: {
         title,
         description,
-        type: 'article',
+        type: "article",
         publishedTime: rule.created_at || undefined,
         modifiedTime: rule.updated_at || undefined,
         section: rule.categoryName || category,
         tags: rule.tags || undefined,
         images: [
           {
-            url: `/og?title=${encodeURIComponent(rule.title)}&description=${encodeURIComponent(
-              description
-            )}&theme=rule`,
+            url: `/og?title=${encodeURIComponent(
+              rule.title
+            )}&description=${encodeURIComponent(description)}&theme=rule`,
             width: 1200,
             height: 630,
-            alt: `${rule.title} - VibeCodingRules`,
+            alt: `${rule.title} - VibeKit VDK`,
           },
         ],
         url: canonicalUrl,
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title,
         description,
         images: [
-          `/og?title=${encodeURIComponent(rule.title)}&description=${encodeURIComponent(
-            description
-          )}&theme=rule`,
+          `/og?title=${encodeURIComponent(
+            rule.title
+          )}&description=${encodeURIComponent(description)}&theme=rule`,
         ],
       },
       alternates: {
@@ -91,38 +93,34 @@ export async function generateMetadata({
         googleBot: {
           index: true,
           follow: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
         },
       },
-    }
+    };
   } catch (error) {
-    console.error('Error generating metadata for rule:', error)
+    console.error("Error generating metadata for rule:", error);
     return {
-      title: 'VibeCodingRules',
-      description: 'AI-assisted development rules and guidelines',
-    }
+      title: "VibeKit VDK",
+      description: "AI-assisted development rules and guidelines",
+    };
   }
 }
 
 export default async function RuleDetailLayout({
   children,
-  params
+  params,
 }: RuleDetailLayoutProps) {
   try {
-    const { category, ruleId } = await params
-    const rule = await getRule(ruleId)
+    const { category, ruleId } = await params;
+    const rule = await getRule(ruleId);
 
     if (!rule) {
-      return (
-        <div className="rule-detail-layout">
-          {children}
-        </div>
-      )
+      return <div className="rule-detail-layout">{children}</div>;
     }
 
-    const canonicalUrl = `https://hub.vibecodingrules.rocks/rules/${category}/${ruleId}`
+    const canonicalUrl = `https://vdk.tools/rules/${category}/${ruleId}`;
 
     return (
       <div className="rule-detail-layout">
@@ -137,13 +135,9 @@ export default async function RuleDetailLayout({
           tags={rule.tags || []}
         />
       </div>
-    )
+    );
   } catch (error) {
-    console.error('Error in RuleDetailLayout:', error)
-    return (
-      <div className="rule-detail-layout">
-        {children}
-      </div>
-    )
+    console.error("Error in RuleDetailLayout:", error);
+    return <div className="rule-detail-layout">{children}</div>;
   }
 }

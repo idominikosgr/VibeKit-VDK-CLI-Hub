@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Vibe Coding Rules - A collection of coding rules for Vibe Coding';
+export const alt = 'VibeKit VDK Hub - Vibe Development Kit';
 export const size = {
   width: 1200,
   height: 630,
@@ -10,9 +10,9 @@ export const contentType = 'image/png';
 
 export default async function OpengraphImage() {
   // Default image for the homepage/main app
-  const title = 'Vibe Coding Rules - A collection of coding rules for Vibe Coding';
+  const title = 'VibeKit VDK Hub - Vibe Development Kit';
   const subtitle =
-    'A collection of coding rules for Vibe Coding';
+    'Make your AI assistant project-aware';
 
   try {
     return new ImageResponse(
@@ -86,13 +86,13 @@ export default async function OpengraphImage() {
               </div>
               <span
                 style={{
-                  fontSize: '36px',
+                  fontSize: '32px',
                   fontWeight: 'bold',
                   color: '#1a202c',
                   letterSpacing: '-0.025em',
                 }}
               >
-                Vibe Coding Rules
+                VibeKit VDK Hub
               </span>
             </div>
 
@@ -139,7 +139,7 @@ export default async function OpengraphImage() {
               fontWeight: '500',
             }}
           >
-            hub.vibecodingrules.rocks
+            vdk.tools
           </div>
         </div>
       ),
@@ -166,7 +166,7 @@ export default async function OpengraphImage() {
             fontWeight: 'bold',
           }}
         >
-          Vibe Coding Rules
+          VibeKit VDK Hub
         </div>
       ),
       { ...size }
