@@ -2,14 +2,21 @@
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2024",
-    "lib": ["DOM", "DOM.Iterable", "ES2022", "WebWorker", "ES2023.Array", "ES2024.Object"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022",
+      "WebWorker",
+      "ES2023.Array",
+      "ES2024.Object"
+    ],
     "jsx": "preserve",
     "allowJs": true,
     "useDefineForClassFields": true,
 
     /* Modules */
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "allowArbitraryExtensions": true,
@@ -69,7 +76,12 @@
     },
 
     /* Type Definitions */
-    "types": ["node", "@types/react", "@types/react-dom", "@serwist/next/typings"],
+    "types": [
+      "node",
+      "@types/react",
+      "@types/react-dom",
+      "@serwist/next/typings"
+    ],
 
     /* Next.js Plugin */
     "plugins": [
@@ -130,15 +142,6 @@
     "docker/**/*",
     "scripts/**/*"
   ],
-
-  /* TypeScript 5.x Specific Options */
-  "ts-node": {
-    "esm": true,
-    "compilerOptions": {
-      "module": "ESNext",
-      "moduleResolution": "bundler"
-    }
-  },
 
   /* References for Project Structure */
   "references": []
